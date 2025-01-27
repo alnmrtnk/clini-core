@@ -1,0 +1,105 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Studying\\Diploma\\clini-core\\server-app\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\models\\prescriptionlabresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\models\\prescriptionlabresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\models\\prescription.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\models\\prescription.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\models\\labresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\models\\labresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\models\\bloodpressure.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\models\\bloodpressure.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 418,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PrescriptionLabResult.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\PrescriptionLabResult.cs",
+              "RelativeDocumentMoniker": "server-app\\Models\\PrescriptionLabResult.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\PrescriptionLabResult.cs",
+              "RelativeToolTip": "server-app\\Models\\PrescriptionLabResult.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T13:03:56.24Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BloodPressure.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\BloodPressure.cs",
+              "RelativeDocumentMoniker": "server-app\\Models\\BloodPressure.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\BloodPressure.cs",
+              "RelativeToolTip": "server-app\\Models\\BloodPressure.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T13:02:01.692Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LabResult.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\LabResult.cs",
+              "RelativeDocumentMoniker": "server-app\\Models\\LabResult.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\LabResult.cs",
+              "RelativeToolTip": "server-app\\Models\\LabResult.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T12:56:18.924Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Prescription.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\Prescription.cs",
+              "RelativeDocumentMoniker": "server-app\\Models\\Prescription.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\Prescription.cs",
+              "RelativeToolTip": "server-app\\Models\\Prescription.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAB7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T12:54:38.948Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "server-app\\Data\\AppDbContext.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "server-app\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAFgAAAAAAAAAAAAgwGIAAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T12:11:17.299Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
