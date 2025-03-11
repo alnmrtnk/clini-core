@@ -5,12 +5,12 @@ namespace server_app.Models
     public class LabResult : MedicalRecordRelationship
     {
         [Required]
-        public string TestName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string TestResult { get; set; } = string.Empty;
+        public string Result { get; set; } = string.Empty;
 
         [Required]
-        public DateTime TestDate { get; set; }
+        public DateTime Date { get; set; }
     }
 }

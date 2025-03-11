@@ -12,6 +12,7 @@ namespace server_app.Models
         [AllowNull]
         public BloodPressure BloodPressure { get; set; } = null;
 
+        [AllowNull]
         [Range(0, 200)]
         public int PulseRate { get; set; }
 

@@ -3,12 +3,28 @@
   "WorkspaceRootPath": "D:\\Studying\\Diploma\\clini-core\\server-app\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\models\\medicalconclusion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\models\\medicalconclusion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\models\\allergy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\models\\allergy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\models\\prescriptionlabresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\models\\prescriptionlabresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\models\\medicalrecordrelationship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|solutionrelative:server-app\\models\\medicalrecordrelationship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E1E65A29-D728-4122-8CE5-15CAC9AAF919}|server-app\\server-app.csproj|d:\\studying\\diploma\\clini-core\\server-app\\server-app\\models\\prescription.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,37 +46,76 @@
       "DocumentGroups": [
         {
           "DockedWidth": 418,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Program.cs",
+              "RelativeDocumentMoniker": "server-app\\Program.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Program.cs",
+              "RelativeToolTip": "server-app\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-27T19:41:09.713Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MedicalConclusion.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\MedicalConclusion.cs",
+              "RelativeDocumentMoniker": "server-app\\Models\\MedicalConclusion.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\MedicalConclusion.cs",
+              "RelativeToolTip": "server-app\\Models\\MedicalConclusion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-27T19:38:12.346Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MedicalRecordRelationship.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\MedicalRecordRelationship.cs",
+              "RelativeDocumentMoniker": "server-app\\Models\\MedicalRecordRelationship.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\MedicalRecordRelationship.cs",
+              "RelativeToolTip": "server-app\\Models\\MedicalRecordRelationship.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-27T19:35:59.378Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Allergy.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\Allergy.cs",
+              "RelativeDocumentMoniker": "server-app\\Models\\Allergy.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\Allergy.cs",
+              "RelativeToolTip": "server-app\\Models\\Allergy.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-27T19:35:37.166Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "PrescriptionLabResult.cs",
               "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\PrescriptionLabResult.cs",
               "RelativeDocumentMoniker": "server-app\\Models\\PrescriptionLabResult.cs",
               "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\PrescriptionLabResult.cs",
               "RelativeToolTip": "server-app\\Models\\PrescriptionLabResult.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAvAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-12T13:03:56.24Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "BloodPressure.cs",
-              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\BloodPressure.cs",
-              "RelativeDocumentMoniker": "server-app\\Models\\BloodPressure.cs",
-              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\BloodPressure.cs",
-              "RelativeToolTip": "server-app\\Models\\BloodPressure.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-12T13:02:01.692Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "LabResult.cs",
               "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\LabResult.cs",
               "RelativeDocumentMoniker": "server-app\\Models\\LabResult.cs",
@@ -68,12 +123,36 @@
               "RelativeToolTip": "server-app\\Models\\LabResult.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-12T12:56:18.924Z",
+              "WhenOpened": "2025-01-12T12:56:18.924Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "server-app\\Data\\AppDbContext.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "server-app\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAqwHIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T12:11:17.299Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
+              "Title": "BloodPressure.cs",
+              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\BloodPressure.cs",
+              "RelativeDocumentMoniker": "server-app\\Models\\BloodPressure.cs",
+              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\BloodPressure.cs",
+              "RelativeToolTip": "server-app\\Models\\BloodPressure.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-12T13:02:01.692Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "Prescription.cs",
               "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Models\\Prescription.cs",
               "RelativeDocumentMoniker": "server-app\\Models\\Prescription.cs",
@@ -81,21 +160,7 @@
               "RelativeToolTip": "server-app\\Models\\Prescription.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAB7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-12T12:54:38.948Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Data\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "server-app\\Data\\AppDbContext.cs",
-              "ToolTip": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\Data\\AppDbContext.cs",
-              "RelativeToolTip": "server-app\\Data\\AppDbContext.cs",
-              "ViewState": "AgIAAFgAAAAAAAAAAAAgwGIAAABIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-12T12:11:17.299Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-12T12:54:38.948Z"
             }
           ]
         }
