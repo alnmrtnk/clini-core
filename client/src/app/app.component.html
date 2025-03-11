@@ -1,3 +1,35 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-split-pane contentId="main-content" [disabled]="true">
+    <ion-menu contentId="main-content" type="overlay" [ngClass]="{'menu-expanded': menuExpanded, 'menu-collapsed': !menuExpanded}">
+      <ion-content>
+        <div class="menu-header">
+          <div class="app-title" [ngClass]="{'hidden': !menuExpanded}">
+            <ion-list-header>Medical Tracker</ion-list-header>
+            <ion-note>Your health companion</ion-note>
+          </div>
+          <ion-button fill="clear" class="toggle-button" (click)="toggleMenu()">
+            <ion-icon [name]="menuExpanded ? 'chevron-back' : 'chevron-forward'"></ion-icon>
+          </ion-button>
+        </div>
+
+        <ion-list id="inbox-list" class="menu-list">
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
+            <ion-item 
+              routerDirection="root" 
+              [routerLink]="[p.url]" 
+              lines="none" 
+              detail="false" 
+              routerLinkActive="selected"
+              class="menu-item"
+            >
+              <ion-icon slot="start" [name]="p.icon"></ion-icon>
+              <ion-label [ngClass]="{'hidden': !menuExpanded}">{{ p.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
 </ion-app>
+

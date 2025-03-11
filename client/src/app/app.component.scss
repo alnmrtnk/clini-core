@@ -1,53 +1,70 @@
-ion-app {
-  background: radial-gradient(circle, var(--ion-color-primary-tint) 0%, white 100%);
+ion-menu {
+  --width: 60px;
+  transition: width 0.3s ease;
+  
+  &.menu-expanded {
+    --width: 250px;
+  }
 }
 
-.desktop-view {
-  --tabs-position: left;
+.menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 8px 0;
   
-  /* Desktop-specific styles */
-  ion-tabs {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
+  .app-title {
+    transition: opacity 0.2s ease;
+    
+    &.hidden {
+      opacity: 0;
+      display: none;
+    }
   }
   
-  ion-tab-bar {
-    flex-direction: column;
-    width: 80px;
-    height: 100%;
-    border-right: 1px solid var(--ion-color-light-shade);
-    border-top: none;
-    padding: 20px 0;
+  .toggle-button {
+    margin: 0;
+    height: 36px;
+    width: 36px;
+    --padding-start: 0;
+    --padding-end: 0;
   }
+}
+
+.menu-list {
+  margin-top: 16px;
   
-  ion-tab-button {
-    height: 60px;
-    justify-content: center;
+  .menu-item {
+    margin: 8px 0;
+    
+    ion-icon {
+      font-size: 20px;
+      min-width: 24px;
+    }
+    
+    ion-label {
+      transition: opacity 0.2s ease;
+      
+      &.hidden {
+        opacity: 0;
+        display: none;
+      }
+    }
   }
+}
+
+ion-item.selected {
+  --background: rgba(var(--ion-color-primary-rgb), 0.14);
+  --color: var(--ion-color-primary);
   
-  ion-router-outlet {
-    flex: 1;
+  ion-icon {
+    color: var(--ion-color-primary);
   }
-  
-  /* Add padding to content for desktop */
-  ion-content {
-    --padding-start: 20px;
-    --padding-end: 20px;
-    --padding-top: 20px;
-    --padding-bottom: 20px;
-  }
-  
-  /* Adjust card layouts for desktop */
-  ion-card {
-    margin: 16px;
-    max-width: 1200px;
-  }
-  
-  /* Grid adjustments for desktop */
-  ion-grid {
-    max-width: 1400px;
-    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  ion-menu.menu-collapsed {
+    --width: 0;
   }
 }
 

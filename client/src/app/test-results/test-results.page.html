@@ -1,0 +1,87 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Test Results</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="filter"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list *ngIf="!selectedResult">
+    <ion-item *ngFor="let result of testResults" (click)="viewDetails(result)" button>
+      <ion-icon name="document-text" slot="start" color="primary"></ion-icon>
+      <ion-label>
+        <h2>{{result.name}}</h2>
+        <h3>{{result.date}}</h3>
+        <p>Provider: {{result.provider}}</p>
+        <p>Location: {{result.location}}</p>
+      </ion-label>
+      <ion-icon name="chevron-forward" slot="end"></ion-icon>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="selectedResult" class="ion-padding">
+    <ion-button fill="clear" (click)="closeDetails()">
+      <ion-icon name="arrow-back" slot="start"></ion-icon>
+      Back to List
+    </ion-button>
+    
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>{{selectedResult.date}}</ion-card-subtitle>
+        <ion-card-title>{{selectedResult.name}}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-label>
+            <p>Provider: {{selectedResult.provider}}</p>
+            <p>Location: {{selectedResult.location}}</p>
+            <p>Category: {{selectedResult.category}}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-list-header>
+          <ion-label>Results</ion-label>
+        </ion-list-header>
+        
+        <ion-item *ngFor="let item of selectedResult.results">
+          <ion-label>
+            <h2>{{item.name}}</h2>
+            <div class="result-value">
+              <span [ngClass]="{
+                'normal': item.flag === 'normal',
+                'high': item.flag === 'high',
+                'low': item.flag === 'low',
+                'critical': item.flag === 'critical'
+              }">{{item.value}} {{item.unit}}</span>
+              <ion-badge *ngIf="item.flag === 'high'" color="warning">HIGH</ion-badge>
+              <ion-badge *ngIf="item.flag === 'low'" color="warning">LOW</ion-badge>
+              <ion-badge *ngIf="item.flag === 'critical'" color="danger">CRITICAL</ion-badge>
+            </div>
+            <p>Reference Range: {{item.referenceRange}}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item *ngIf="selectedResult.notes" lines="none">
+          <ion-label>
+            <h2>Notes</h2>
+            <p>{{selectedResult.notes}}</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+

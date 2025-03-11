@@ -1,10 +1,63 @@
-import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { Component } from "@angular/core"
+import { RouterLink, RouterOutlet } from "@angular/router"
+import { Platform } from "@ionic/angular/standalone"
+import { SplashScreen } from "@capacitor/splash-screen"
+import { StatusBar } from "@capacitor/status-bar"
+import {
+  IonApp,
+  IonSplitPane,
+  IonMenu,
+  IonContent,
+  IonList,
+  IonListHeader,
+  IonNote,
+  IonMenuToggle,
+  IonItem,
+  IonIcon,
+  IonLabel,
+  IonRouterOutlet,
+  IonButton,
+  IonFooter,
+  IonToolbar,
+} from "@ionic/angular/standalone"
+import { NgFor, NgClass } from "@angular/common"
+import { addIcons } from "ionicons"
+import {
+  home,
+  fitness,
+  clipboard,
+  medkit,
+  calendar,
+  document,
+  person,
+  menuOutline,
+  chevronForward,
+  chevronBack,
+} from "ionicons/icons"
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet],
+  selector: "app-root",
+  templateUrl: "app.component.html",
+  styleUrls: ["app.component.scss"],
+  standalone: true,
+  imports: [
+    RouterLink,
+    IonApp,
+    IonSplitPane,
+    IonMenu,
+    IonContent,
+    IonList,
+    IonListHeader,
+    IonNote,
+    IonMenuToggle,
+    IonItem,
+    IonIcon,
+    IonLabel,
+    IonRouterOutlet,
+    IonButton,
+    NgFor,
+    NgClass,
+  ],
 })
 export class AppComponent {
   public appPages = [
@@ -17,8 +70,22 @@ export class AppComponent {
     { title: "Profile", url: "/profile", icon: "person" },
   ]
 
+  menuExpanded = false
+
   constructor(private platform: Platform) {
     this.initializeApp()
+    addIcons({
+      home,
+      fitness,
+      clipboard,
+      medkit,
+      calendar,
+      document,
+      person,
+      menuOutline,
+      chevronForward,
+      chevronBack,
+    })
   }
 
   initializeApp() {
@@ -29,4 +96,13 @@ export class AppComponent {
       }
     })
   }
+
+  isMobile(): boolean {
+    return window.innerWidth < 768
+  }
+
+  toggleMenu() {
+    this.menuExpanded = !this.menuExpanded
+  }
 }
+

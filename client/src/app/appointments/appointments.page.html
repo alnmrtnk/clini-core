@@ -1,0 +1,67 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Appointments</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment (ionChange)="segmentChanged($event)" [value]="segment">
+      <ion-segment-button value="upcoming">
+        <ion-label>Upcoming</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="completed">
+        <ion-label>Past</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="all">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-item-sliding *ngFor="let appointment of getFilteredAppointments()">
+      <ion-item>
+        <ion-icon 
+          [name]="appointment.status === 'upcoming' ? 'calendar' : (appointment.status === 'completed' ? 'checkmark-circle' : 'close-circle')" 
+          [color]="appointment.status === 'upcoming' ? 'primary' : (appointment.status === 'completed' ? 'success' : 'danger')"
+          slot="start">
+        </ion-icon>
+        <ion-label>
+          <h2>{{appointment.doctor}}</h2>
+          <h3>{{appointment.specialty}}</h3>
+          <p>{{appointment.date}} at {{appointment.time}}</p>
+          <p>{{appointment.location}}</p>
+          <p *ngIf="appointment.notes">Notes: {{appointment.notes}}</p>
+        </ion-label>
+        <ion-badge 
+          [color]="appointment.status === 'upcoming' ? 'primary' : (appointment.status === 'completed' ? 'success' : 'danger')"
+          slot="end">
+          {{appointment.status}}
+        </ion-badge>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option *ngIf="appointment.status === 'upcoming'" color="danger">
+          <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="primary">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
