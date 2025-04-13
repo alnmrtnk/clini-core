@@ -1,0 +1,80 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* custom styles imports */
+@use "./assets/styles/variables.scss";
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/* Custom global styles */
+.medical-bg {
+  --background: radial-gradient(circle, #ffffff 0%, #e6f7ff 100%);
+}
+
+ion-content {
+  --background: radial-gradient(circle, #ffffff 0%, #e6f7ff 100%);
+}
+
+ion-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+ion-card-title {
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
+body.dark ion-content {
+  --background: radial-gradient(circle, #1e1e1e 0%, #121212 100%);
+}
+
+body.dark ion-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@media (min-width: 992px) {
+  ion-header {
+    left: var(--menu-height);
+    position: fixed;
+    width: calc(100vw - var(--menu-height));
+  }
+
+  .page-wrapper {
+    top: var(--header-height);
+    left: var(--menu-height);
+    width: calc(100vw - var(--menu-height));
+    position: fixed;
+    max-height: calc(100vh - var(--header-height));
+    overflow-y: auto;
+
+    &.has-searchbar {
+      top: calc(var(--header-height) + var(--searchbar-height));
+      max-height: calc(
+        100vh - calc(var(--header-height) + var(--searchbar-height))
+      );
+    }
+  }
+}

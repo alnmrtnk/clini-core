@@ -1,0 +1,219 @@
+import { Component } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { addIcons } from 'ionicons';
+import { mailOutline, qrCodeOutline } from 'ionicons/icons';
+
+@Component({
+  selector: 'app-doctor-access',
+  standalone: true,
+  imports: [IonicModule, CommonModule, FormsModule],
+  template: `
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>Doctor Access</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <div class="page-wrapper container">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Share Medical Data</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>
+              Grant temporary access to your medical data for healthcare
+              professionals.
+            </p>
+            <ion-button
+              expand="block"
+              color="primary"
+              (click)="generateQRCode()"
+            >
+              <ion-icon name="qr-code-outline" slot="start"></ion-icon>
+              Generate QR Code
+            </ion-button>
+            <ion-button
+              expand="block"
+              fill="outline"
+              color="primary"
+              (click)="sendEmailInvitation()"
+            >
+              <ion-icon name="mail-outline" slot="start"></ion-icon>
+              Send Email Invitation
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card *ngIf="showQRCode">
+          <ion-card-header>
+            <ion-card-title>QR Code</ion-card-title>
+            <ion-card-subtitle>Valid for 24 hours</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content class="qr-container">
+            <div class="qr-code">
+              <!-- QR Code would be generated here -->
+              <div class="placeholder-qr"></div>
+            </div>
+            <p class="qr-instructions">
+              Show this QR code to your doctor to grant them temporary access to
+              your medical data.
+            </p>
+            <ion-button
+              expand="block"
+              fill="outline"
+              color="medium"
+              (click)="showQRCode = false"
+            >
+              Hide QR Code
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-list-header>
+          <ion-label>Active Access Grants</ion-label>
+        </ion-list-header>
+
+        <ion-card *ngIf="activeGrants.length === 0">
+          <ion-card-content>
+            <p class="no-grants">No active access grants</p>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-list *ngIf="activeGrants.length > 0">
+          <ion-item *ngFor="let grant of activeGrants">
+            <ion-avatar slot="start">
+              <img [src]="grant.avatar" alt="Doctor avatar" />
+            </ion-avatar>
+            <ion-label>
+              <h2>{{ grant.name }}</h2>
+              <p>{{ grant.specialty }}</p>
+              <p>Expires: {{ grant.expiresAt | date : 'medium' }}</p>
+            </ion-label>
+            <ion-button
+              fill="clear"
+              color="danger"
+              slot="end"
+              (click)="revokeAccess(grant.id)"
+            >
+              Revoke
+            </ion-button>
+          </ion-item>
+        </ion-list>
+
+        <ion-list-header>
+          <ion-label>Access History</ion-label>
+        </ion-list-header>
+
+        <ion-list>
+          <ion-item *ngFor="let access of accessHistory">
+            <ion-avatar slot="start">
+              <img [src]="access.avatar" alt="Doctor avatar" />
+            </ion-avatar>
+            <ion-label>
+              <h2>{{ access.name }}</h2>
+              <p>{{ access.specialty }}</p>
+              <p>Accessed: {{ access.accessedAt | date : 'medium' }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-content>
+  `,
+  styles: [
+    `
+      .container {
+        padding: 16px;
+      }
+
+      ion-card {
+        margin-bottom: 16px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+
+      .qr-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+      }
+
+      .qr-code {
+        margin-bottom: 16px;
+      }
+
+      .placeholder-qr {
+        width: 200px;
+        height: 200px;
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      .placeholder-qr:after {
+        content: 'QR Code';
+        color: #999;
+      }
+
+      .qr-instructions {
+        text-align: center;
+        margin-bottom: 16px;
+        color: var(--ion-color-medium);
+      }
+
+      .no-grants {
+        text-align: center;
+        color: var(--ion-color-medium);
+      }
+    `,
+  ],
+})
+export class DoctorAccessPage {
+  showQRCode = false;
+  activeGrants: any[] = [];
+  accessHistory: any[] = [
+    {
+      id: '1',
+      name: 'Dr. Sarah Johnson',
+      specialty: 'Cardiologist',
+      avatar: '/placeholder.svg?height=40&width=40',
+      accessedAt: new Date(Date.now() - 604800000), // 7 days ago
+    },
+    {
+      id: '2',
+      name: 'Dr. Michael Chen',
+      specialty: 'General Practitioner',
+      avatar: '/placeholder.svg?height=40&width=40',
+      accessedAt: new Date(Date.now() - 2592000000), // 30 days ago
+    },
+  ];
+
+  constructor() {
+    addIcons({
+      qrCodeOutline,
+      mailOutline,
+    });
+  }
+
+  generateQRCode() {
+    this.showQRCode = true;
+    // Implement QR code generation
+  }
+
+  sendEmailInvitation() {
+    console.log('Send email invitation');
+    // Implement email invitation functionality
+  }
+
+  revokeAccess(id: string) {
+    console.log('Revoke access:', id);
+    // Implement revoke access functionality
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "clini-core",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
