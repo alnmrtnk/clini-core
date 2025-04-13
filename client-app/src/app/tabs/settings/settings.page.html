@@ -43,7 +43,10 @@
             color="primary"
           ></ion-icon>
           <ion-label>Automatic Backup</ion-label>
-          <ion-toggle [(ngModel)]="settings.automaticBackup"></ion-toggle>
+          <ion-toggle
+            [(ngModel)]="settings.automaticBackup"
+            slot="end"
+          ></ion-toggle>
         </ion-item>
 
         <ion-item button detail (click)="manageDataSharing()">
@@ -77,7 +80,10 @@
             color="primary"
           ></ion-icon>
           <ion-label>Appointment Reminders</ion-label>
-          <ion-toggle [(ngModel)]="settings.appointmentReminders"></ion-toggle>
+          <ion-toggle
+            [(ngModel)]="settings.appointmentReminders"
+            slot="end"
+          ></ion-toggle>
         </ion-item>
 
         <ion-item>
@@ -87,7 +93,10 @@
             color="primary"
           ></ion-icon>
           <ion-label>Vaccination Reminders</ion-label>
-          <ion-toggle [(ngModel)]="settings.vaccinationReminders"></ion-toggle>
+          <ion-toggle
+            [(ngModel)]="settings.vaccinationReminders"
+            slot="end"
+          ></ion-toggle>
         </ion-item>
 
         <ion-item>
@@ -99,6 +108,7 @@
           <ion-label>Lab Results Notifications</ion-label>
           <ion-toggle
             [(ngModel)]="settings.labResultsNotifications"
+            slot="end"
           ></ion-toggle>
         </ion-item>
       </ion-item-group>

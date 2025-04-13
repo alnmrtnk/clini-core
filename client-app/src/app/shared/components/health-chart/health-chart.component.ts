@@ -1,7 +1,7 @@
 import {
   Component,
-  type AfterViewInit,
-  type ElementRef,
+  AfterViewInit,
+  ElementRef,
   ViewChild,
 } from '@angular/core';
 import { IonicModule } from '@ionic/angular';

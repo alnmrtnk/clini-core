@@ -1,57 +1,25 @@
 <ion-content>
-  <div class="tabs-container" [class.desktop]="isDesktop">
+  <div
+    class="tabs-container"
+    [class.desktop]="isDesktop"
+    [class.expanded]="expanded"
+  >
     <ion-tabs>
       <ion-tab-bar
         [slot]="isDesktop ? 'start' : 'bottom'"
         class="ion-tab-bar"
         [class.vertical]="isDesktop"
       >
+        <ion-button *ngIf="isDesktop" (click)="expanded = !expanded"
+          ><ion-icon name="menu-outline"></ion-icon
+        ></ion-button>
         <ion-tab-button
-          tab="dashboard"
+          *ngFor="let tab of tabs"
+          [tab]="tab.id"
           [layout]="isDesktop ? 'icon-start' : 'icon-top'"
         >
-          <ion-icon name="home-outline"></ion-icon>
-          <ion-label>Dashboard</ion-label>
-        </ion-tab-button>
-
-        <ion-tab-button
-          tab="medical-records"
-          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
-        >
-          <ion-icon name="document-text-outline"></ion-icon>
-          <ion-label>Records</ion-label>
-        </ion-tab-button>
-
-        <ion-tab-button
-          tab="vaccinations"
-          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
-        >
-          <ion-icon name="fitness-outline"></ion-icon>
-          <ion-label>Vaccinations</ion-label>
-        </ion-tab-button>
-
-        <ion-tab-button
-          tab="health-tracking"
-          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
-        >
-          <ion-icon name="pulse-outline"></ion-icon>
-          <ion-label>Health</ion-label>
-        </ion-tab-button>
-
-        <ion-tab-button
-          tab="doctor-access"
-          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
-        >
-          <ion-icon name="people-outline"></ion-icon>
-          <ion-label>Doctors</ion-label>
-        </ion-tab-button>
-
-        <ion-tab-button
-          tab="settings"
-          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
-        >
-          <ion-icon name="settings-outline"></ion-icon>
-          <ion-label>Settings</ion-label>
+          <ion-icon [name]="tab.icon"></ion-icon>
+          <ion-label *ngIf="isDesktop && expanded">{{tab.label}}</ion-label>
         </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>

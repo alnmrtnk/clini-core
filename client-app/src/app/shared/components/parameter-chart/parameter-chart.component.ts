@@ -1,11 +1,10 @@
 import {
   Component,
-  type AfterViewInit,
-  type ElementRef,
+  AfterViewInit,
+  ElementRef,
   ViewChild,
-  Input,
-  type OnChanges,
-  type SimpleChanges,
+  input,
+  effect,
 } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
@@ -18,20 +17,22 @@ import Chart from 'chart.js/auto';
   templateUrl: 'parameter-chart.component.html',
   styleUrl: 'parameter-chart.component.scss',
 })
-export class ParameterChartComponent implements AfterViewInit, OnChanges {
+export class ParameterChartComponent implements AfterViewInit {
   @ViewChild('chartCanvas') chartCanvas!: ElementRef;
-  @Input() parameter = 'bloodPressure';
+  parameter = input<string>('bloodPressure');
 
   chart: any;
 
-  ngAfterViewInit() {
-    this.createChart();
+  constructor() {
+    effect(() => {
+      if (this.chart) {
+        this.updateChart();
+      }
+    });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['parameter'] && !changes['parameter'].firstChange) {
-      this.updateChart();
-    }
+  ngAfterViewInit() {
+    this.createChart();
   }
 
   createChart() {
@@ -79,7 +80,7 @@ export class ParameterChartComponent implements AfterViewInit, OnChanges {
       });
     });
 
-    switch (this.parameter) {
+    switch (this.parameter()) {
       case 'bloodPressure':
         return {
           labels,
