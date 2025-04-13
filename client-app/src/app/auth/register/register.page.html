@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/auth/login"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Create Account</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="register-container page-wrapper">
+    <div class="form-container">
+      <ion-card>
+        <ion-card-content>
+          <form (ngSubmit)="register()">
+            <ion-item>
+              <ion-label position="floating">Full Name</ion-label>
+              <ion-input
+                type="text"
+                [(ngModel)]="fullName"
+                name="fullName"
+                required
+              ></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="floating">Email</ion-label>
+              <ion-input
+                type="email"
+                [(ngModel)]="email"
+                name="email"
+                required
+              ></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="floating">Password</ion-label>
+              <ion-input
+                type="password"
+                [(ngModel)]="password"
+                name="password"
+                required
+              ></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="floating">Confirm Password</ion-label>
+              <ion-input
+                type="password"
+                [(ngModel)]="confirmPassword"
+                name="confirmPassword"
+                required
+              ></ion-input>
+            </ion-item>
+
+            <ion-item lines="none">
+              <ion-checkbox
+                [(ngModel)]="agreeToTerms"
+                name="agreeToTerms"
+              ></ion-checkbox>
+              <ion-label class="ion-padding-start">
+                I agree to the <a href="#">Terms of Service</a> and
+                <a href="#">Privacy Policy</a>
+              </ion-label>
+            </ion-item>
+
+            <ion-button
+              expand="block"
+              type="submit"
+              color="primary"
+              class="ion-margin-top"
+              [disabled]="!agreeToTerms"
+            >
+              Create Account
+            </ion-button>
+          </form>
+
+          <div class="login-link">
+            <p>Already have an account? <a (click)="goToLogin()">Log In</a></p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

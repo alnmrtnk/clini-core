@@ -1,0 +1,35 @@
+.register-container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  background: radial-gradient(
+    circle,
+    var(--ion-color-primary-tint) 0%,
+    white 100%
+  );
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+ion-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 16px;
+  color: var(--ion-color-medium);
+}
+
+.login-link a {
+  color: var(--ion-color-primary);
+  cursor: pointer;
+}

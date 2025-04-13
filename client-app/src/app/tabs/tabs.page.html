@@ -1,0 +1,59 @@
+<ion-content>
+  <div class="tabs-container" [class.desktop]="isDesktop">
+    <ion-tabs>
+      <ion-tab-bar
+        [slot]="isDesktop ? 'start' : 'bottom'"
+        class="ion-tab-bar"
+        [class.vertical]="isDesktop"
+      >
+        <ion-tab-button
+          tab="dashboard"
+          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
+        >
+          <ion-icon name="home-outline"></ion-icon>
+          <ion-label>Dashboard</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button
+          tab="medical-records"
+          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
+        >
+          <ion-icon name="document-text-outline"></ion-icon>
+          <ion-label>Records</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button
+          tab="vaccinations"
+          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
+        >
+          <ion-icon name="fitness-outline"></ion-icon>
+          <ion-label>Vaccinations</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button
+          tab="health-tracking"
+          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
+        >
+          <ion-icon name="pulse-outline"></ion-icon>
+          <ion-label>Health</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button
+          tab="doctor-access"
+          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
+        >
+          <ion-icon name="people-outline"></ion-icon>
+          <ion-label>Doctors</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button
+          tab="settings"
+          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
+        >
+          <ion-icon name="settings-outline"></ion-icon>
+          <ion-label>Settings</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
+  </div>
+</ion-content>

@@ -1,16 +1,15 @@
-import { Injectable } from "@angular/core"
-import { BehaviorSubject } from "rxjs"
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ScreenService {
-  private isDesktopSubject = new BehaviorSubject<boolean>(false)
-  isDesktop$ = this.isDesktopSubject.asObservable()
+  private isDesktopSubject = new BehaviorSubject<boolean>(false);
+  isDesktop$ = this.isDesktopSubject.asObservable();
 
   checkScreenSize() {
-    const isDesktop = window.innerWidth >= 992 // Bootstrap lg breakpoint
-    this.isDesktopSubject.next(isDesktop)
+    const isDesktop = window.innerWidth >= 992;
+    this.isDesktopSubject.next(isDesktop);
   }
 }
-
