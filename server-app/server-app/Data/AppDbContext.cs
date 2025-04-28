@@ -5,126 +5,45 @@ namespace server_app.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Patient> Patients { get; set; }
-        public DbSet<MedicalStaff> MedicalStaff { get; set; }
-        public DbSet<Position> Positions { get; set; }
-        public DbSet<Vaccination> Vaccinations { get; set; }
-        public DbSet<Diagnose> Diagnoses { get; set; }
+        public AppDbContext(DbContextOptions<AppDbContext> opts)
+            : base(opts) { }
+
+        public DbSet<User> Users { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
-        public DbSet<Allergy> Allergies { get; set; }
-        public DbSet<MedicalConclusion> MedicalConclusions { get; set; }
+        public DbSet<Vaccination> Vaccinations { get; set; }
+        public DbSet<HealthMeasurement> HealthMeasurements { get; set; }
+        public DbSet<DoctorAccess> DoctorAccesses { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder m)
         {
-            modelBuilder.Entity<Patient>()
-                .Property(p => p.Gender)
-                .HasConversion<int>();
-
-            modelBuilder.Entity<Patient>()
-                .Property(p => p.BloodType)
-                .HasConversion<int>();
-
-            modelBuilder.Entity<MedicalStaff>()
-                .HasOne(ms => ms.Position)
-                .WithMany()
-                .HasForeignKey(ms => ms.PositionId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Vaccination>()
-               .HasOne(v => v.Patient)
-               .WithMany()
-               .HasForeignKey(v => v.PatientId)
-               .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Vaccination>()
-                .HasOne(v => v.MedicalStaff)
-                .WithMany()
-                .HasForeignKey(v => v.MedicalStaffId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Diagnose>()
-                .Property(d => d.Status)
-                .HasConversion<int>();
-
-            modelBuilder.Entity<Diagnose>()
-               .HasOne(v => v.Patient)
-               .WithMany()
-               .HasForeignKey(v => v.PatientId)
-               .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Diagnose>()
-                .HasOne(v => v.MedicalStaff)
-                .WithMany()
-                .HasForeignKey(v => v.MedicalStaffId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MedicalRecord>()
-               .HasOne(v => v.Patient)
-               .WithMany()
-               .HasForeignKey(v => v.PatientId)
-               .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MedicalRecord>()
-                .HasOne(v => v.MedicalStaff)
-                .WithMany()
-                .HasForeignKey(v => v.MedicalStaffId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-
-            modelBuilder.Entity<LabResult>()
-               .HasOne(v => v.Patient)
-               .WithMany()
-               .HasForeignKey(v => v.PatientId)
-               .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<LabResult>()
-                .HasOne(v => v.MedicalStaff)
-                .WithMany()
-                .HasForeignKey(v => v.MedicalStaffId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Prescription>()
-               .HasOne(v => v.Patient)
-               .WithMany()
-               .HasForeignKey(v => v.PatientId)
-               .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Prescription>()
-                .HasOne(v => v.MedicalStaff)
-                .WithMany()
-                .HasForeignKey(v => v.MedicalStaffId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Allergy>()
-                .HasOne(v => v.Patient)
-                .WithMany()
-                .HasForeignKey(v => v.PatientId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MedicalConclusion>()
-                .HasOne(v => v.Patient)
-                .WithMany()
-                .HasForeignKey(v => v.PatientId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MedicalConclusion>()
-                .HasOne(v => v.MedicalStaff)
-                .WithMany()
-                .HasForeignKey(v => v.MedicalStaffId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<PrescriptionLabResult>()
-            .HasKey(plr => new { plr.PrescriptionId, plr.LabResultId });
-
-            modelBuilder.Entity<PrescriptionLabResult>()
-                .HasOne(plr => plr.Prescription)
-                .WithMany(p => p.PrescriptionLabResults)
-                .HasForeignKey(plr => plr.PrescriptionId);
-
-            modelBuilder.Entity<PrescriptionLabResult>()
-                .HasOne(plr => plr.LabResult)
-                .WithMany()
-                .HasForeignKey(plr => plr.LabResultId);
+            base.OnModelCreating(m);
+            m.Entity<User>(e =>
+            {
+                e.HasKey(u => u.Id);
+                e.HasIndex(u => u.Email).IsUnique();
+            });
+            m.Entity<MedicalRecord>(e =>
+            {
+                e.HasKey(x => x.Id);
+                e.HasOne(x => x.User).WithMany(u => u.MedicalRecords).HasForeignKey(x => x.UserId);
+            });
+            m.Entity<Vaccination>(e =>
+            {
+                e.HasKey(x => x.Id);
+                e.HasOne(x => x.User).WithMany(u => u.Vaccinations).HasForeignKey(x => x.UserId);
+            });
+            m.Entity<HealthMeasurement>(e =>
+            {
+                e.HasKey(x => x.Id);
+                e.HasOne(x => x.User)
+                    .WithMany(u => u.HealthMeasurements)
+                    .HasForeignKey(x => x.UserId);
+            });
+            m.Entity<DoctorAccess>(e =>
+            {
+                e.HasKey(x => x.Id);
+                e.HasOne(x => x.User).WithMany(u => u.DoctorAccesses).HasForeignKey(x => x.UserId);
+            });
         }
     }
 }

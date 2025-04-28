@@ -1,21 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
-namespace server_app.Models
+﻿namespace server_app.Models
 {
-    public class MedicalRecord : MedicalRecordRelationship
+    public class MedicalRecord
     {
-        public int Height { get; set; }
-
-        public int Width { get; set; }
-
-        [AllowNull]
-        public BloodPressure BloodPressure { get; set; } = null;
-
-        [AllowNull]
-        [Range(0, 200)]
-        public int PulseRate { get; set; }
-
-        public DateTime Date { get; set; } = DateTime.UtcNow;
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+        public string RecordType { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public DateTime Date { get; set; }
+        public User User { get; set; } = null!;
     }
 }

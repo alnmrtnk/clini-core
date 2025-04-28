@@ -1,0 +1,34 @@
+﻿using server_app.Dtos;
+using server_app.Models;
+using AutoMapper;
+
+namespace server_app.Profiles
+{
+    public class CliniCoreProfile : Profile
+    {
+        public CliniCoreProfile()
+        {
+            CreateMap<User, UserDto>();
+            CreateMap<CreateUserDto, User>()
+                .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()))
+                .ForMember(d => d.PasswordHash, o => o.MapFrom(s => Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(s.Password))));
+            CreateMap<UpdateUserDto, User>();
+            CreateMap<MedicalRecord, MedicalRecordDto>();
+            CreateMap<CreateMedicalRecordDto, MedicalRecord>()
+                .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()));
+            CreateMap<UpdateMedicalRecordDto, MedicalRecord>();
+            CreateMap<Vaccination, VaccinationDto>();
+            CreateMap<CreateVaccinationDto, Vaccination>()
+                .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()));
+            CreateMap<UpdateVaccinationDto, Vaccination>();
+            CreateMap<HealthMeasurement, HealthMeasurementDto>();
+            CreateMap<CreateHealthMeasurementDto, HealthMeasurement>()
+                .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()));
+            CreateMap<UpdateHealthMeasurementDto, HealthMeasurement>();
+            CreateMap<DoctorAccess, DoctorAccessDto>();
+            CreateMap<CreateDoctorAccessDto, DoctorAccess>()
+                .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()))
+                .ForMember(d => d.GrantedAt, o => o.MapFrom(_ => DateTime.UtcNow));
+        }
+    }
+}
