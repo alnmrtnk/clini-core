@@ -13,6 +13,7 @@ namespace server_app.Repositories
         Task<Guid> AddAsync(CreateUserDto dto);
         Task UpdateAsync(Guid id, UpdateUserDto dto);
         Task DeleteAsync(Guid id);
+        Task<User> GetEntityByEmailAsync(string email);
     }
 
     public class UserRepository : IUserRepository
@@ -56,6 +57,11 @@ namespace server_app.Repositories
                 _db.Users.Remove(e);
                 await _db.SaveChangesAsync();
             }
+        }
+
+        public async Task<User> GetEntityByEmailAsync(string email)
+        {
+            return await _db.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Email == email);
         }
     }
 }

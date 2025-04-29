@@ -11,7 +11,7 @@ namespace server_app.Profiles
             CreateMap<User, UserDto>();
             CreateMap<CreateUserDto, User>()
                 .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()))
-                .ForMember(d => d.PasswordHash, o => o.MapFrom(s => Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(s.Password))));
+                .ForMember(d => d.PasswordHash, o => o.MapFrom(s => s.Password));
             CreateMap<UpdateUserDto, User>();
             CreateMap<MedicalRecord, MedicalRecordDto>();
             CreateMap<CreateMedicalRecordDto, MedicalRecord>()

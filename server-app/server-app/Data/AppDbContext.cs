@@ -26,36 +26,36 @@ namespace server_app.Data
                     {
                         Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                         Email = "alice.smith@example.com",
-                        PasswordHash = "AQIDBA==",
+                        PasswordHash = "$2a$11$uG8v.z01UXD2DzTCKFTZP.U2r3koECkfjZg0Nbh3b6p5z1LGCb5BW",
                         FullName = "Alice Smith",
-                        DateOfBirth = new DateTime(1985, 5, 1),
+                        DateOfBirth = new DateTime(1985, 5, 1, 0, 0, 0, DateTimeKind.Utc),
                         PhoneNumber = "+380501234567"
                     },
                     new User
                     {
                         Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                         Email = "bob.johnson@example.com",
-                        PasswordHash = "BQYHCA==",
+                        PasswordHash = "$2a$11$uG8v.z01UXD2DzTCKFTZP.U2r3koECkfjZg0Nbh3b6p5z1LGCb5BW",
                         FullName = "Bob Johnson",
-                        DateOfBirth = new DateTime(1990, 8, 15),
+                        DateOfBirth = new DateTime(1990, 8, 15, 0, 0, 0, DateTimeKind.Utc),
                         PhoneNumber = "+380509876543"
                     },
                     new User
                     {
                         Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                         Email = "carol.williams@example.com",
-                        PasswordHash = "QkNERA==",
+                        PasswordHash = "$2a$11$uG8v.z01UXD2DzTCKFTZP.U2r3koECkfjZg0Nbh3b6p5z1LGCb5BW",
                         FullName = "Carol Williams",
-                        DateOfBirth = new DateTime(1978, 2, 20),
+                        DateOfBirth = new DateTime(1978, 2, 20, 0, 0, 0, DateTimeKind.Utc),     
                         PhoneNumber = "+380503456789"
                     },
                     new User
                     {
                         Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
                         Email = "david.brown@example.com",
-                        PasswordHash = "R0hJSg==",
+                        PasswordHash = "$2a$11$uG8v.z01UXD2DzTCKFTZP.U2r3koECkfjZg0Nbh3b6p5z1LGCb5BW",
                         FullName = "David Brown",
-                        DateOfBirth = new DateTime(2000, 11, 30),
+                        DateOfBirth = new DateTime(2000, 11, 30, 0, 0, 0, DateTimeKind.Utc),
                         PhoneNumber = "+380507654321"
                     }
                 );
@@ -73,7 +73,7 @@ namespace server_app.Data
                         UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                         RecordType = "Lab Test",
                         Title = "Complete Blood Count",
-                        Date = new DateTime(2024, 1, 10)
+                        Date = new DateTime(2024, 1, 10, 0, 0, 0, DateTimeKind.Utc)
                     },
                     new MedicalRecord
                     {
@@ -81,7 +81,7 @@ namespace server_app.Data
                         UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                         RecordType = "Imaging",
                         Title = "Chest X-Ray",
-                        Date = new DateTime(2024, 2, 5)
+                        Date = new DateTime(2024, 2, 5, 0, 0, 0, DateTimeKind.Utc)
                     },
                     new MedicalRecord
                     {
@@ -89,7 +89,7 @@ namespace server_app.Data
                         UserId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                         RecordType = "Doctor Visit",
                         Title = "Dermatology Consultation",
-                        Date = new DateTime(2024, 3, 12)
+                        Date = new DateTime(2024, 3, 12, 0, 0, 0, DateTimeKind.Utc)
                     },
                     new MedicalRecord
                     {
@@ -97,7 +97,7 @@ namespace server_app.Data
                         UserId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                         RecordType = "Prescription",
                         Title = "Blood Pressure Medication",
-                        Date = new DateTime(2024, 3, 20)
+                        Date = new DateTime(2024, 3, 20, 0, 0, 0, DateTimeKind.Utc)
                     },
                     new MedicalRecord
                     {
@@ -105,7 +105,7 @@ namespace server_app.Data
                         UserId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
                         RecordType = "Surgery",
                         Title = "Appendectomy",
-                        Date = new DateTime(2023, 12, 1)
+                        Date = new DateTime(2023, 12, 1, 0, 0, 0, DateTimeKind.Utc)
                     }
                 );
             });
@@ -122,7 +122,7 @@ namespace server_app.Data
                         UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                         VaccineName = "COVID-19",
                         DoseNumber = 2,
-                        DateAdministered = new DateTime(2023, 12, 10)
+                        DateAdministered = new DateTime(2023, 12, 10, 0, 0, 0, DateTimeKind.Utc)
                     },
                     new Vaccination
                     {
@@ -130,7 +130,7 @@ namespace server_app.Data
                         UserId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                         VaccineName = "Influenza",
                         DoseNumber = 1,
-                        DateAdministered = new DateTime(2023, 10, 1)
+                        DateAdministered = new DateTime(2023, 10, 1, 0, 0, 0, DateTimeKind.Utc)
                     },
                     new Vaccination
                     {
@@ -138,7 +138,7 @@ namespace server_app.Data
                         UserId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                         VaccineName = "Hepatitis B",
                         DoseNumber = 3,
-                        DateAdministered = new DateTime(2023, 9, 15)
+                        DateAdministered = new DateTime(2023, 9, 15, 0, 0, 0, DateTimeKind.Utc)
                     },
                     new Vaccination
                     {
@@ -146,7 +146,7 @@ namespace server_app.Data
                         UserId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
                         VaccineName = "Tetanus",
                         DoseNumber = 1,
-                        DateAdministered = new DateTime(2023, 8, 5)
+                        DateAdministered = new DateTime(2023, 8, 5, 0, 0, 0, DateTimeKind.Utc)
                     }
                 );
             });
@@ -156,31 +156,33 @@ namespace server_app.Data
                 e.HasOne(x => x.User)
                  .WithMany(u => u.HealthMeasurements)
                  .HasForeignKey(x => x.UserId);
+
                 e.HasData(
-                    new HealthMeasurement
-                    {
-                        Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                        UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                        MeasurementType = "BloodPressure",
-                        Value = "118/76",
-                        MeasuredAt = new DateTime(2024, 4, 1)
-                    },
-                    new HealthMeasurement
-                    {
-                        Id = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
-                        UserId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                        MeasurementType = "BloodSugar",
-                        Value = "5.4 mmol/L",
-                        MeasuredAt = new DateTime(2024, 4, 2)
-                    },
-                    new HealthMeasurement
-                    {
-                        Id = Guid.Parse("00000000-0000-0000-0000-000000000000"),
-                        UserId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                        MeasurementType = "Weight",
-                        Value = "68 kg",
-                        MeasuredAt = new DateTime(2024, 4, 3)
-                    }
+                  new HealthMeasurement
+                  {
+                      Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+                      UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                      MeasurementType = "BloodPressure",
+                      Value = "118/76",
+                      MeasuredAt = new DateTime(2024, 4, 1, 0, 0, 0, DateTimeKind.Utc)
+                  },
+                  new HealthMeasurement
+                  {
+                      Id = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                      UserId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                      MeasurementType = "BloodSugar",
+                      Value = "5.4 mmol/L",
+                      MeasuredAt = new DateTime(2024, 4, 2, 0, 0, 0, DateTimeKind.Utc)
+                  },
+                  new HealthMeasurement
+                  {
+                      // ← this must not be Guid.Empty
+                      Id = Guid.Parse("abcdefab-cdef-abcd-efab-cdefabcdefab"),
+                      UserId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                      MeasurementType = "Weight",
+                      Value = "68 kg",
+                      MeasuredAt = new DateTime(2024, 4, 3, 0, 0, 0, DateTimeKind.Utc)
+                  }
                 );
             });
 
@@ -196,16 +198,16 @@ namespace server_app.Data
                         Id = Guid.Parse("12345678-1234-1234-1234-1234567890ab"),
                         UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                         DoctorName = "Dr. Gregory House",
-                        GrantedAt = new DateTime(2024, 4, 15),
-                        ExpiresAt = new DateTime(2024, 5, 15)
+                        GrantedAt = new DateTime(2024, 4, 15, 0, 0, 0, DateTimeKind.Utc),
+                        ExpiresAt = new DateTime(2024, 5, 15, 0, 0, 0, DateTimeKind.Utc)
                     },
                     new DoctorAccess
                     {
                         Id = Guid.Parse("87654321-4321-4321-4321-ba0987654321"),
                         UserId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                         DoctorName = "Dr. Meredith Grey",
-                        GrantedAt = new DateTime(2024, 3, 1),
-                        ExpiresAt = new DateTime(2024, 4, 1)
+                        GrantedAt = new DateTime(2024, 3, 1, 0, 0, 0, DateTimeKind.Utc),
+                        ExpiresAt = new DateTime(2024, 4, 1, 0, 0, 0, DateTimeKind.Utc)
                     }
                 );
             });

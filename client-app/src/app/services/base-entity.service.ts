@@ -1,10 +1,15 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export abstract class BaseEntityService<T> {
   protected abstract baseUrl: string;
+
+  get apiUrl() {
+    return `${environment.apiUrl}${this.baseUrl}`;
+  }
 
   constructor(protected http: HttpClient) {}
 
@@ -17,22 +22,22 @@ export abstract class BaseEntityService<T> {
         }
       });
     }
-    return this.http.get<T[]>(this.baseUrl, { params });
+    return this.http.get<T[]>(this.apiUrl, { params });
   }
 
   getById(id: string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${id}`);
+    return this.http.get<T>(`${this.apiUrl}/${id}`);
   }
 
   create(payload: Partial<T>): Observable<T> {
-    return this.http.post<T>(this.baseUrl, payload);
+    return this.http.post<T>(this.apiUrl, payload);
   }
 
   update(id: string, changes: Partial<T>): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/${id}`, changes);
+    return this.http.put<void>(`${this.apiUrl}/${id}`, changes);
   }
 
   delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

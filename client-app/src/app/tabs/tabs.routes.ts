@@ -1,5 +1,9 @@
 import { Routes } from "@angular/router"
 import { TabsPage } from "./tabs.page"
+import { importProvidersFrom } from "@angular/core"
+import { NgxsModule } from "@ngxs/store"
+import { VaccinationsState } from "../store/vaccination.state"
+import { MeasurementsState } from "../store/health-measurement.state"
 
 export const routes: Routes = [
   {
@@ -9,6 +13,7 @@ export const routes: Routes = [
       {
         path: "dashboard",
         loadComponent: () => import("./dashboard/dashboard.page").then((m) => m.DashboardPage),
+        providers: [importProvidersFrom(NgxsModule.forFeature([VaccinationsState, MeasurementsState]))],
       },
       {
         path: "medical-records",

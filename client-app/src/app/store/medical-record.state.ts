@@ -34,8 +34,8 @@ export class RecordsState {
   constructor(private recordService: MedicalRecordService) {}
 
   @Selector()
-  static getRecords(state: RecordsStateModel) {
-    return state.records;
+  static getRecords(state?: RecordsStateModel) {
+    return state?.records ?? [];
   }
 
   @Action(LoadRecords)

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class HealthMeasurementService extends BaseEntityService<HealthMeasurement> {
-  protected baseUrl = '/api/HealthMeasurements';
+  protected baseUrl = 'HealthMeasurements';
   constructor(http: HttpClient) {
     super(http);
   }

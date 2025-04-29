@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -12,6 +13,7 @@ import { Router } from '@angular/router';
   styleUrl: 'register.page.scss',
 })
 export class RegisterPage {
+  authService = inject(AuthService);
   fullName = '';
   email = '';
   password = '';
@@ -22,8 +24,13 @@ export class RegisterPage {
 
   register() {
     // Implement register functionality
-    console.log('Register with:', this.fullName, this.email, this.password);
-    this.router.navigateByUrl('/tabs');
+
+    this.authService.register(this.email, this.password, this.fullName).subscribe(() => {
+      console.log('something happened');
+    });
+
+    // console.log('Register with:', this.fullName, this.email, this.password);
+    // this.router.navigateByUrl('/tabs');
   }
 
   goToLogin() {

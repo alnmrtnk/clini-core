@@ -6,8 +6,8 @@
         public string Email { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
         public string FullName { get; set; } = null!;
-        public DateTime DateOfBirth { get; set; }
-        public string PhoneNumber { get; set; } = null!;
+        public DateTime? DateOfBirth { get; set; }
+        public string? PhoneNumber { get; set; } = null!;
         public ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
         public ICollection<Vaccination> Vaccinations { get; set; } = new List<Vaccination>();
         public ICollection<HealthMeasurement> HealthMeasurements { get; set; } = new List<HealthMeasurement>();

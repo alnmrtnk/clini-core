@@ -5,7 +5,7 @@ import { BaseEntityService } from './base-entity.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserService extends BaseEntityService<User> {
-  protected override baseUrl = '/api/Users';
+  protected override baseUrl = 'Users';
   constructor(http: HttpClient) {
     super(http);
   }

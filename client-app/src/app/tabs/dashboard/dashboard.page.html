@@ -1,3 +1,4 @@
+<!-- dashboard.page.html -->
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Dashboard</ion-title>
@@ -28,19 +29,18 @@
             </ion-card-header>
             <ion-card-content>
               <ion-list lines="full">
-                <ion-item>
+                <ion-item *ngFor="let rec of recentRecords()">
                   <ion-label>
-                    <h3>Blood Test</h3>
-                    <p>March 15, 2025</p>
+                    <h3>{{ rec.title }}</h3>
+                    <p>{{ rec.date | date:'longDate' }}</p>
                   </ion-label>
-                  <ion-button slot="end" fill="clear">View</ion-button>
-                </ion-item>
-                <ion-item>
-                  <ion-label>
-                    <h3>Annual Checkup</h3>
-                    <p>February 2, 2025</p>
-                  </ion-label>
-                  <ion-button slot="end" fill="clear">View</ion-button>
+                  <ion-button
+                    slot="end"
+                    fill="clear"
+                    [routerLink]="['/records', rec.id]"
+                  >
+                    View
+                  </ion-button>
                 </ion-item>
               </ion-list>
             </ion-card-content>
@@ -54,12 +54,18 @@
             </ion-card-header>
             <ion-card-content>
               <ion-list lines="full">
-                <ion-item>
+                <ion-item *ngFor="let vac of upcomingVaccinations()">
                   <ion-label>
-                    <h3>Flu Vaccine</h3>
-                    <p>Due in 14 days</p>
+                    <h3>{{ vac.vaccineName }}</h3>
+                    <p>Due {{ vac.dueDate | date:'shortDate' }}</p>
                   </ion-label>
-                  <ion-button slot="end" fill="clear">Schedule</ion-button>
+                  <ion-button
+                    slot="end"
+                    fill="clear"
+                    [routerLink]="['/vaccinations', vac.id]"
+                  >
+                    Schedule
+                  </ion-button>
                 </ion-item>
               </ion-list>
             </ion-card-content>
