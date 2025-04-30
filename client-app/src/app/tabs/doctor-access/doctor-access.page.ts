@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { addIcons } from 'ionicons';
-import { mailOutline, qrCodeOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-doctor-access',
@@ -30,13 +28,6 @@ export class DoctorAccessPage {
       accessedAt: new Date(Date.now() - 2592000000), // 30 days ago
     },
   ];
-
-  constructor() {
-    addIcons({
-      qrCodeOutline,
-      mailOutline,
-    });
-  }
 
   generateQRCode() {
     this.showQRCode = true;

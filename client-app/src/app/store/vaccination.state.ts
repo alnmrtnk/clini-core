@@ -39,23 +39,24 @@ export class VaccinationsState {
   }
 
   @Action(LoadVaccinations)
-  load(ctx: StateContext<VaccinationsStateModel>, action: LoadVaccinations) {
+  load(
+    { getState, setState }: StateContext<VaccinationsStateModel>,
+    action: LoadVaccinations
+  ) {
     return this.service
       .getByUser(action.userId)
-      .pipe(tap((vacs) => ctx.setState({ vaccinations: vacs })));
+      .pipe(tap((vacs) => setState({ ...getState(), vaccinations: vacs })));
   }
 
   @Action(AddVaccination)
   add(ctx: StateContext<VaccinationsStateModel>, action: AddVaccination) {
-    return this.service
-      .create(action.payload)
-      .pipe(
-        tap((vac) =>
-          ctx.patchState({
-            vaccinations: [...ctx.getState().vaccinations, vac],
-          })
-        )
-      );
+    return this.service.create(action.payload).pipe(
+      tap((vac) =>
+        ctx.patchState({
+          vaccinations: [...ctx.getState().vaccinations, vac],
+        })
+      )
+    );
   }
 
   @Action(UpdateVaccination)

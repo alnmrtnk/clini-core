@@ -15,46 +15,60 @@ namespace server_app.Repositories
         Task DeleteAsync(Guid id);
     }
 
-    public class VaccinationRepository : IVaccinationRepository
+    public class VaccinationRepository : BaseRepository, IVaccinationRepository
     {
         private readonly AppDbContext _db;
-
         private readonly IMapper _map;
 
-        public VaccinationRepository(AppDbContext db, IMapper map)
+        public VaccinationRepository(AppDbContext db, IMapper map, IHttpContextAccessor accessor)
+            : base(accessor)
         {
             _db = db;
             _map = map;
         }
 
         public async Task<IEnumerable<VaccinationDto>> GetAllAsync() =>
-            _map.Map<IEnumerable<VaccinationDto>>(await _db.Vaccinations.ToListAsync());
+            _map.Map<IEnumerable<VaccinationDto>>(
+                await _db.Vaccinations
+                    .Where(x => x.UserId == CurrentUserId)
+                    .ToListAsync()
+            );
 
         public async Task<VaccinationDto> GetByIdAsync(Guid id) =>
-            _map.Map<VaccinationDto>(await _db.Vaccinations.FindAsync(id));
+            _map.Map<VaccinationDto>(
+                await _db.Vaccinations
+                    .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId)
+            );
 
         public async Task<Guid> AddAsync(CreateVaccinationDto dto)
         {
-            var e = _map.Map<Vaccination>(dto);
-            _db.Vaccinations.Add(e);
+            var entity = _map.Map<Vaccination>(dto);
+            entity.UserId = CurrentUserId;
+            _db.Vaccinations.Add(entity);
             await _db.SaveChangesAsync();
-            return e.Id;
+            return entity.Id;
         }
 
         public async Task UpdateAsync(Guid id, UpdateVaccinationDto dto)
         {
-            var e = await _db.Vaccinations.FindAsync(id);
-            _map.Map(dto, e);
+            var entity = await _db.Vaccinations
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
+
+            if (entity == null)
+                throw new UnauthorizedAccessException("Access denied or record not found.");
+
+            _map.Map(dto, entity);
             await _db.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var e = await _db.Vaccinations.FindAsync(id);
+            var entity = await _db.Vaccinations
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
 
-            if (e != null)
+            if (entity != null)
             {
-                _db.Vaccinations.Remove(e);
+                _db.Vaccinations.Remove(entity);
                 await _db.SaveChangesAsync();
             }
         }

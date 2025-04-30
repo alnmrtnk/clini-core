@@ -13,38 +13,47 @@ namespace server_app.Repositories
         Task DeleteAsync(Guid id);
     }
 
-    public class DoctorAccessRepository : IDoctorAccessRepository
+    public class DoctorAccessRepository : BaseRepository, IDoctorAccessRepository
     {
         private readonly AppDbContext _db;
-
         private readonly IMapper _map;
 
-        public DoctorAccessRepository(AppDbContext db, IMapper map)
+        public DoctorAccessRepository(AppDbContext db, IMapper map, IHttpContextAccessor accessor)
+            : base(accessor)
         {
             _db = db;
             _map = map;
         }
 
-        public async Task<IEnumerable<DoctorAccessDto>> GetAllByUserAsync(Guid userId) =>
-            _map.Map<IEnumerable<DoctorAccessDto>>(
-                await _db.DoctorAccesses.Where(a => a.UserId == userId).ToListAsync()
+        public async Task<IEnumerable<DoctorAccessDto>> GetAllByUserAsync(Guid userId)
+        {
+            if (userId != CurrentUserId)
+                throw new UnauthorizedAccessException("Access to this user's data is denied.");
+
+            return _map.Map<IEnumerable<DoctorAccessDto>>(
+                await _db.DoctorAccesses
+                    .Where(x => x.UserId == userId)
+                    .ToListAsync()
             );
+        }
 
         public async Task<Guid> AddAsync(CreateDoctorAccessDto dto)
         {
-            var e = _map.Map<DoctorAccess>(dto);
-            _db.DoctorAccesses.Add(e);
+            var entity = _map.Map<DoctorAccess>(dto);
+            entity.UserId = CurrentUserId;
+            _db.DoctorAccesses.Add(entity);
             await _db.SaveChangesAsync();
-            return e.Id;
+            return entity.Id;
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var e = await _db.DoctorAccesses.FindAsync(id);
+            var entity = await _db.DoctorAccesses
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
 
-            if (e != null)
+            if (entity != null)
             {
-                _db.DoctorAccesses.Remove(e);
+                _db.DoctorAccesses.Remove(entity);
                 await _db.SaveChangesAsync();
             }
         }

@@ -15,46 +15,60 @@ namespace server_app.Repositories
         Task DeleteAsync(Guid id);
     }
 
-    public class HealthMeasurementRepository : IHealthMeasurementRepository
+    public class HealthMeasurementRepository : BaseRepository, IHealthMeasurementRepository
     {
         private readonly AppDbContext _db;
-
         private readonly IMapper _map;
 
-        public HealthMeasurementRepository(AppDbContext db, IMapper map)
+        public HealthMeasurementRepository(AppDbContext db, IMapper map, IHttpContextAccessor accessor)
+            : base(accessor)
         {
             _db = db;
             _map = map;
         }
 
         public async Task<IEnumerable<HealthMeasurementDto>> GetAllAsync() =>
-            _map.Map<IEnumerable<HealthMeasurementDto>>(await _db.HealthMeasurements.ToListAsync());
+            _map.Map<IEnumerable<HealthMeasurementDto>>(
+                await _db.HealthMeasurements
+                    .Where(h => h.UserId == CurrentUserId)
+                    .ToListAsync()
+            );
 
         public async Task<HealthMeasurementDto> GetByIdAsync(Guid id) =>
-            _map.Map<HealthMeasurementDto>(await _db.HealthMeasurements.FindAsync(id));
+            _map.Map<HealthMeasurementDto>(
+                await _db.HealthMeasurements
+                    .FirstOrDefaultAsync(h => h.Id == id && h.UserId == CurrentUserId)
+            );
 
         public async Task<Guid> AddAsync(CreateHealthMeasurementDto dto)
         {
-            var e = _map.Map<HealthMeasurement>(dto);
-            _db.HealthMeasurements.Add(e);
+            var entity = _map.Map<HealthMeasurement>(dto);
+            entity.UserId = CurrentUserId;
+            _db.HealthMeasurements.Add(entity);
             await _db.SaveChangesAsync();
-            return e.Id;
+            return entity.Id;
         }
 
         public async Task UpdateAsync(Guid id, UpdateHealthMeasurementDto dto)
         {
-            var e = await _db.HealthMeasurements.FindAsync(id);
-            _map.Map(dto, e);
+            var entity = await _db.HealthMeasurements
+                .FirstOrDefaultAsync(h => h.Id == id && h.UserId == CurrentUserId);
+
+            if (entity == null)
+                throw new UnauthorizedAccessException("Access denied or record not found.");
+
+            _map.Map(dto, entity);
             await _db.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var e = await _db.HealthMeasurements.FindAsync(id);
+            var entity = await _db.HealthMeasurements
+                .FirstOrDefaultAsync(h => h.Id == id && h.UserId == CurrentUserId);
 
-            if (e != null)
+            if (entity != null)
             {
-                _db.HealthMeasurements.Remove(e);
+                _db.HealthMeasurements.Remove(entity);
                 await _db.SaveChangesAsync();
             }
         }

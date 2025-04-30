@@ -1,0 +1,210 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/vaccinations"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add Vaccination</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="page-wrapper">
+    <form
+      [formGroup]="vaccinationForm"
+      class="form-wrapper"
+      (ngSubmit)="saveVaccination()"
+    >
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Vaccination Details</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <!-- Vaccine Name -->
+          <div class="form-control">
+            <ion-label>Vaccine Name*</ion-label>
+            <ion-select formControlName="vaccineName" interface="popover">
+              <ion-select-option value="covid19">COVID-19</ion-select-option>
+              <ion-select-option value="influenza"
+                >Influenza (Flu)</ion-select-option
+              >
+              <ion-select-option value="tetanus">Tetanus</ion-select-option>
+              <ion-select-option value="hepatitisB"
+                >Hepatitis B</ion-select-option
+              >
+              <ion-select-option value="mmr"
+                >MMR (Measles, Mumps, Rubella)</ion-select-option
+              >
+              <ion-select-option value="other">Other</ion-select-option>
+            </ion-select>
+            <ion-note
+              color="danger"
+              *ngIf="
+                vaccinationForm.get('vaccineName')?.hasError('required') &&
+                vaccinationForm.get('vaccineName')?.touched
+              "
+            >
+              Vaccine name is required
+            </ion-note>
+          </div>
+
+          <!-- Custom vaccine name -->
+          <div
+            class="form-control"
+            *ngIf="vaccinationForm.get('vaccineName')?.value === 'other'"
+          >
+            <ion-label>Specify Vaccine Name*</ion-label>
+            <ion-input formControlName="otherVaccineName"></ion-input>
+            <ion-note
+              color="danger"
+              *ngIf="
+                vaccinationForm.get('otherVaccineName')?.hasError('required') &&
+                vaccinationForm.get('otherVaccineName')?.touched
+              "
+            >
+              Please specify the vaccine name
+            </ion-note>
+          </div>
+
+          <!-- Dose Number -->
+          <div class="form-control">
+            <ion-label>Dose Number*</ion-label>
+            <ion-select formControlName="doseNumber" interface="popover">
+              <ion-select-option value="1">1st Dose</ion-select-option>
+              <ion-select-option value="2">2nd Dose</ion-select-option>
+              <ion-select-option value="3">3rd Dose</ion-select-option>
+              <ion-select-option value="booster">Booster</ion-select-option>
+            </ion-select>
+            <ion-note
+              color="danger"
+              *ngIf="
+                vaccinationForm.get('doseNumber')?.hasError('required') &&
+                vaccinationForm.get('doseNumber')?.touched
+              "
+            >
+              Dose number is required
+            </ion-note>
+          </div>
+
+          <!-- Date Administered -->
+          <div class="form-control">
+            <ion-label>Date Administered*</ion-label>
+            <ion-datetime-button
+              datetime="dateAdministered"
+            ></ion-datetime-button>
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime
+                  id="dateAdministered"
+                  presentation="date"
+                  formControlName="dateAdministered"
+                  [max]="today"
+                ></ion-datetime>
+              </ng-template>
+            </ion-modal>
+            <ion-note
+              color="danger"
+              *ngIf="
+                vaccinationForm.get('dateAdministered')?.hasError('required') &&
+                vaccinationForm.get('dateAdministered')?.touched
+              "
+            >
+              Date is required
+            </ion-note>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Provider Information</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="form-control">
+            <ion-label>Administered By</ion-label>
+            <ion-input
+              formControlName="administeredBy"
+              placeholder="Doctor or Nurse Name"
+            ></ion-input>
+          </div>
+
+          <div class="form-control">
+            <ion-label>Location</ion-label>
+            <ion-input
+              formControlName="location"
+              placeholder="Clinic, Hospital, Pharmacy"
+            ></ion-input>
+          </div>
+
+          <div class="form-control">
+            <ion-label>Lot Number</ion-label>
+            <ion-input formControlName="lotNumber"></ion-input>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Additional Information</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="form-control">
+            <ion-label>Notes</ion-label>
+            <ion-textarea
+              formControlName="notes"
+              rows="3"
+              placeholder="Any additional information"
+            ></ion-textarea>
+          </div>
+
+          <div class="form-control">
+            <ion-label>Side Effects</ion-label>
+            <ion-textarea
+              formControlName="sideEffects"
+              rows="3"
+              placeholder="Any side effects experienced"
+            ></ion-textarea>
+          </div>
+
+          <div class="form-control toggle-group">
+            <ion-label>Set Reminder for Next Dose</ion-label>
+            <ion-toggle formControlName="setReminder" slot="end"></ion-toggle>
+          </div>
+
+          <div
+            class="form-control"
+            *ngIf="vaccinationForm.get('setReminder')?.value"
+          >
+            <ion-label>Next Dose Due Date</ion-label>
+            <ion-datetime-button datetime="nextDoseDate"></ion-datetime-button>
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime
+                  id="nextDoseDate"
+                  presentation="date"
+                  formControlName="nextDoseDate"
+                  [min]="tomorrow"
+                ></ion-datetime>
+              </ng-template>
+            </ion-modal>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <div class="button-group ion-padding">
+        <ion-button
+          expand="block"
+          type="submit"
+          [disabled]="!vaccinationForm.valid"
+          >Save Vaccination</ion-button
+        >
+        <ion-button
+          expand="block"
+          fill="outline"
+          type="button"
+          (click)="cancel()"
+          >Cancel</ion-button
+        >
+      </div>
+    </form>
+  </div>
+</ion-content>

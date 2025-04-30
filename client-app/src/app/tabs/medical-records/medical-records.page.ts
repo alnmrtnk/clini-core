@@ -3,16 +3,6 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
-import { addIcons } from 'ionicons';
-import {
-  add,
-  addOutline,
-  flaskOutline,
-  medicalOutline,
-  medkitOutline,
-  pulseOutline,
-  scanOutline,
-} from 'ionicons/icons';
 
 @Component({
   selector: 'app-medical-records',
@@ -22,17 +12,6 @@ import {
 })
 export class MedicalRecordsPage {
   currentSegment = 'all';
-
-  constructor() {
-    addIcons({
-      addOutline,
-      flaskOutline,
-      medkitOutline,
-      pulseOutline,
-      add,
-      scanOutline,
-    });
-  }
 
   searchRecords(event: any) {
     const query = event.detail.value;

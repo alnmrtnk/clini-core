@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using server_app.Dtos;
+using server_app.Extensions;
 using server_app.Services;
 
 namespace server_app.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class VaccinationsController : ControllerBase
@@ -16,7 +19,9 @@ namespace server_app.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get() => Ok(await _s.GetAllAsync());
+        public async Task<IActionResult> Get() {
+            return Ok(await _s.GetAllAsync()); 
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id) => Ok(await _s.GetByIdAsync(id));

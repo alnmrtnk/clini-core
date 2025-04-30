@@ -15,46 +15,60 @@ namespace server_app.Repositories
         Task DeleteAsync(Guid id);
     }
 
-    public class MedicalRecordRepository : IMedicalRecordRepository
+    public class MedicalRecordRepository : BaseRepository, IMedicalRecordRepository
     {
         private readonly AppDbContext _db;
-
         private readonly IMapper _map;
 
-        public MedicalRecordRepository(AppDbContext db, IMapper map)
+        public MedicalRecordRepository(AppDbContext db, IMapper map, IHttpContextAccessor accessor)
+            : base(accessor)
         {
             _db = db;
             _map = map;
         }
 
         public async Task<IEnumerable<MedicalRecordDto>> GetAllAsync() =>
-            _map.Map<IEnumerable<MedicalRecordDto>>(await _db.MedicalRecords.ToListAsync());
+            _map.Map<IEnumerable<MedicalRecordDto>>(
+                await _db.MedicalRecords
+                    .Where(x => x.UserId == CurrentUserId)
+                    .ToListAsync()
+            );
 
         public async Task<MedicalRecordDto> GetByIdAsync(Guid id) =>
-            _map.Map<MedicalRecordDto>(await _db.MedicalRecords.FindAsync(id));
+            _map.Map<MedicalRecordDto>(
+                await _db.MedicalRecords
+                    .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId)
+            );
 
         public async Task<Guid> AddAsync(CreateMedicalRecordDto dto)
         {
-            var e = _map.Map<MedicalRecord>(dto);
-            _db.MedicalRecords.Add(e);
+            var entity = _map.Map<MedicalRecord>(dto);
+            entity.UserId = CurrentUserId;
+            _db.MedicalRecords.Add(entity);
             await _db.SaveChangesAsync();
-            return e.Id;
+            return entity.Id;
         }
 
         public async Task UpdateAsync(Guid id, UpdateMedicalRecordDto dto)
         {
-            var e = await _db.MedicalRecords.FindAsync(id);
-            _map.Map(dto, e);
+            var entity = await _db.MedicalRecords
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
+
+            if (entity == null)
+                throw new UnauthorizedAccessException("Access denied or record not found.");
+
+            _map.Map(dto, entity);
             await _db.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var e = await _db.MedicalRecords.FindAsync(id);
+            var entity = await _db.MedicalRecords
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
 
-            if (e != null)
+            if (entity != null)
             {
-                _db.MedicalRecords.Remove(e);
+                _db.MedicalRecords.Remove(entity);
                 await _db.SaveChangesAsync();
             }
         }

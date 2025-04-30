@@ -2,23 +2,6 @@ import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { addIcons } from 'ionicons';
-import {
-  calendarOutline,
-  cloudUploadOutline,
-  documentOutline,
-  documentTextOutline,
-  downloadOutline,
-  fitnessOutline,
-  flaskOutline,
-  informationCircleOutline,
-  linkOutline,
-  lockClosedOutline,
-  logOutOutline,
-  personOutline,
-  pulseOutline,
-  shareOutline,
-} from 'ionicons/icons';
 
 @Component({
   selector: 'app-settings',
@@ -34,25 +17,6 @@ export class SettingsPage {
     labResultsNotifications: true,
     esculabConnected: false,
   };
-
-  constructor() {
-    addIcons({
-      personOutline,
-      lockClosedOutline,
-      cloudUploadOutline,
-      shareOutline,
-      downloadOutline,
-      calendarOutline,
-      fitnessOutline,
-      flaskOutline,
-      linkOutline,
-      pulseOutline,
-      informationCircleOutline,
-      documentTextOutline,
-      documentOutline,
-      logOutOutline,
-    });
-  }
 
   editProfile() {
     console.log('Edit profile');

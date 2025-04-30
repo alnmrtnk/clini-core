@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { addIcons } from 'ionicons';
-import { checkmarkCircle, time } from 'ionicons/icons';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-vaccinations',
@@ -12,18 +11,11 @@ import { checkmarkCircle, time } from 'ionicons/icons';
   styleUrl: 'vaccinations.page.scss',
 })
 export class VaccinationsPage {
+  private readonly router = inject(Router);
   currentSegment = 'upcoming';
 
-  onstructor() {
-    addIcons({
-      checkmarkCircle,
-      time,
-    });
-  }
-
   addVaccination() {
-    console.log('Add vaccination');
-    // Implement add vaccination functionality
+    this.router.navigate(['/tabs/vaccinations/add']);
   }
 
   scheduleVaccination(type: string) {

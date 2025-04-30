@@ -26,27 +26,24 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     }
 );
 
-var jwt = builder.Configuration.GetSection("JwtSettings");
-var keyBytes = Encoding.UTF8.GetBytes(jwt["Key"]!);
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = true;
-    options.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
     {
-        ValidateIssuer = true,
-        ValidIssuer = jwt["Issuer"],
-        ValidateAudience = true,
-        ValidAudience = jwt["Audience"],
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-        ValidateLifetime = true,
-    };
-});
+        var jwtConf = builder.Configuration.GetSection("JwtSettings");
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtConf["Issuer"],
+            ValidAudience = jwtConf["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConf["Key"]!))
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
@@ -66,8 +63,10 @@ builder.Services.AddCors(options =>
 // AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+// HttpContext
+builder.Services.AddHttpContextAccessor();
+
 // Repositories
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
 builder.Services.AddScoped<IVaccinationRepository, VaccinationRepository>();
@@ -75,6 +74,7 @@ builder.Services.AddScoped<IHealthMeasurementRepository, HealthMeasurementReposi
 builder.Services.AddScoped<IDoctorAccessRepository, DoctorAccessRepository>();
 
 // Services
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
 builder.Services.AddScoped<IVaccinationService, VaccinationService>();
@@ -94,6 +94,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

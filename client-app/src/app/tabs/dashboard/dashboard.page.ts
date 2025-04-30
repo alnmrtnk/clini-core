@@ -26,7 +26,7 @@ export class DashboardPage {
 
   // перетворюємо селектор NGXS на Signal
   readonly recordsSignal: Signal<MedicalRecord[]> = toSignal(
-    this.store.select(RecordsState.getRecords),
+    this.store.select(RecordsState.records),
     { initialValue: [] }
   );
   readonly vaccinationsSignal: Signal<Vaccination[]> = toSignal(
@@ -59,12 +59,10 @@ export class DashboardPage {
 
   ngOnInit() {
     const userId = this.auth.currentUserId();
-    
+
     if (userId) {
-      this.store.dispatch([
-        new LoadRecords(userId),
-        new LoadVaccinations(userId),
-      ]);
+      this.store.dispatch(new LoadRecords(userId));
+      this.store.dispatch(new LoadVaccinations(userId));
     }
   }
 }

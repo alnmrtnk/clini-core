@@ -1,46 +1,71 @@
-import { Routes } from "@angular/router"
-import { TabsPage } from "./tabs.page"
-import { importProvidersFrom } from "@angular/core"
-import { NgxsModule } from "@ngxs/store"
-import { VaccinationsState } from "../store/vaccination.state"
-import { MeasurementsState } from "../store/health-measurement.state"
+import { Routes } from '@angular/router';
+import { TabsPage } from './tabs.page';
+import { importProvidersFrom } from '@angular/core';
+import { NgxsModule } from '@ngxs/store';
+import { VaccinationsState } from '../store/vaccination.state';
+import { MeasurementsState } from '../store/health-measurement.state';
+import { RecordsState } from '../store/medical-record.state';
 
 export const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: TabsPage,
     children: [
       {
-        path: "dashboard",
-        loadComponent: () => import("./dashboard/dashboard.page").then((m) => m.DashboardPage),
-        providers: [importProvidersFrom(NgxsModule.forFeature([VaccinationsState, MeasurementsState]))],
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./dashboard/dashboard.page').then((m) => m.DashboardPage),
+        providers: [
+          importProvidersFrom(
+            NgxsModule.forFeature([VaccinationsState, RecordsState])
+          ),
+        ],
       },
       {
-        path: "medical-records",
-        loadComponent: () => import("./medical-records/medical-records.page").then((m) => m.MedicalRecordsPage),
+        path: 'medical-records',
+        loadComponent: () =>
+          import('./medical-records/medical-records.page').then(
+            (m) => m.MedicalRecordsPage
+          ),
       },
       {
-        path: "vaccinations",
-        loadComponent: () => import("./vaccinations/vaccinations.page").then((m) => m.VaccinationsPage),
+        path: 'vaccinations',
+        loadComponent: () =>
+          import('./vaccinations/vaccinations.page').then(
+            (m) => m.VaccinationsPage
+          ),
       },
       {
-        path: "health-tracking",
-        loadComponent: () => import("./health-tracking/health-tracking.page").then((m) => m.HealthTrackingPage),
+        path: 'vaccinations/add',
+        loadComponent: () =>
+          import(
+            './vaccinations/components/add-vaccination/add-vaccination.component'
+          ).then((m) => m.AddVaccinationComponent),
       },
       {
-        path: "doctor-access",
-        loadComponent: () => import("./doctor-access/doctor-access.page").then((m) => m.DoctorAccessPage),
+        path: 'health-tracking',
+        loadComponent: () =>
+          import('./health-tracking/health-tracking.page').then(
+            (m) => m.HealthTrackingPage
+          ),
       },
       {
-        path: "settings",
-        loadComponent: () => import("./settings/settings.page").then((m) => m.SettingsPage),
+        path: 'doctor-access',
+        loadComponent: () =>
+          import('./doctor-access/doctor-access.page').then(
+            (m) => m.DoctorAccessPage
+          ),
       },
       {
-        path: "",
-        redirectTo: "/tabs/dashboard",
-        pathMatch: "full",
+        path: 'settings',
+        loadComponent: () =>
+          import('./settings/settings.page').then((m) => m.SettingsPage),
+      },
+      {
+        path: '',
+        redirectTo: '/tabs/dashboard',
+        pathMatch: 'full',
       },
     ],
   },
-]
-
+];

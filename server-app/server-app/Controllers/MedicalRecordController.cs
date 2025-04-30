@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using server_app.Dtos;
 using server_app.Services;
 
 namespace server_app.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MedicalRecordsController : ControllerBase

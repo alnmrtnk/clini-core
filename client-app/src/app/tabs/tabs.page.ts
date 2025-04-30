@@ -2,16 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ScreenService } from '../services/screen.service';
-import { addIcons } from 'ionicons';
-import {
-  documentTextOutline,
-  fitnessOutline,
-  homeOutline,
-  peopleOutline,
-  pulseOutline,
-  settingsOutline,
-  menuOutline
-} from 'ionicons/icons';
 
 @Component({
   selector: 'app-tabs',
@@ -31,18 +21,6 @@ export class TabsPage implements OnInit {
     { label: 'Settings', icon: 'settings-outline', id: 'settings' },
   ];
   public expanded = false;
-
-  constructor() {
-    addIcons({
-      homeOutline,
-      pulseOutline,
-      peopleOutline,
-      documentTextOutline,
-      settingsOutline,
-      fitnessOutline,
-      menuOutline
-    });
-  }
 
   ngOnInit() {
     this.screenService.isDesktop$.subscribe((isDesktop) => {

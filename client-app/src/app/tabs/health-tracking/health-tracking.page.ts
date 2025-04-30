@@ -3,7 +3,6 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
-import { addIcons } from 'ionicons';
 import { add, addOutline } from 'ionicons/icons';
 
 @Component({
@@ -15,13 +14,6 @@ import { add, addOutline } from 'ionicons/icons';
 export class HealthTrackingPage implements OnInit {
   currentParameter = 'bloodPressure';
   recentMeasurements: any[] = [];
-
-  constructor() {
-    addIcons({
-      addOutline,
-      add,
-    });
-  }
 
   ngOnInit() {
     this.loadMeasurements();
