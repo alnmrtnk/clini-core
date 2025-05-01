@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server_app.Dtos;
+using server_app.Helpers;
 using server_app.Services;
 
 namespace server_app.Controllers
@@ -18,21 +19,27 @@ namespace server_app.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetByUser(Guid userId) =>
-            Ok(await _s.GetByUserIdAsync(userId));
+        public async Task<IActionResult> GetByUser(Guid userId)
+        {
+            var result = await _s.GetByUserIdAsync(userId);
+            return this.ToActionResult(result);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post(CreateDoctorAccessDto d)
         {
-            var id = await _s.CreateAsync(d);
-            return CreatedAtAction(null, new { id }, null);
+            var result = await _s.CreateAsync(d);
+            if (result.Success)
+                return CreatedAtAction(null, new { id = result.Data }, null);
+
+            return this.ToActionResult(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _s.DeleteAsync(id);
-            return NoContent();
+            var result = await _s.DeleteAsync(id);
+            return this.ToActionResult(result);
         }
     }
 }

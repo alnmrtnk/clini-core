@@ -1,15 +1,16 @@
 ﻿using server_app.Dtos;
+using server_app.Helpers;
 using server_app.Repositories;
 
 namespace server_app.Services
 {
     public interface IVaccinationService
     {
-        Task<IEnumerable<VaccinationDto>> GetAllAsync();
-        Task<VaccinationDto> GetByIdAsync(Guid id);
-        Task<Guid> CreateAsync(CreateVaccinationDto dto);
-        Task UpdateAsync(Guid id, UpdateVaccinationDto dto);
-        Task DeleteAsync(Guid id);
+        Task<ServiceResult<IEnumerable<VaccinationDto>>> GetAllAsync();
+        Task<ServiceResult<VaccinationDto>> GetByIdAsync(Guid id);
+        Task<ServiceResult<Guid>> CreateAsync(CreateVaccinationDto dto);
+        Task<ServiceResult<bool>> UpdateAsync(Guid id, UpdateVaccinationDto dto);
+        Task<ServiceResult<bool>> DeleteAsync(Guid id);
     }
 
     public class VaccinationService : IVaccinationService
@@ -21,14 +22,40 @@ namespace server_app.Services
             _r = r;
         }
 
-        public Task<IEnumerable<VaccinationDto>> GetAllAsync() => _r.GetAllAsync();
+        public async Task<ServiceResult<IEnumerable<VaccinationDto>>> GetAllAsync()
+        {
+            var data = await _r.GetAllAsync();
+            return ServiceResult<IEnumerable<VaccinationDto>>.Ok(data);
+        }
 
-        public Task<VaccinationDto> GetByIdAsync(Guid id) => _r.GetByIdAsync(id);
+        public async Task<ServiceResult<VaccinationDto>> GetByIdAsync(Guid id)
+        {
+            var data = await _r.GetByIdAsync(id);
+            return data == null
+                ? ServiceResult<VaccinationDto>.Fail("Vaccination not found", StatusCodes.Status404NotFound)
+                : ServiceResult<VaccinationDto>.Ok(data);
+        }
 
-        public Task<Guid> CreateAsync(CreateVaccinationDto dto) => _r.AddAsync(dto);
+        public async Task<ServiceResult<Guid>> CreateAsync(CreateVaccinationDto dto)
+        {
+            var id = await _r.AddAsync(dto);
+            return ServiceResult<Guid>.Ok(id);
+        }
 
-        public Task UpdateAsync(Guid id, UpdateVaccinationDto dto) => _r.UpdateAsync(id, dto);
+        public async Task<ServiceResult<bool>> UpdateAsync(Guid id, UpdateVaccinationDto dto)
+        {
+            var success = await _r.UpdateAsync(id, dto);
+            return success
+                ? ServiceResult<bool>.Ok(true)
+                : ServiceResult<bool>.Fail("Vaccination not found", StatusCodes.Status404NotFound);
+        }
 
-        public Task DeleteAsync(Guid id) => _r.DeleteAsync(id);
+        public async Task<ServiceResult<bool>> DeleteAsync(Guid id)
+        {
+            var success = await _r.DeleteAsync(id);
+            return success
+                ? ServiceResult<bool>.Ok(true)
+                : ServiceResult<bool>.Fail("Vaccination not found", StatusCodes.Status404NotFound);
+        }
     }
 }

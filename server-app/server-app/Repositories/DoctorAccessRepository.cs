@@ -10,7 +10,7 @@ namespace server_app.Repositories
     {
         Task<IEnumerable<DoctorAccessDto>> GetAllByUserAsync(Guid userId);
         Task<Guid> AddAsync(CreateDoctorAccessDto dto);
-        Task DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(Guid id);
     }
 
     public class DoctorAccessRepository : BaseRepository, IDoctorAccessRepository
@@ -46,16 +46,17 @@ namespace server_app.Repositories
             return entity.Id;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await _db.DoctorAccesses
                 .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
 
-            if (entity != null)
-            {
-                _db.DoctorAccesses.Remove(entity);
-                await _db.SaveChangesAsync();
-            }
+            if (entity == null)
+                return false;
+
+            _db.DoctorAccesses.Remove(entity);
+            await _db.SaveChangesAsync();
+            return true;
         }
     }
 }

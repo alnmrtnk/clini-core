@@ -12,5 +12,13 @@ namespace server_app.Extensions
 
             return Guid.TryParse(idStr, out var id) ? id : null;
         }
+
+        public static Guid? GetEsculabUUID(this ClaimsPrincipal user)
+        {
+            var idStr = user.FindFirstValue("esculabUUID")
+                     ?? user.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return Guid.TryParse(idStr, out var id) ? id : null;
+        }
     }
 }

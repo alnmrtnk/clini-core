@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server_app.Dtos;
+using server_app.Helpers;
 using server_app.Services;
 
 namespace server_app.Controllers
@@ -18,30 +19,41 @@ namespace server_app.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get() => Ok(await _s.GetAllAsync());
+        public async Task<IActionResult> Get()
+        {
+            var result = await _s.GetAllAsync();
+            return this.ToActionResult(result);
+        }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id) => Ok(await _s.GetByIdAsync(id));
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var result = await _s.GetByIdAsync(id);
+            return this.ToActionResult(result);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post(CreateMedicalRecordDto d)
         {
-            var id = await _s.CreateAsync(d);
-            return CreatedAtAction(null, new { id }, null);
+            var result = await _s.CreateAsync(d);
+            if (result.Success)
+                return CreatedAtAction(null, new { id = result.Data }, null);
+
+            return this.ToActionResult(result);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, UpdateMedicalRecordDto d)
         {
-            await _s.UpdateAsync(id, d);
-            return NoContent();
+            var result = await _s.UpdateAsync(id, d);
+            return this.ToActionResult(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _s.DeleteAsync(id);
-            return NoContent();
+            var result = await _s.DeleteAsync(id);
+            return this.ToActionResult(result);
         }
     }
 }

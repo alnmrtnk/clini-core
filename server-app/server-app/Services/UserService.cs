@@ -1,15 +1,15 @@
 ﻿using server_app.Dtos;
+using server_app.Helpers;
 using server_app.Repositories;
 
 namespace server_app.Services
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserDto>> GetAllAsync();
-        Task<UserDto> GetByIdAsync(Guid id);
-        Task<Guid> CreateAsync(CreateUserDto dto);
-        Task UpdateAsync(Guid id, UpdateUserDto dto);
-        Task DeleteAsync(Guid id);
+        Task<ServiceResult<IEnumerable<UserDto>>> GetAllAsync();
+        Task<ServiceResult<UserDto>> GetByIdAsync(Guid id);
+        Task<ServiceResult<Guid>> CreateAsync(CreateUserDto dto);
+        Task<ServiceResult<bool>> UpdateAsync(UpdateUserDto dto);
     }
 
     public class UserService : IUserService
@@ -21,14 +21,32 @@ namespace server_app.Services
             _r = r;
         }
 
-        public Task<IEnumerable<UserDto>> GetAllAsync() => _r.GetAllAsync();
+        public async Task<ServiceResult<IEnumerable<UserDto>>> GetAllAsync()
+        {
+            var users = await _r.GetAllAsync();
+            return ServiceResult<IEnumerable<UserDto>>.Ok(users);
+        }
 
-        public Task<UserDto> GetByIdAsync(Guid id) => _r.GetByIdAsync(id);
+        public async Task<ServiceResult<UserDto>> GetByIdAsync(Guid id)
+        {
+            var user = await _r.GetByIdAsync(id);
+            return user == null
+                ? ServiceResult<UserDto>.Fail("User not found", StatusCodes.Status404NotFound)
+                : ServiceResult<UserDto>.Ok(user);
+        }
 
-        public Task<Guid> CreateAsync(CreateUserDto dto) => _r.AddAsync(dto);
+        public async Task<ServiceResult<Guid>> CreateAsync(CreateUserDto dto)
+        {
+            var id = await _r.AddAsync(dto);
+            return ServiceResult<Guid>.Ok(id);
+        }
 
-        public Task UpdateAsync(Guid id, UpdateUserDto dto) => _r.UpdateAsync(id, dto);
-
-        public Task DeleteAsync(Guid id) => _r.DeleteAsync(id);
+        public async Task<ServiceResult<bool>> UpdateAsync(UpdateUserDto dto)
+        {
+            var success = await _r.UpdateAsync(dto);
+            return success
+                ? ServiceResult<bool>.Ok(true)
+                : ServiceResult<bool>.Fail("User not found", StatusCodes.Status404NotFound);
+        }
     }
 }

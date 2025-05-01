@@ -11,8 +11,8 @@ namespace server_app.Repositories
         Task<IEnumerable<MedicalRecordDto>> GetAllAsync();
         Task<MedicalRecordDto> GetByIdAsync(Guid id);
         Task<Guid> AddAsync(CreateMedicalRecordDto dto);
-        Task UpdateAsync(Guid id, UpdateMedicalRecordDto dto);
-        Task DeleteAsync(Guid id);
+        Task<bool> UpdateAsync(Guid id, UpdateMedicalRecordDto dto);
+        Task<bool> DeleteAsync(Guid id);
     }
 
     public class MedicalRecordRepository : BaseRepository, IMedicalRecordRepository
@@ -49,28 +49,31 @@ namespace server_app.Repositories
             return entity.Id;
         }
 
-        public async Task UpdateAsync(Guid id, UpdateMedicalRecordDto dto)
+        public async Task<bool> UpdateAsync(Guid id, UpdateMedicalRecordDto dto)
         {
             var entity = await _db.MedicalRecords
                 .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
 
             if (entity == null)
-                throw new UnauthorizedAccessException("Access denied or record not found.");
+                return false;
 
             _map.Map(dto, entity);
             await _db.SaveChangesAsync();
+            return true;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await _db.MedicalRecords
                 .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
 
-            if (entity != null)
-            {
-                _db.MedicalRecords.Remove(entity);
-                await _db.SaveChangesAsync();
-            }
+            if (entity == null)
+                return false;
+
+            _db.MedicalRecords.Remove(entity);
+            await _db.SaveChangesAsync();
+            return true;
         }
+
     }
 }

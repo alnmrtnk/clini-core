@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using server_app.Dtos;
+using server_app.Helpers;
 using server_app.Services;
 
 namespace server_app.Controllers
@@ -11,19 +11,26 @@ namespace server_app.Controllers
     {
         private readonly IAuthService _auth;
 
-        public AuthController(IAuthService auth) => _auth = auth;
+        public AuthController(IAuthService auth)
+        {
+            _auth = auth;
+        }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
-            var userId = await _auth.RegisterAsync(dto);
-            return CreatedAtAction(null, new { id = userId });
+            var result = await _auth.RegisterAsync(dto);
+            if (result.Success)
+                return CreatedAtAction(null, new { id = result.Data });
+
+            return this.ToActionResult(result);
         }
 
         [HttpPost("login")]
-        public async Task<AuthResponse> Login(LoginDto dto)
+        public async Task<IActionResult> Login(LoginDto dto)
         {
-            return await _auth.LoginAsync(dto);
+            var result = await _auth.LoginAsync(dto);
+            return this.ToActionResult(result);
         }
     }
 }

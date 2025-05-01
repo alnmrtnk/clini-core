@@ -1,15 +1,16 @@
 ﻿using server_app.Dtos;
+using server_app.Helpers;
 using server_app.Repositories;
 
 namespace server_app.Services
 {
     public interface IMedicalRecordService
     {
-        Task<IEnumerable<MedicalRecordDto>> GetAllAsync();
-        Task<MedicalRecordDto> GetByIdAsync(Guid id);
-        Task<Guid> CreateAsync(CreateMedicalRecordDto dto);
-        Task UpdateAsync(Guid id, UpdateMedicalRecordDto dto);
-        Task DeleteAsync(Guid id);
+        Task<ServiceResult<IEnumerable<MedicalRecordDto>>> GetAllAsync();
+        Task<ServiceResult<MedicalRecordDto>> GetByIdAsync(Guid id);
+        Task<ServiceResult<Guid>> CreateAsync(CreateMedicalRecordDto dto);
+        Task<ServiceResult<bool>> UpdateAsync(Guid id, UpdateMedicalRecordDto dto);
+        Task<ServiceResult<bool>> DeleteAsync(Guid id);
     }
 
     public class MedicalRecordService : IMedicalRecordService
@@ -21,14 +22,40 @@ namespace server_app.Services
             _r = r;
         }
 
-        public Task<IEnumerable<MedicalRecordDto>> GetAllAsync() => _r.GetAllAsync();
+        public async Task<ServiceResult<IEnumerable<MedicalRecordDto>>> GetAllAsync()
+        {
+            var items = await _r.GetAllAsync();
+            return ServiceResult<IEnumerable<MedicalRecordDto>>.Ok(items);
+        }
 
-        public Task<MedicalRecordDto> GetByIdAsync(Guid id) => _r.GetByIdAsync(id);
+        public async Task<ServiceResult<MedicalRecordDto>> GetByIdAsync(Guid id)
+        {
+            var record = await _r.GetByIdAsync(id);
+            return record == null
+                ? ServiceResult<MedicalRecordDto>.Fail("Not found", StatusCodes.Status404NotFound)
+                : ServiceResult<MedicalRecordDto>.Ok(record);
+        }
 
-        public Task<Guid> CreateAsync(CreateMedicalRecordDto dto) => _r.AddAsync(dto);
+        public async Task<ServiceResult<Guid>> CreateAsync(CreateMedicalRecordDto dto)
+        {
+            var id = await _r.AddAsync(dto);
+            return ServiceResult<Guid>.Ok(id);
+        }
 
-        public Task UpdateAsync(Guid id, UpdateMedicalRecordDto dto) => _r.UpdateAsync(id, dto);
+        public async Task<ServiceResult<bool>> UpdateAsync(Guid id, UpdateMedicalRecordDto dto)
+        {
+            var success = await _r.UpdateAsync(id, dto);
+            return success
+                ? ServiceResult<bool>.Ok(true)
+                : ServiceResult<bool>.Fail("Record not found", StatusCodes.Status404NotFound);
+        }
 
-        public Task DeleteAsync(Guid id) => _r.DeleteAsync(id);
+        public async Task<ServiceResult<bool>> DeleteAsync(Guid id)
+        {
+            var success = await _r.DeleteAsync(id);
+            return success
+                ? ServiceResult<bool>.Ok(true)
+                : ServiceResult<bool>.Fail("Record not found", StatusCodes.Status404NotFound);
+        }
     }
 }

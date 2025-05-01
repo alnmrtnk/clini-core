@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using server_app.Data;
-using server_app.Extensions;
+﻿using server_app.Extensions;
 
 namespace server_app.Repositories
 {

@@ -11,8 +11,8 @@ namespace server_app.Repositories
         Task<IEnumerable<HealthMeasurementDto>> GetAllAsync();
         Task<HealthMeasurementDto> GetByIdAsync(Guid id);
         Task<Guid> AddAsync(CreateHealthMeasurementDto dto);
-        Task UpdateAsync(Guid id, UpdateHealthMeasurementDto dto);
-        Task DeleteAsync(Guid id);
+        Task<bool> UpdateAsync(Guid id, UpdateHealthMeasurementDto dto);
+        Task<bool> DeleteAsync(Guid id);
     }
 
     public class HealthMeasurementRepository : BaseRepository, IHealthMeasurementRepository
@@ -49,28 +49,30 @@ namespace server_app.Repositories
             return entity.Id;
         }
 
-        public async Task UpdateAsync(Guid id, UpdateHealthMeasurementDto dto)
+        public async Task<bool> UpdateAsync(Guid id, UpdateHealthMeasurementDto dto)
         {
             var entity = await _db.HealthMeasurements
                 .FirstOrDefaultAsync(h => h.Id == id && h.UserId == CurrentUserId);
 
             if (entity == null)
-                throw new UnauthorizedAccessException("Access denied or record not found.");
+                return false;
 
             _map.Map(dto, entity);
             await _db.SaveChangesAsync();
+            return true;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await _db.HealthMeasurements
                 .FirstOrDefaultAsync(h => h.Id == id && h.UserId == CurrentUserId);
 
-            if (entity != null)
-            {
-                _db.HealthMeasurements.Remove(entity);
-                await _db.SaveChangesAsync();
-            }
+            if (entity == null)
+                return false;
+
+            _db.HealthMeasurements.Remove(entity);
+            await _db.SaveChangesAsync();
+            return true;
         }
     }
 }

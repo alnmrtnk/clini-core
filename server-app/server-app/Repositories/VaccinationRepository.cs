@@ -11,8 +11,8 @@ namespace server_app.Repositories
         Task<IEnumerable<VaccinationDto>> GetAllAsync();
         Task<VaccinationDto> GetByIdAsync(Guid id);
         Task<Guid> AddAsync(CreateVaccinationDto dto);
-        Task UpdateAsync(Guid id, UpdateVaccinationDto dto);
-        Task DeleteAsync(Guid id);
+        Task<bool> UpdateAsync(Guid id, UpdateVaccinationDto dto);
+        Task<bool> DeleteAsync(Guid id);
     }
 
     public class VaccinationRepository : BaseRepository, IVaccinationRepository
@@ -49,28 +49,30 @@ namespace server_app.Repositories
             return entity.Id;
         }
 
-        public async Task UpdateAsync(Guid id, UpdateVaccinationDto dto)
+        public async Task<bool> UpdateAsync(Guid id, UpdateVaccinationDto dto)
         {
             var entity = await _db.Vaccinations
                 .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
 
             if (entity == null)
-                throw new UnauthorizedAccessException("Access denied or record not found.");
+                return false;
 
             _map.Map(dto, entity);
             await _db.SaveChangesAsync();
+            return true;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await _db.Vaccinations
                 .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
 
-            if (entity != null)
-            {
-                _db.Vaccinations.Remove(entity);
-                await _db.SaveChangesAsync();
-            }
+            if (entity == null)
+                return false;
+
+            _db.Vaccinations.Remove(entity);
+            await _db.SaveChangesAsync();
+            return true;
         }
     }
 }

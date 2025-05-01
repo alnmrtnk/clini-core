@@ -1,17 +1,18 @@
-﻿using server_app.Dtos;
-using server_app.Models;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using server_app.Dtos;
+using server_app.Helpers;
 using server_app.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 
 namespace server_app.Services
 {
     public interface IAuthService
     {
-        Task<Guid> RegisterAsync(RegisterDto dto);
-        Task<AuthResponse> LoginAsync(LoginDto dto);
+        Task<ServiceResult<Guid>> RegisterAsync(RegisterDto dto);
+        Task<ServiceResult<AuthResponse>> LoginAsync(LoginDto dto);
     }
 
     public class AuthService : IAuthService
@@ -25,40 +26,38 @@ namespace server_app.Services
             _config = config;
         }
 
-        public async Task<Guid> RegisterAsync(RegisterDto dto)
+        public async Task<ServiceResult<Guid>> RegisterAsync(RegisterDto dto)
         {
             if (await _users.GetEntityByEmailAsync(dto.Email) != null)
-                throw new InvalidOperationException("Email already in use.");
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+                return ServiceResult<Guid>.Fail("Email already in use.", StatusCodes.Status409Conflict);
 
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             var newId = await _users.AddAsync(new CreateUserDto
             {
                 Email = dto.Email,
                 Password = passwordHash,
                 FullName = dto.FullName
             });
-            return newId;
+
+            return ServiceResult<Guid>.Ok(newId);
         }
 
-        public async Task<AuthResponse> LoginAsync(LoginDto dto)
+        public async Task<ServiceResult<AuthResponse>> LoginAsync(LoginDto dto)
         {
-            var userEntity = await _users.GetEntityByEmailAsync(dto.Email)
-                             ?? throw new UnauthorizedAccessException("Invalid credentials.");
-
-            if (!BCrypt.Net.BCrypt.Verify(dto.Password, userEntity.PasswordHash))
-                throw new UnauthorizedAccessException("Invalid credentials.");
+            var user = await _users.GetEntityByEmailAsync(dto.Email);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+                return ServiceResult<AuthResponse>.Fail("Invalid credentials.", StatusCodes.Status401Unauthorized);
 
             var jwtConf = _config.GetSection("JwtSettings");
-            var keyBytes = Encoding.UTF8.GetBytes(jwtConf["Key"]!);
-            var key = new SymmetricSecurityKey(keyBytes);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConf["Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, userEntity.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, userEntity.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
             var token = new JwtSecurityToken(
                 issuer: jwtConf["Issuer"],
@@ -67,9 +66,9 @@ namespace server_app.Services
                 expires: DateTime.UtcNow.AddMinutes(double.Parse(jwtConf["ExpiresInMinutes"]!)),
                 signingCredentials: creds
             );
-            var tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return new AuthResponse(tokenStr, userEntity.Id, userEntity.Email);
+            var tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
+            return ServiceResult<AuthResponse>.Ok(new AuthResponse(tokenStr, user.Id, user.Email));
         }
     }
 }

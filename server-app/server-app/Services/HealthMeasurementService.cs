@@ -1,15 +1,16 @@
 ﻿using server_app.Dtos;
+using server_app.Helpers;
 using server_app.Repositories;
 
 namespace server_app.Services
 {
     public interface IHealthMeasurementService
     {
-        Task<IEnumerable<HealthMeasurementDto>> GetAllAsync();
-        Task<HealthMeasurementDto> GetByIdAsync(Guid id);
-        Task<Guid> CreateAsync(CreateHealthMeasurementDto dto);
-        Task UpdateAsync(Guid id, UpdateHealthMeasurementDto dto);
-        Task DeleteAsync(Guid id);
+        Task<ServiceResult<IEnumerable<HealthMeasurementDto>>> GetAllAsync();
+        Task<ServiceResult<HealthMeasurementDto>> GetByIdAsync(Guid id);
+        Task<ServiceResult<Guid>> CreateAsync(CreateHealthMeasurementDto dto);
+        Task<ServiceResult<bool>> UpdateAsync(Guid id, UpdateHealthMeasurementDto dto);
+        Task<ServiceResult<bool>> DeleteAsync(Guid id);
     }
 
     public class HealthMeasurementService : IHealthMeasurementService
@@ -21,14 +22,42 @@ namespace server_app.Services
             _r = r;
         }
 
-        public Task<IEnumerable<HealthMeasurementDto>> GetAllAsync() => _r.GetAllAsync();
+        public async Task<ServiceResult<IEnumerable<HealthMeasurementDto>>> GetAllAsync()
+        {
+            var data = await _r.GetAllAsync();
+            return ServiceResult<IEnumerable<HealthMeasurementDto>>.Ok(data);
+        }
 
-        public Task<HealthMeasurementDto> GetByIdAsync(Guid id) => _r.GetByIdAsync(id);
+        public async Task<ServiceResult<HealthMeasurementDto>> GetByIdAsync(Guid id)
+        {
+            var item = await _r.GetByIdAsync(id);
+            return item == null
+                ? ServiceResult<HealthMeasurementDto>.Fail("Not found", StatusCodes.Status404NotFound)
+                : ServiceResult<HealthMeasurementDto>.Ok(item);
+        }
 
-        public Task<Guid> CreateAsync(CreateHealthMeasurementDto dto) => _r.AddAsync(dto);
+        public async Task<ServiceResult<Guid>> CreateAsync(CreateHealthMeasurementDto dto)
+        {
+            var id = await _r.AddAsync(dto);
+            return ServiceResult<Guid>.Ok(id);
+        }
 
-        public Task UpdateAsync(Guid id, UpdateHealthMeasurementDto dto) => _r.UpdateAsync(id, dto);
+        public async Task<ServiceResult<bool>> UpdateAsync(Guid id, UpdateHealthMeasurementDto dto)
+        {
+            var updated = await _r.UpdateAsync(id, dto);
 
-        public Task DeleteAsync(Guid id) => _r.DeleteAsync(id);
+            return updated
+                ? ServiceResult<bool>.Ok(true)
+                : ServiceResult<bool>.Fail("Item not found", StatusCodes.Status404NotFound);
+        }
+
+
+        public async Task<ServiceResult<bool>> DeleteAsync(Guid id)
+        {
+            var result = await _r.DeleteAsync(id);
+            return result
+                ? ServiceResult<bool>.Ok(true)
+                : ServiceResult<bool>.Fail("Item not found", StatusCodes.Status404NotFound);
+        }
     }
 }
