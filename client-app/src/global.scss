@@ -56,6 +56,10 @@ body.dark ion-card {
 }
 
 @media (min-width: 992px) {
+  input {
+    margin-top: 20px;
+  }
+  
   .tabs-container {
     &:has(.page-wrapper) {
       ion-header {

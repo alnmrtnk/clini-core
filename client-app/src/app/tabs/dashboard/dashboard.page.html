@@ -14,18 +14,28 @@
       </ion-card-header>
       <ion-card-content>
         <p>
-          Access all your medical information, track your health, and manage
-          your vaccinations.
+          Access all your medical information.
         </p>
       </ion-card-content>
     </ion-card>
 
     <ion-grid>
       <ion-row>
-        <ion-col size="12" size-md="6">
+        <ion-col size="12" size-md="8">
           <ion-card>
             <ion-card-header>
-              <ion-card-title>Recent Medical Records</ion-card-title>
+              <ion-card-title>Recent records</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <app-document-gallery></app-document-gallery>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" size-md="4">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Recent Doctor Acesses</ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <ion-list lines="full">
@@ -43,44 +53,6 @@
                   </ion-button>
                 </ion-item>
               </ion-list>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-
-        <ion-col size="12" size-md="6">
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>Upcoming Vaccinations</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              <ion-list lines="full">
-                <ion-item *ngFor="let vac of vaccinationsSignal()">
-                  <ion-label>
-                    <h3>{{ vac.vaccineName }}</h3>
-                    <p>Due {{ vac.dateAdministered | date:'shortDate' }}</p>
-                  </ion-label>
-                  <ion-button
-                    slot="end"
-                    fill="clear"
-                    [routerLink]="['/vaccinations', vac.id]"
-                  >
-                    Schedule
-                  </ion-button>
-                </ion-item>
-              </ion-list>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col size="12">
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>Health Trends</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              <app-health-chart></app-health-chart>
             </ion-card-content>
           </ion-card>
         </ion-col>

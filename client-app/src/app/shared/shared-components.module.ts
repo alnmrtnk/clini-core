@@ -1,11 +1,10 @@
 import { NgModule } from "@angular/core"
 import { CommonModule } from "@angular/common"
-import { HealthChartComponent } from "./components/health-chart/health-chart.component"
-import { ParameterChartComponent } from "./components/parameter-chart/parameter-chart.component"
+import { DocumentGalleryComponent } from "./components/document-gallery/document-gallery.component"
 
 @NgModule({
-  imports: [CommonModule, HealthChartComponent, ParameterChartComponent],
-  exports: [HealthChartComponent, ParameterChartComponent],
+  imports: [CommonModule, DocumentGalleryComponent],
+  exports: [DocumentGalleryComponent],
 })
 export class SharedComponentsModule {}
 

@@ -1,5 +1,5 @@
 <div *ngIf="currentStep === 'phone'">
-  <ion-card>
+  <div>
     <ion-card-header>
       <ion-card-title>Connect to Esculab</ion-card-title>
       <ion-card-subtitle>Enter your phone number to access your lab results</ion-card-subtitle>
@@ -29,7 +29,7 @@
         </div>
       </form>
     </ion-card-content>
-  </ion-card>
+  </div>
   
   <!-- Error message -->
   <ion-card *ngIf="error() as error">
@@ -41,7 +41,7 @@
 
 <!-- Authorization Step 2: Verification Code Entry -->
 <div *ngIf="currentStep === 'verification'">
-  <ion-card>
+  <div>
     <ion-card-header>
       <ion-card-title>Verification Code</ion-card-title>
       <ion-card-subtitle>Enter the 4-digit code sent to {{ phoneForm.get('phoneNumber')?.value }}</ion-card-subtitle>
@@ -79,7 +79,7 @@
         </div>
       </form>
     </ion-card-content>
-  </ion-card>
+  </div>
   
   <!-- Error message -->
   <ion-card *ngIf="error() as error">
@@ -91,7 +91,7 @@
 
 <!-- Results Display -->
 <div *ngIf="currentStep === 'results'">
-  <ion-card *ngIf="orders()?.length === 0 && !loading()">
+  <div *ngIf="orders()?.length === 0 && !loading()">
     <ion-card-content>
       <div class="empty-state">
         <ion-icon name="flask-outline" size="large"></ion-icon>
@@ -99,7 +99,7 @@
         <p>We couldn't find any lab results associated with your account.</p>
       </div>
     </ion-card-content>
-  </ion-card>
+  </div>
   
   <ion-list *ngIf="orders()?.length">
     <ion-list-header>

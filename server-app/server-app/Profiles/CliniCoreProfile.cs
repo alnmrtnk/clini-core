@@ -17,14 +17,6 @@ namespace server_app.Profiles
             CreateMap<CreateMedicalRecordDto, MedicalRecord>()
                 .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()));
             CreateMap<UpdateMedicalRecordDto, MedicalRecord>();
-            CreateMap<Vaccination, VaccinationDto>();
-            CreateMap<CreateVaccinationDto, Vaccination>()
-                .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()));
-            CreateMap<UpdateVaccinationDto, Vaccination>();
-            CreateMap<HealthMeasurement, HealthMeasurementDto>();
-            CreateMap<CreateHealthMeasurementDto, HealthMeasurement>()
-                .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()));
-            CreateMap<UpdateHealthMeasurementDto, HealthMeasurement>();
             CreateMap<DoctorAccess, DoctorAccessDto>();
             CreateMap<CreateDoctorAccessDto, DoctorAccess>()
                 .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()))
