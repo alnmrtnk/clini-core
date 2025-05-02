@@ -5,6 +5,7 @@ import { NgxsModule } from '@ngxs/store';
 import { VaccinationsState } from '../store/vaccination.state';
 import { MeasurementsState } from '../store/health-measurement.state';
 import { RecordsState } from '../store/medical-record.state';
+import { EsculabState } from '../store/esculab.state';
 
 export const routes: Routes = [
   {
@@ -27,6 +28,7 @@ export const routes: Routes = [
           import('./medical-records/medical-records.page').then(
             (m) => m.MedicalRecordsPage
           ),
+        providers: [importProvidersFrom(NgxsModule.forFeature([EsculabState]))],
       },
       {
         path: 'vaccinations',

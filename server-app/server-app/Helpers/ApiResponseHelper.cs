@@ -8,7 +8,7 @@ namespace server_app.Helpers
         {
             return result.StatusCode switch
             {
-                StatusCodes.Status200OK => controller.Ok(result.Data),
+                StatusCodes.Status200OK => controller.Ok(new { data = result.Data }),
                 StatusCodes.Status404NotFound => controller.NotFound(new { error = result.ErrorMessage }),
                 StatusCodes.Status401Unauthorized => controller.Unauthorized(),
                 StatusCodes.Status503ServiceUnavailable => controller.StatusCode(503, new { error = result.ErrorMessage }),

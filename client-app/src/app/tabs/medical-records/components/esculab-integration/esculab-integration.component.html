@@ -1,0 +1,199 @@
+<div *ngIf="currentStep === 'phone'">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Connect to Esculab</ion-card-title>
+      <ion-card-subtitle>Enter your phone number to access your lab results</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="phoneForm" (ngSubmit)="submitPhone()">
+        <ion-item>
+          <ion-label position="floating">Phone Number*</ion-label>
+          <ion-input 
+            type="tel" 
+            formControlName="phoneNumber" 
+            placeholder="+380XXXXXXXXX">
+          </ion-input>
+          <ion-note slot="error" *ngIf="phoneForm.get('phoneNumber')?.hasError('required') && phoneForm.get('phoneNumber')?.touched">
+            Phone number is required
+          </ion-note>
+          <ion-note slot="error" *ngIf="phoneForm.get('phoneNumber')?.hasError('pattern') && phoneForm.get('phoneNumber')?.touched">
+            Please enter a valid phone number
+          </ion-note>
+        </ion-item>
+        
+        <div class="ion-padding-top">
+          <ion-button expand="block" type="submit" [disabled]="!phoneForm.valid || loading()">
+            <ion-spinner name="dots" *ngIf="loading()"></ion-spinner>
+            <span *ngIf="!loading()">Get Verification Code</span>
+          </ion-button>
+        </div>
+      </form>
+    </ion-card-content>
+  </ion-card>
+  
+  <!-- Error message -->
+  <ion-card *ngIf="error() as error">
+    <ion-card-content>
+      <ion-text color="danger">{{ error }}</ion-text>
+    </ion-card-content>
+  </ion-card>
+</div>
+
+<!-- Authorization Step 2: Verification Code Entry -->
+<div *ngIf="currentStep === 'verification'">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Verification Code</ion-card-title>
+      <ion-card-subtitle>Enter the 4-digit code sent to {{ phoneForm.get('phoneNumber')?.value }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="verificationForm" (ngSubmit)="submitVerification()">
+        <ion-item>
+          <ion-label position="floating">4-Digit Code*</ion-label>
+          <ion-input 
+            type="text" 
+            formControlName="verificationCode" 
+            placeholder="0000"
+            maxlength="4"
+            inputmode="numeric">
+          </ion-input>
+          <ion-note slot="error" *ngIf="verificationForm.get('verificationCode')?.hasError('required') && verificationForm.get('verificationCode')?.touched">
+            Verification code is required
+          </ion-note>
+          <ion-note slot="error" *ngIf="verificationForm.get('verificationCode')?.hasError('pattern') && verificationForm.get('verificationCode')?.touched">
+            Please enter a valid 4-digit code
+          </ion-note>
+        </ion-item>
+        
+        <div class="ion-padding-top">
+          <ion-button expand="block" type="submit" [disabled]="!verificationForm.valid || loading()">
+            <ion-spinner name="dots" *ngIf="loading()"></ion-spinner>
+            <span *ngIf="!loading()">Verify</span>
+          </ion-button>
+          <ion-button expand="block" fill="outline" (click)="resendCode()" [disabled]="loading() || resendDisabled">
+            Resend Code {{ resendCountdown > 0 ? '(' + resendCountdown + 's)' : '' }}
+          </ion-button>
+          <ion-button expand="block" fill="clear" (click)="goBack()">
+            Change Phone Number
+          </ion-button>
+        </div>
+      </form>
+    </ion-card-content>
+  </ion-card>
+  
+  <!-- Error message -->
+  <ion-card *ngIf="error() as error">
+    <ion-card-content>
+      <ion-text color="danger">{{ error }}</ion-text>
+    </ion-card-content>
+  </ion-card>
+</div>
+
+<!-- Results Display -->
+<div *ngIf="currentStep === 'results'">
+  <ion-card *ngIf="orders()?.length === 0 && !loading()">
+    <ion-card-content>
+      <div class="empty-state">
+        <ion-icon name="flask-outline" size="large"></ion-icon>
+        <h3>No Lab Results Found</h3>
+        <p>We couldn't find any lab results associated with your account.</p>
+      </div>
+    </ion-card-content>
+  </ion-card>
+  
+  <ion-list *ngIf="orders()?.length">
+    <ion-list-header>
+      <ion-label>Your Lab Results</ion-label>
+    </ion-list-header>
+    
+    <ion-item *ngFor="let order of orders()" button detail (click)="viewOrderDetails(order)">
+      <ion-icon name="flask-outline" slot="start" color="primary"></ion-icon>
+      <ion-label>
+        <h2>{{ order.packet }}</h2>
+        <p>{{ formatDate(order.dt) }}</p>
+        <p>{{ order.address }}</p>
+      </ion-label>
+      <ion-badge slot="end" color="primary">{{ order.ready }}/{{ order.total }}</ion-badge>
+    </ion-item>
+  </ion-list>
+  
+  <ion-spinner *ngIf="loading()" class="loading-spinner"></ion-spinner>
+  
+  <!-- Error message -->
+  <ion-card *ngIf="error() as error">
+    <ion-card-content>
+      <ion-text color="danger">{{ error }}</ion-text>
+    </ion-card-content>
+  </ion-card>
+</div>
+
+<!-- Order Details Modal -->
+<ion-modal [isOpen]="showOrderDetails">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>Lab Results</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeOrderDetails()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <div *ngIf="selectedOrder">
+        <div class="results-header">
+          <ion-button fill="clear" (click)="downloadResults()">
+            <ion-icon name="download-outline" slot="start"></ion-icon>
+            Download results
+          </ion-button>
+        </div>
+
+        <div *ngIf="loading()" class="ion-text-center ion-padding">
+          <ion-spinner></ion-spinner>
+          <p>Loading results...</p>
+        </div>
+
+        <div *ngIf="!loading() && groupedResults.length === 0" class="ion-text-center ion-padding">
+          <ion-icon name="alert-circle-outline" color="warning" size="large"></ion-icon>
+          <p>No detailed results available for this order.</p>
+        </div>
+
+        <div *ngFor="let group of groupedResults" class="result-group">
+          <div class="group-header">
+            <h2>{{ group.name }}</h2>
+            <div class="date-ready">
+              <span>{{ group.date }}</span>
+            </div>
+          </div>
+
+          <div class="result-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Test name</th>
+                  <th>Result</th>
+                  <th>Reference range</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let test of group.results" [class.abnormal]="test.state !== 'normal'">
+                  <td>{{ test.test }}</td>
+                  <td>{{ test.result }} {{ test.units }}</td>
+                  <td>{{ formatNormRange(test.norm) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="ion-padding-top">
+          <ion-button expand="block" (click)="importToMedicalRecords(selectedOrder)">
+            <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+            Import to Medical Records
+          </ion-button>
+        </div>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
