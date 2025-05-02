@@ -5,15 +5,18 @@
         public Guid Id { get; set; }
         public string Title { get; set; } = null!;
         public DateTime Date { get; set; }
+        public string RecordTypeName { get; set; } = null!;
     }
+
 
     public class CreateMedicalRecordDto
     {
         public Guid UserId { get; set; }
-        public string RecordType { get; set; } = null!;
+        public Guid RecordTypeId { get; set; }
         public string Title { get; set; } = null!;
         public DateTime Date { get; set; }
     }
+
 
     public class UpdateMedicalRecordDto
     {

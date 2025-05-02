@@ -3,10 +3,12 @@ import { MedicalRecord } from '../models/medical-record.model';
 import { MedicalRecordService } from '../services/medical-record.service';
 import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
+import { RecordTypeService } from '../services/record-type.service';
+import { RecordType } from '../models/record-type.model';
 
 export class LoadRecords {
   static readonly type = '[Record] Load';
-  constructor(public userId: string) {}
+  constructor() {}
 }
 export class AddRecord {
   static readonly type = '[Record] Add';
@@ -21,17 +23,26 @@ export class DeleteRecord {
   constructor(public id: string) {}
 }
 
+export class LoadRecordTypes {
+  static readonly type = '[Record] Get Types';
+  constructor() {}
+}
+
 export interface RecordsStateModel {
   records: MedicalRecord[];
+  recordTypes: RecordType[];
 }
 
 @State<RecordsStateModel>({
   name: 'records',
-  defaults: { records: [] },
+  defaults: { records: [], recordTypes: [] },
 })
 @Injectable()
 export class RecordsState {
-  constructor(private recordService: MedicalRecordService) {}
+  constructor(
+    private recordService: MedicalRecordService,
+    private recordTypeService: RecordTypeService
+  ) {}
 
   @Selector()
   static records(state: RecordsStateModel) {
@@ -39,10 +50,17 @@ export class RecordsState {
   }
 
   @Action(LoadRecords)
-  load({ getState, setState }: StateContext<RecordsStateModel>, { userId }: LoadRecords) {
+  load({ getState, setState }: StateContext<RecordsStateModel>) {
     return this.recordService
-      .getByUser(userId)
+      .getAll()
       .pipe(tap((records) => setState({ ...getState(), records })));
+  }
+
+  @Action(LoadRecordTypes)
+  loadTypes({ getState, setState }: StateContext<RecordsStateModel>) {
+    return this.recordTypeService
+      .getAll()
+      .pipe(tap((recordTypes) => setState({ ...getState(), recordTypes })));
   }
 
   @Action(AddRecord)
@@ -69,7 +87,7 @@ export class RecordsState {
         const records = getState().records.map((r) =>
           r.id === id ? { ...r, ...changes } : r
         );
-        setState({ records });
+        setState({ ...getState(), records });
       })
     );
   }
@@ -83,7 +101,7 @@ export class RecordsState {
       .delete(id)
       .pipe(
         tap(() =>
-          setState({ records: getState().records.filter((r) => r.id !== id) })
+          setState({ ...getState(), records: getState().records.filter((r) => r.id !== id) })
         )
       );
   }

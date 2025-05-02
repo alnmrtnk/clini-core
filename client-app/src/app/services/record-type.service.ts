@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MedicalRecord } from '../models/medical-record.model';
 import { BaseEntityService } from './base-entity.service';
-import { Observable } from 'rxjs';
+import { RecordType } from '../models/record-type.model';
 
 @Injectable({ providedIn: 'root' })
-export class MedicalRecordService extends BaseEntityService<MedicalRecord> {
-  protected baseUrl = 'MedicalRecords';
+export class RecordTypeService extends BaseEntityService<RecordType> {
+  protected baseUrl = 'RecordType';
+
   constructor(http: HttpClient) {
     super(http);
   }

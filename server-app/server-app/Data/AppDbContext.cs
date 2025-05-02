@@ -11,6 +11,8 @@ namespace server_app.Data
         public DbSet<User> Users { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
         public DbSet<DoctorAccess> DoctorAccesses { get; set; }
+        public DbSet<RecordType> RecordTypes { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder m)
         {
@@ -59,17 +61,37 @@ namespace server_app.Data
                 );
             });
 
+            var recordTypeReport = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+            var recordTypeImage = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+            var recordTypePrescription = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
+            var recordTypeForm = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd");
+
+            m.Entity<RecordType>(e => {
+                e.HasKey(rt => rt.Id);
+                e.HasData(
+                    new RecordType { Id = recordTypeReport, Name = "report" },
+                    new RecordType { Id = recordTypeImage, Name = "image" },
+                    new RecordType { Id = recordTypePrescription, Name = "prescription" },
+                    new RecordType { Id = recordTypeForm, Name = "form" }
+                );
+            });
+
             m.Entity<MedicalRecord>(e => {
                 e.HasKey(x => x.Id);
                 e.HasOne(x => x.User)
-                 .WithMany(u => u.MedicalRecords)
-                 .HasForeignKey(x => x.UserId);
+                    .WithMany(u => u.MedicalRecords)
+                    .HasForeignKey(x => x.UserId);
+
+                e.HasOne(x => x.RecordType)
+                    .WithMany(rt => rt.MedicalRecords)
+                    .HasForeignKey(x => x.RecordTypeId);
+
                 e.HasData(
                     new MedicalRecord
                     {
                         Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
                         UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                        RecordType = "Lab Test",
+                        RecordTypeId = recordTypeReport,
                         Title = "Complete Blood Count",
                         Date = new DateTime(2024, 1, 10, 0, 0, 0, DateTimeKind.Utc)
                     },
@@ -77,7 +99,7 @@ namespace server_app.Data
                     {
                         Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
                         UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                        RecordType = "Imaging",
+                        RecordTypeId = recordTypeImage,
                         Title = "Chest X-Ray",
                         Date = new DateTime(2024, 2, 5, 0, 0, 0, DateTimeKind.Utc)
                     },
@@ -85,7 +107,7 @@ namespace server_app.Data
                     {
                         Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
                         UserId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                        RecordType = "Doctor Visit",
+                        RecordTypeId = recordTypeForm,
                         Title = "Dermatology Consultation",
                         Date = new DateTime(2024, 3, 12, 0, 0, 0, DateTimeKind.Utc)
                     },
@@ -93,7 +115,7 @@ namespace server_app.Data
                     {
                         Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
                         UserId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                        RecordType = "Prescription",
+                        RecordTypeId = recordTypePrescription,
                         Title = "Blood Pressure Medication",
                         Date = new DateTime(2024, 3, 20, 0, 0, 0, DateTimeKind.Utc)
                     },
@@ -101,12 +123,13 @@ namespace server_app.Data
                     {
                         Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
                         UserId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-                        RecordType = "Surgery",
+                        RecordTypeId = recordTypeForm,
                         Title = "Appendectomy",
                         Date = new DateTime(2023, 12, 1, 0, 0, 0, DateTimeKind.Utc)
                     }
                 );
             });
+
 
             // Seed DoctorAccess
             m.Entity<DoctorAccess>(e => {

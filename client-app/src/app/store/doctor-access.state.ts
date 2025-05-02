@@ -6,7 +6,7 @@ import { tap } from 'rxjs/operators';
 
 export class LoadAccesses {
   static readonly type = '[Access] Load';
-  constructor(public userId: string) {}
+  constructor() {}
 }
 export class AddAccess {
   static readonly type = '[Access] Add';
@@ -35,9 +35,9 @@ export class AccessState {
   }
 
   @Action(LoadAccesses)
-  load(ctx: StateContext<AccessStateModel>, action: LoadAccesses) {
+  load(ctx: StateContext<AccessStateModel>) {
     return this.service
-      .getByUser(action.userId)
+      .getAll()
       .pipe(tap((a) => ctx.setState({ accesses: a })));
   }
 

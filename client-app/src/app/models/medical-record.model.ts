@@ -1,7 +1,7 @@
 export type MedicalRecord = {
   id: string;
   userId: string;
-  recordType: string;
+  recordTypeName: string;
   title: string;
   date: string;
 };

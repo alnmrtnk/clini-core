@@ -37,7 +37,7 @@ export class DashboardPage {
     const userId = this.auth.currentUserId();
 
     if (userId) {
-      this.store.dispatch(new LoadRecords(userId));
+      this.store.dispatch(new LoadRecords());
     }
   }
 }

@@ -13,10 +13,13 @@ namespace server_app.Profiles
                 .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()))
                 .ForMember(d => d.PasswordHash, o => o.MapFrom(s => s.Password));
             CreateMap<UpdateUserDto, User>();
-            CreateMap<MedicalRecord, MedicalRecordDto>();
+
+            CreateMap<MedicalRecord, MedicalRecordDto>()
+                .ForMember(d => d.RecordTypeName, o => o.MapFrom(s => s.RecordType.Name));
             CreateMap<CreateMedicalRecordDto, MedicalRecord>()
                 .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()));
             CreateMap<UpdateMedicalRecordDto, MedicalRecord>();
+
             CreateMap<DoctorAccess, DoctorAccessDto>();
             CreateMap<CreateDoctorAccessDto, DoctorAccess>()
                 .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()))
