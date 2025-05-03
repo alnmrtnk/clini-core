@@ -141,26 +141,31 @@ namespace server_app.Data
             });
 
 
-                // Seed DoctorAccess
-                m.Entity<DoctorAccess>(e => {
+            m.Entity<DoctorAccess>(e => {
                 e.HasKey(x => x.Id);
+
                 e.HasOne(x => x.User)
-                 .WithMany(u => u.DoctorAccesses)
-                 .HasForeignKey(x => x.UserId);
+                    .WithMany(u => u.DoctorAccesses)
+                    .HasForeignKey(x => x.OwnerUserId);
+
+                e.HasOne(x => x.SharedWithUser)
+                .WithMany()
+                .HasForeignKey(x => x.TargetUserId);
+
                 e.HasData(
                     new DoctorAccess
                     {
                         Id = Guid.Parse("12345678-1234-1234-1234-1234567890ab"),
-                        UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                        DoctorName = "Dr. Gregory House",
+                        OwnerUserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                        Name = "Dr. Gregory House",
                         GrantedAt = new DateTime(2024, 4, 15, 0, 0, 0, DateTimeKind.Utc),
                         ExpiresAt = new DateTime(2024, 5, 15, 0, 0, 0, DateTimeKind.Utc)
                     },
                     new DoctorAccess
                     {
                         Id = Guid.Parse("87654321-4321-4321-4321-ba0987654321"),
-                        UserId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                        DoctorName = "Dr. Meredith Grey",
+                        OwnerUserId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                        Name = "Dr. Meredith Grey",
                         GrantedAt = new DateTime(2024, 3, 1, 0, 0, 0, DateTimeKind.Utc),
                         ExpiresAt = new DateTime(2024, 4, 1, 0, 0, 0, DateTimeKind.Utc)
                     }

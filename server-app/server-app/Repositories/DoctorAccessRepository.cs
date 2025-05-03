@@ -8,54 +8,69 @@ namespace server_app.Repositories
 {
     public interface IDoctorAccessRepository
     {
-        Task<IEnumerable<DoctorAccessDto>> GetAllByUserAsync(Guid userId);
-        Task<Guid> AddAsync(CreateDoctorAccessDto dto);
-        Task<bool> DeleteAsync(Guid id);
+        Task<Guid> AddAsync(DoctorAccess dto);
+        Task<DoctorAccess?> GetByTokenAsync(string token);
+        Task<IEnumerable<DoctorAccess>> GetValidAccessesForUserAsync(Guid userId);
+        Task<IEnumerable<DoctorAccess>> GetValidAccessesByTokenAsync(string token);
+        Task<IEnumerable<DoctorAccess>> GetGrantedAccessesByCurrentUserAsync();
+        Task<bool> RevokeAsync(Guid id);
     }
 
     public class DoctorAccessRepository : BaseRepository, IDoctorAccessRepository
     {
-        private readonly AppDbContext _db;
+        private readonly AppDbContext _context;
         private readonly IMapper _map;
 
-        public DoctorAccessRepository(AppDbContext db, IMapper map, IHttpContextAccessor accessor)
+        public DoctorAccessRepository(AppDbContext context, IHttpContextAccessor accessor, IMapper mapper)
             : base(accessor)
         {
-            _db = db;
-            _map = map;
+            _context = context;
+            _map = mapper;
         }
 
-        public async Task<IEnumerable<DoctorAccessDto>> GetAllByUserAsync(Guid userId)
+        public async Task<Guid> AddAsync(DoctorAccess dto)
         {
-            if (userId != CurrentUserId)
-                throw new UnauthorizedAccessException("Access to this user's data is denied.");
+            dto.OwnerUserId = CurrentUserId;
 
-            return _map.Map<IEnumerable<DoctorAccessDto>>(
-                await _db.DoctorAccesses
-                    .Where(x => x.UserId == userId)
-                    .ToListAsync()
-            );
+            _context.DoctorAccesses.Add(dto);
+            await _context.SaveChangesAsync();
+            return dto.Id;
         }
 
-        public async Task<Guid> AddAsync(CreateDoctorAccessDto dto)
+        public async Task<DoctorAccess?> GetByTokenAsync(string token)
         {
-            var entity = _map.Map<DoctorAccess>(dto);
-            entity.UserId = CurrentUserId;
-            _db.DoctorAccesses.Add(entity);
-            await _db.SaveChangesAsync();
-            return entity.Id;
+            return await _context.DoctorAccesses.FirstOrDefaultAsync(x => x.Token == token);
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<IEnumerable<DoctorAccess>> GetValidAccessesForUserAsync(Guid userId)
         {
-            var entity = await _db.DoctorAccesses
-                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId);
+            return await _context.DoctorAccesses
+                .Where(x => x.TargetUserId == userId && !x.Revoked && x.ExpiresAt > DateTime.UtcNow)
+                .ToListAsync();
+        }
 
-            if (entity == null)
-                return false;
+        public async Task<IEnumerable<DoctorAccess>> GetValidAccessesByTokenAsync(string token)
+        {
+            return await _context.DoctorAccesses
+                .Where(x => x.Token == token && !x.Revoked && x.ExpiresAt > DateTime.UtcNow)
+                .ToListAsync();
+        }
 
-            _db.DoctorAccesses.Remove(entity);
-            await _db.SaveChangesAsync();
+        public async Task<IEnumerable<DoctorAccess>> GetGrantedAccessesByCurrentUserAsync()
+        {
+            return await _context.DoctorAccesses
+                .Where(x => x.OwnerUserId == CurrentUserId)
+                .OrderByDescending(x => x.GrantedAt)
+                .ToListAsync();
+        }
+
+        public async Task<bool> RevokeAsync(Guid id)
+        {
+            var entity = await _context.DoctorAccesses.FirstOrDefaultAsync(x => x.Id == id && x.OwnerUserId == CurrentUserId);
+            if (entity == null) return false;
+
+            entity.Revoked = true;
+            await _context.SaveChangesAsync();
             return true;
         }
     }

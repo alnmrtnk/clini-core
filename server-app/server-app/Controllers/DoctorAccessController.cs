@@ -11,34 +11,49 @@ namespace server_app.Controllers
     [Route("api/[controller]")]
     public class DoctorAccessController : ControllerBase
     {
-        private readonly IDoctorAccessService _s;
+        private readonly IDoctorAccessService _svc;
 
-        public DoctorAccessController(IDoctorAccessService s)
+        public DoctorAccessController(IDoctorAccessService svc)
         {
-            _s = s;
-        }
-
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetByUser(Guid userId)
-        {
-            var result = await _s.GetByUserIdAsync(userId);
-            return this.ToActionResult(result);
+            _svc = svc;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(CreateDoctorAccessDto d)
+        public async Task<IActionResult> Create([FromBody] CreateDoctorAccessDto dto)
         {
-            var result = await _s.CreateAsync(d);
-            if (result.Success)
-                return CreatedAtAction(null, new { id = result.Data }, null);
+            var result = await _svc.CreateAsync(dto);
+            return this.ToActionResult(result);
+        }
 
+        [HttpGet("shared-with-me")]
+        public async Task<IActionResult> GetSharedWithMe()
+        {
+            var userId = HttpContext.User.Identity?.IsAuthenticated == true
+                ? Guid.Parse(User.FindFirst("sub")!.Value)
+                : (Guid?)null;
+            var result = await _svc.GetAccessibleRecordsAsync(userId, null);
+            return this.ToActionResult(result);
+        }
+
+        [HttpGet("public/{token}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetSharedPublic(string token)
+        {
+            var result = await _svc.GetAccessibleRecordsAsync(null, token);
+            return this.ToActionResult(result);
+        }
+
+        [HttpGet("granted")]
+        public async Task<IActionResult> GetGrantedAccesses()
+        {
+            var result = await _svc.GetGrantedAccessesAsync();
             return this.ToActionResult(result);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Revoke(Guid id)
         {
-            var result = await _s.DeleteAsync(id);
+            var result = await _svc.RevokeAsync(id);
             return this.ToActionResult(result);
         }
     }
