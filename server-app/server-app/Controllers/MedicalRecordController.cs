@@ -33,9 +33,9 @@ namespace server_app.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(CreateMedicalRecordDto d)
+        public async Task<IActionResult> Post([FromForm] CreateMedicalRecordDto dto, [FromForm] List<IFormFile> files)
         {
-            var result = await _s.CreateAsync(d);
+            var result = await _s.CreateAsync(dto, files);
             if (result.Success)
                 return CreatedAtAction(null, new { id = result.Data }, null);
 
@@ -43,11 +43,12 @@ namespace server_app.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, UpdateMedicalRecordDto d)
+        public async Task<IActionResult> Put(Guid id, [FromForm] UpdateMedicalRecordDto d, [FromForm] List<IFormFile> files)
         {
-            var result = await _s.UpdateAsync(id, d);
+            var result = await _s.UpdateAsync(id, d, files);
             return this.ToActionResult(result);
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)

@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "F8xzbn/vcCg=",
+  "dgSpecHash": "F7sEs6M+EPQ=",
   "success": true,
   "projectFilePath": "D:\\Studying\\Diploma\\clini-core\\server-app\\server-app\\server-app.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\alina\\.nuget\\packages\\automapper\\14.0.0\\automapper.14.0.0.nupkg.sha512",
+    "C:\\Users\\alina\\.nuget\\packages\\awssdk.core\\4.0.0.2\\awssdk.core.4.0.0.2.nupkg.sha512",
+    "C:\\Users\\alina\\.nuget\\packages\\awssdk.extensions.netcore.setup\\4.0.0\\awssdk.extensions.netcore.setup.4.0.0.nupkg.sha512",
+    "C:\\Users\\alina\\.nuget\\packages\\awssdk.s3\\4.0.0.1\\awssdk.s3.4.0.0.1.nupkg.sha512",
     "C:\\Users\\alina\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\alina\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
     "C:\\Users\\alina\\.nuget\\packages\\bcrypt.net-core\\1.6.0\\bcrypt.net-core.1.6.0.nupkg.sha512",

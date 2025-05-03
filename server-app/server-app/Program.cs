@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Amazon.S3;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,6 +67,17 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // HttpContext
 builder.Services.AddHttpContextAccessor();
 
+// S3
+builder.Services.AddSingleton<IAmazonS3>(_ =>
+{
+    var config = new AmazonS3Config
+    {
+        ServiceURL = "http://localhost:4566",
+        ForcePathStyle = true
+    };
+    return new AmazonS3Client("test", "test", config);
+});
+
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
@@ -77,6 +89,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
 builder.Services.AddScoped<IDoctorAccessService, DoctorAccessService>();
 builder.Services.AddScoped<IEsculabService, EsculabService>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+builder.Services.AddScoped<IMedicalRecordFileRepository, MedicalRecordFileRepository>();
 
 builder.Services.AddHttpClient<EsculabService>();
 

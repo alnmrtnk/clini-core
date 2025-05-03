@@ -13,6 +13,8 @@ namespace server_app.Data
         public DbSet<DoctorAccess> DoctorAccesses { get; set; }
         public DbSet<RecordType> RecordTypes { get; set; }
 
+        public DbSet<MedicalRecordFile> MedicalRecordFiles { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder m)
         {
@@ -130,9 +132,17 @@ namespace server_app.Data
                 );
             });
 
+            m.Entity<MedicalRecordFile>(e =>
+            {
+                e.HasKey(x => x.Id);
+                e.HasOne(x => x.MedicalRecord)
+                    .WithMany(mr => mr.Files)
+                    .HasForeignKey(x => x.MedicalRecordId);
+            });
 
-            // Seed DoctorAccess
-            m.Entity<DoctorAccess>(e => {
+
+                // Seed DoctorAccess
+                m.Entity<DoctorAccess>(e => {
                 e.HasKey(x => x.Id);
                 e.HasOne(x => x.User)
                  .WithMany(u => u.DoctorAccesses)

@@ -30,6 +30,8 @@ namespace server_app.Repositories
         public async Task<IEnumerable<MedicalRecordDto>> GetAllAsync() =>
             _map.Map<IEnumerable<MedicalRecordDto>>(
                 await _db.MedicalRecords
+                    .Include(x => x.Files)
+                    .Include(x => x.RecordType)
                     .Where(x => x.UserId == CurrentUserId)
                     .ToListAsync()
             );
@@ -37,8 +39,11 @@ namespace server_app.Repositories
         public async Task<MedicalRecordDto> GetByIdAsync(Guid id) =>
             _map.Map<MedicalRecordDto>(
                 await _db.MedicalRecords
+                    .Include(x => x.Files)
+                    .Include(x => x.RecordType)
                     .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId)
             );
+
 
         public async Task<Guid> AddAsync(CreateMedicalRecordDto dto)
         {

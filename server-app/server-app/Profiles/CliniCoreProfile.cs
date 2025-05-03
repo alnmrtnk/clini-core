@@ -15,10 +15,19 @@ namespace server_app.Profiles
             CreateMap<UpdateUserDto, User>();
 
             CreateMap<MedicalRecord, MedicalRecordDto>()
-                .ForMember(d => d.RecordTypeName, o => o.MapFrom(s => s.RecordType.Name));
+                .ForMember(d => d.RecordTypeName, o => o.MapFrom(s => s.RecordType.Name))
+                .ForMember(d => d.Files, o => o.MapFrom(s => s.Files));
+
+            CreateMap<MedicalRecordFile, MedicalRecordFileDto>();
+
             CreateMap<CreateMedicalRecordDto, MedicalRecord>()
                 .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()));
             CreateMap<UpdateMedicalRecordDto, MedicalRecord>();
+
+            CreateMap<MedicalRecordFileDto, CreateMedicalRecordFileDto>();
+
+            CreateMap<CreateMedicalRecordFileDto, MedicalRecordFile>()
+                 .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()));
 
             CreateMap<DoctorAccess, DoctorAccessDto>();
             CreateMap<CreateDoctorAccessDto, DoctorAccess>()
