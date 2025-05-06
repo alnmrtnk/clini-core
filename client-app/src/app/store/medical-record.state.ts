@@ -10,6 +10,11 @@ export class LoadRecords {
   static readonly type = '[Record] Load';
   constructor() {}
 }
+
+export class LoadRecord {
+  static readonly type = '[Record] Load by Id';
+  constructor(public id: string) {}
+}
 export class AddRecord {
   static readonly type = '[Record] Add';
   constructor(public payload: Partial<MedicalRecord>) {}
@@ -29,13 +34,14 @@ export class LoadRecordTypes {
 }
 
 export interface RecordsStateModel {
+  selectedRecord: MedicalRecord | null;
   records: MedicalRecord[];
   recordTypes: RecordType[];
 }
 
 @State<RecordsStateModel>({
   name: 'records',
-  defaults: { records: [], recordTypes: [] },
+  defaults: { selectedRecord: null, records: [], recordTypes: [] },
 })
 @Injectable()
 export class RecordsState {
@@ -49,11 +55,23 @@ export class RecordsState {
     return state.records;
   }
 
+  @Selector()
+  static selectedRecord(state: RecordsStateModel) {
+    return state.selectedRecord;
+  }
+
   @Action(LoadRecords)
   load({ getState, setState }: StateContext<RecordsStateModel>) {
     return this.recordService
       .getAll()
       .pipe(tap((records) => setState({ ...getState(), records })));
+  }
+
+  @Action(LoadRecord)
+  loadRecord({ getState, setState }: StateContext<RecordsStateModel>, {id}: LoadRecord) {
+    return this.recordService
+      .getById(id)
+      .pipe(tap((record) => setState({ ...getState(), selectedRecord: record })));
   }
 
   @Action(LoadRecordTypes)

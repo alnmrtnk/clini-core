@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { EsculabIntegrationComponent } from "./components/esculab-integration/esculab-integration.component";
 
 @Component({
   selector: 'app-medical-records',
-  imports: [IonicModule, CommonModule, FormsModule, SharedComponentsModule, EsculabIntegrationComponent],
+  imports: [IonicModule, CommonModule, FormsModule, EsculabIntegrationComponent],
   templateUrl: 'medical-records.page.html',
   styleUrl: 'medical-records.page.scss',
 })

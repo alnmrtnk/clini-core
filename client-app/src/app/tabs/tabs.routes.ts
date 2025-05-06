@@ -4,6 +4,7 @@ import { importProvidersFrom } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
 import { RecordsState } from '../store/medical-record.state';
 import { EsculabState } from '../store/esculab.state';
+import { AccessState } from '../store/doctor-access.state';
 
 export const routes: Routes = [
   {
@@ -16,7 +17,7 @@ export const routes: Routes = [
           import('./dashboard/dashboard.page').then((m) => m.DashboardPage),
         providers: [
           importProvidersFrom(
-            NgxsModule.forFeature([RecordsState])
+            NgxsModule.forFeature([RecordsState, AccessState])
           ),
         ],
       },
@@ -26,7 +27,15 @@ export const routes: Routes = [
           import('./medical-records/medical-records.page').then(
             (m) => m.MedicalRecordsPage
           ),
-        providers: [importProvidersFrom(NgxsModule.forFeature([EsculabState]))],
+        providers: [importProvidersFrom(NgxsModule.forFeature([EsculabState, RecordsState]))],
+      },
+      {
+        path: 'medical-records/:id',
+        loadComponent: () =>
+          import('./medical-record-page/medical-record-page.component').then(
+            (m) => m.MedicalRecordPageComponent
+          ),
+        providers: [importProvidersFrom(NgxsModule.forFeature([EsculabState, RecordsState]))],
       },
       {
         path: 'doctor-access',

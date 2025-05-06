@@ -1,0 +1,59 @@
+<div class="gallery-container">
+  <div class="view-toggle">
+    <ion-segment [value]="viewMode()">
+      <ion-segment-button value="grid" (click)="setViewMode('grid')">
+        <ion-icon name="grid-outline"></ion-icon>
+        <ion-label>Grid</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="list" (click)="setViewMode('list')">
+        <ion-icon name="list-outline"></ion-icon>
+        <ion-label>List</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Grid View -->
+  <div class="gallery-grid" *ngIf="isGridView()">
+    <div
+      class="file-card"
+      *ngFor="let file of files()"
+      (click)="selectFile(file)"
+    >
+      <div class="file-thumbnail" [ngClass]="getFileTypeClass(file)">
+        <ion-icon
+          *ngIf="!isImageFile(file)"
+          [name]="getFileIcon(file)"
+          class="file-icon"
+        ></ion-icon>
+        <img
+          *ngIf="isImageFile(file)"
+          [src]="file.url"
+          alt="Image thumbnail"
+          class="thumbnail-image"
+        />
+      </div>
+      <div class="file-info">
+        <div class="file-name">{{ getShortFileName(file.fileName) }}</div>
+        <div class="file-type">{{ getFileExtension(file.fileName) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- List View -->
+  <ion-list *ngIf="isListView()">
+    <ion-item *ngFor="let file of files()" button detail (click)="selectFile(file)">
+      <ion-icon
+        [name]="getFileIcon(file)"
+        slot="start"
+        [color]="getFileIconColor(file)"
+      ></ion-icon>
+      <ion-label>
+        <h2>{{ file.fileName }}</h2>
+        <p>{{ getFileExtension(file.fileName) }}</p>
+      </ion-label>
+      <ion-button fill="clear" slot="end" (click)="downloadFile(file, $event)">
+        <ion-icon name="download-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</div>

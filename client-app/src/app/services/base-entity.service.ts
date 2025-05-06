@@ -1,7 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { Response } from '../models/response.type';
 
 @Injectable({ providedIn: 'root' })
 export abstract class BaseEntityService<T> {
@@ -22,15 +23,15 @@ export abstract class BaseEntityService<T> {
         }
       });
     }
-    return this.http.get<T[]>(this.apiUrl, { params });
+    return this.http.get<Response<T[]>>(this.apiUrl, { params }).pipe(map((r) => r.data));
   }
 
   getById(id: string): Observable<T> {
-    return this.http.get<T>(`${this.apiUrl}/${id}`);
+    return this.http.get<Response<T>>(`${this.apiUrl}/${id}`).pipe(map((r) => r.data));
   }
 
   create(payload: Partial<T>): Observable<T> {
-    return this.http.post<T>(this.apiUrl, payload);
+    return this.http.post<Response<T>>(this.apiUrl, payload).pipe(map((r) => r.data));
   }
 
   update(id: string, changes: Partial<T>): Observable<void> {

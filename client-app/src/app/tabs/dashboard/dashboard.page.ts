@@ -1,7 +1,6 @@
 import { Component, computed, inject, Signal } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { Store } from '@ngxs/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LoadRecords } from '../../store/medical-record.state';
@@ -9,10 +8,11 @@ import { RecordsState } from '../../store/medical-record.state';
 import { MedicalRecord } from '../../models/medical-record.model';
 import { RouterLink } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { MainDashboardRecordsComponent } from './components/main-dashboard-records/main-dashboard-records.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [IonicModule, CommonModule, SharedComponentsModule, RouterLink],
+  imports: [IonicModule, CommonModule, MainDashboardRecordsComponent, RouterLink],
   templateUrl: 'dashboard.page.html',
   styleUrl: 'dashboard.page.scss',
 })

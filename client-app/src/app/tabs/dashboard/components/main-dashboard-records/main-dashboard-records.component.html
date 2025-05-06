@@ -1,0 +1,38 @@
+<div class="gallery-container">
+  <div class="gallery-header">
+    <h3>Medical Documents</h3>
+    <ion-button fill="clear" size="small">
+      <ion-icon name="add-outline" slot="start"></ion-icon>
+      Add New
+    </ion-button>
+  </div>
+
+  <div class="document-grid">
+    <div
+      class="document-card"
+      *ngFor="let record of records()"
+      (click)="viewDocument(record)"
+    >
+      <div
+        class="document-thumbnail"
+        [ngClass]="'document-type-' + record.recordTypeName"
+      >
+        <ion-icon [name]="getIcon(record)" class="document-icon"></ion-icon>
+      </div>
+      <div class="document-info">
+        <div class="document-title">{{ record.title }}</div>
+        <div class="document-date">{{ formatDate(record.date) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gallery-footer" *ngIf="records().length > 0">
+    <ion-button fill="clear" size="small">View All Records</ion-button>
+  </div>
+
+  <div class="empty-gallery" *ngIf="records().length === 0">
+    <ion-icon name="document-outline"></ion-icon>
+    <p>No Records yet</p>
+    <ion-button size="small">Upload Record</ion-button>
+  </div>
+</div>

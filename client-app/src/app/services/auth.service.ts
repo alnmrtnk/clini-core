@@ -1,7 +1,7 @@
 import { Injectable, inject, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 interface AuthResponse {
@@ -27,11 +27,12 @@ export class AuthService {
 
   login(email: string, password: string) {
     return this.http
-      .post<AuthResponse>(`${environment.apiUrl}Auth/login`, {
+      .post<{data: AuthResponse}>(`${environment.apiUrl}Auth/login`, {
         email,
         password,
       })
       .pipe(
+        map((res) => res.data),
         tap((res) => {
           localStorage.setItem(this.tokenKey, res.token);
           localStorage.setItem(

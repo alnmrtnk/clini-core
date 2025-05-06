@@ -14,25 +14,22 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginPage {
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   email = '';
   password = '';
 
-  constructor(private router: Router) {}
-
   login() {
     this.authService.login(this.email, this.password).subscribe(() => {
-      console.log('u are logged into this fucking app :)');
+      this.router.navigateByUrl('/tabs/dashboard');
     })
   }
 
   forgotPassword() {
     console.log('Forgot password');
-    // Implement forgot password functionality
   }
 
   register() {
-    console.log('Register');
     this.router.navigateByUrl('/auth/register');
   }
 }

@@ -1,0 +1,58 @@
+<div class="file-viewer-container">
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Loading file...</p>
+    <iframe [src]="safeUrl()" frameborder="0" (load)="onFileLoaded()" (error)="onFileError()"></iframe>
+  </div>
+  
+  <div *ngIf="!isLoading && hasError" class="error-container">
+    <ion-icon name="alert-circle-outline" color="danger"></ion-icon>
+    <p>{{ errorMessage }}</p>
+    <ion-button (click)="downloadFile()">Download Instead</ion-button>
+  </div>
+  
+  <div *ngIf="!isLoading && !hasError && isImageFile()" class="image-viewer">
+    <img [src]="safeUrl()" alt="Image" (load)="onFileLoaded()" (error)="onFileError()">
+    
+    <div class="image-controls">
+      <ion-button fill="clear" (click)="zoomIn()">
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="zoomOut()">
+        <ion-icon slot="icon-only" name="remove-circle-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" (click)="resetZoom()">
+        <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !hasError && isPdfFile()" class="pdf-viewer">
+    <iframe [src]="safeUrl()" frameborder="0" (load)="onFileLoaded()" (error)="onFileError()"></iframe>
+  </div>
+  
+  <div *ngIf="!isLoading && !hasError && !isImageFile() && !isPdfFile()" class="other-file">
+    <div class="file-icon-container">
+      <ion-icon [name]="fileIcon()" class="large-file-icon"></ion-icon>
+      <div class="file-name">{{ file()?.fileName }}</div>
+      <div class="file-type">{{ fileExtension() }}</div>
+    </div>
+    
+    <p>This file type cannot be previewed directly.</p>
+    <ion-button (click)="downloadFile()">
+      <ion-icon name="download-outline" slot="start"></ion-icon>
+      Download File
+    </ion-button>
+  </div>
+  
+  <div *ngIf="!isLoading && !hasError" class="file-actions">
+    <ion-button fill="clear" (click)="downloadFile()">
+      <ion-icon name="download-outline" slot="start"></ion-icon>
+      Download
+    </ion-button>
+    <ion-button fill="clear" (click)="shareFile()">
+      <ion-icon name="share-outline" slot="start"></ion-icon>
+      Share
+    </ion-button>
+  </div>
+</div>

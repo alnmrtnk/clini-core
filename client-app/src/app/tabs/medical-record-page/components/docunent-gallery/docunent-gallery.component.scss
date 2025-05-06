@@ -1,0 +1,90 @@
+.gallery-container {
+  width: 100%;
+}
+
+.view-toggle {
+  margin-bottom: 16px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.file-card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.file-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.file-thumbnail {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--ion-color-light);
+}
+
+.file-type-image {
+  background-color: rgba(61, 194, 255, 0.1);
+}
+
+.file-type-pdf {
+  background-color: rgba(235, 68, 90, 0.1);
+}
+
+.file-type-doc {
+  background-color: rgba(56, 128, 255, 0.1);
+}
+
+.file-type-xls {
+  background-color: rgba(45, 211, 111, 0.1);
+}
+
+.file-type-ppt {
+  background-color: rgba(255, 196, 9, 0.1);
+}
+
+.file-type-other {
+  background-color: rgba(146, 148, 156, 0.1);
+}
+
+.file-icon {
+  font-size: 36px;
+  color: var(--ion-color-medium);
+}
+
+.thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.file-info {
+  padding: 12px;
+}
+
+.file-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ion-color-dark);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-type {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+}

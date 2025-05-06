@@ -1,0 +1,130 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/medical-records"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Medical Record</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editRecord()">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="shareRecord()">
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="container page-wrapper">
+    <div *ngIf="isLoading" class="loading-container">
+      <ion-spinner></ion-spinner>
+      <p>Loading record()?...</p>
+    </div>
+  
+    <div *ngIf="!isLoading && record">
+      <!-- Record Details Card -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>{{ record()?.recordTypeName }}</ion-card-subtitle>
+          <ion-card-title>{{ record()?.title }}</ion-card-title>
+        </ion-card-header>
+  
+        <ion-card-content>
+          <ion-item lines="none">
+            <ion-icon
+              name="calendar-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
+            <ion-label>
+              <h3>Date</h3>
+              <p>{{ formatDate(record()?.date ?? '') }}</p>
+            </ion-label>
+          </ion-item>
+  
+          <ion-item *ngIf="record()?.notes" lines="none">
+            <ion-icon
+              name="document-text-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
+            <ion-label>
+              <h3>Notes</h3>
+              <p>{{ record()?.notes }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+  
+      <!-- Files Gallery -->
+      <ion-card *ngIf="record()?.files && !!record()?.files?.length">
+        <ion-card-header>
+          <ion-card-title>
+            <div class="files-header">
+              <span>Files ({{ record()?.files?.length }})</span>
+              <ion-button fill="clear" size="small" (click)="downloadAllFiles()">
+                <ion-icon name="download-outline" slot="start"></ion-icon>
+                Download All
+              </ion-button>
+            </div>
+          </ion-card-title>
+        </ion-card-header>
+  
+        <ion-card-content>
+          <app-document-gallery
+            [files]="record()?.files || []"
+            (fileSelected)="openFile($event)"
+          >
+          </app-document-gallery>
+        </ion-card-content>
+      </ion-card>
+  
+      <div
+        *ngIf="!record()?.files || record()?.files?.length === 0"
+        class="no-files-container"
+      >
+        <ion-icon name="document-outline"></ion-icon>
+        <p>No files attached to this record</p>
+        <ion-button size="small" (click)="addFiles()" expand="block">
+          <ion-icon name="add-outline"></ion-icon>
+          Add Files
+        </ion-button>
+      </div>
+    </div>
+  
+    <!-- Error State -->
+    <div *ngIf="!isLoading && !record && errorMessage" class="error-container">
+      <ion-icon name="alert-circle-outline" color="danger"></ion-icon>
+      <p>{{ errorMessage }}</p>
+      <ion-button (click)="loadRecord()">Try Again</ion-button>
+    </div>
+  </div>
+</ion-content>
+
+<ion-modal
+  [isOpen]="showFileViewer"
+  [backdropDismiss]="true"
+  (didDismiss)="closeFileViewer()"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ selectedFile?.fileName || "File Viewer" }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeFileViewer()">
+            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <app-file-viewer
+        *ngIf="selectedFile"
+        [file]="selectedFile"
+        [safeUrl]="safeFileUrl"
+      >
+      </app-file-viewer>
+    </ion-content>
+  </ng-template>
+</ion-modal>
