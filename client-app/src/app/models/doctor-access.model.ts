@@ -1,7 +1,13 @@
-export type DoctorAccess = {
+export interface CreateDoctorAccess {
+  name: string;
+  expiresAt: Date;
+  targetEmail?: string;
+}
+
+export interface DoctorAccess {
   id: string;
-  userId: string;
-  doctorName: string;
-  grantedAt: string;
-  expiresAt: string;
-};
+  name: string;
+  token?: string;
+  expiresAt: Date;
+  revoked: boolean;
+}

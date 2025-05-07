@@ -14,7 +14,9 @@ export abstract class BaseEntityService<T> {
 
   constructor(protected http: HttpClient) {}
 
-  getAll(queryParams?: { [key: string]: any }): Observable<T[]> {
+  getAll(queryParams?: { [key: string]: any }, path: string = ''): Observable<T[]> {
+    const url = this.apiUrl + path;
+
     let params = new HttpParams();
     if (queryParams) {
       Object.keys(queryParams).forEach((key) => {
@@ -23,15 +25,21 @@ export abstract class BaseEntityService<T> {
         }
       });
     }
-    return this.http.get<Response<T[]>>(this.apiUrl, { params }).pipe(map((r) => r.data));
+    return this.http
+      .get<Response<T[]>>(url, { params })
+      .pipe(map((r) => r.data));
   }
 
   getById(id: string): Observable<T> {
-    return this.http.get<Response<T>>(`${this.apiUrl}/${id}`).pipe(map((r) => r.data));
+    return this.http
+      .get<Response<T>>(`${this.apiUrl}/${id}`)
+      .pipe(map((r) => r.data));
   }
 
   create(payload: Partial<T>): Observable<T> {
-    return this.http.post<Response<T>>(this.apiUrl, payload).pipe(map((r) => r.data));
+    return this.http
+      .post<Response<T>>(this.apiUrl, payload)
+      .pipe(map((r) => r.data));
   }
 
   update(id: string, changes: Partial<T>): Observable<void> {

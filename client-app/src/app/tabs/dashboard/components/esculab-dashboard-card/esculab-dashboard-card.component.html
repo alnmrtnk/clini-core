@@ -1,0 +1,47 @@
+<div class="esculab-card">
+  <div class="esculab-header">
+    <div class="esculab-logo">
+      <ion-icon name="flask-outline"></ion-icon>
+    </div>
+    <div class="esculab-info">
+      <h3>Esculab Integration</h3>
+      <p *ngIf="isConnected()">Connected to your lab results</p>
+      <p *ngIf="!isConnected()">Connect to access your lab results</p>
+    </div>
+  </div>
+
+  <div class="esculab-content" *ngIf="isConnected() && recentResults().length > 0">
+    <div class="results-list">
+      <div class="result-item" *ngFor="let result of topResults()">
+        <div class="result-details">
+          <h4>{{ result.name }}</h4>
+          <p>{{ formatDate(result.date) }} · {{ result.resultCount }} results</p>
+        </div>
+        <ion-button fill="clear" size="small" [routerLink]="['/tabs/medical-records/esculab']">
+          View
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="esculab-content empty-state" *ngIf="isConnected() && recentResults().length === 0">
+    <ion-icon name="document-text-outline"></ion-icon>
+    <p>No lab results found</p>
+    <span>Your lab results will appear here once they're available</span>
+  </div>
+
+  <div class="esculab-content empty-state" *ngIf="!isConnected()">
+    <ion-icon name="link-outline"></ion-icon>
+    <p>Connect to Esculab</p>
+    <span>Import your lab test results automatically</span>
+  </div>
+
+  <div class="esculab-footer">
+    <ion-button
+      expand="block"
+      [fill]="isConnected() ? 'outline' : 'solid'"
+      [routerLink]="['/tabs/medical-records/esculab']">
+      {{ isConnected() ? 'View All Lab Results' : 'Connect to Esculab' }}
+    </ion-button>
+  </div>
+</div>

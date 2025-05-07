@@ -37,7 +37,7 @@ export class AccessState {
   @Action(LoadAccesses)
   load(ctx: StateContext<AccessStateModel>) {
     return this.service
-      .getAll()
+      .getAllAccesses()
       .pipe(tap((a) => ctx.setState({ accesses: a })));
   }
 

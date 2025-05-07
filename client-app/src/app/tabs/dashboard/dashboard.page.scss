@@ -7,3 +7,32 @@ ion-card {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background-color: rgba(255, 255, 255, 0.9);
 }
+
+ion-row {
+  align-items: stretch; // ensures child ion-cols stretch vertically
+}
+
+ion-col {
+  display: flex;
+  flex-direction: column;
+}
+
+ion-card {
+  flex: 1; // makes the card expand to fill the ion-col
+  display: flex;
+  flex-direction: column;
+}
+
+ion-card-content {
+  flex: 1; // allows card content to stretch if needed
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+  ion-grid ion-col[size-md="8"],
+  ion-grid ion-col[size-md="4"] {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+}

@@ -10,4 +10,8 @@ export class DoctorAccessService extends BaseEntityService<DoctorAccess> {
   constructor(http: HttpClient) {
     super(http);
   }
+
+  getAllAccesses(): Observable<DoctorAccess[]> {
+    return this.getAll({}, '/granted');
+  }
 }

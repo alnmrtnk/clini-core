@@ -12,9 +12,7 @@
         <ion-card-subtitle>Your medical data in one place</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <p>
-          Access all your medical information.
-        </p>
+        <p>Access all your medical information.</p>
       </ion-card-content>
     </ion-card>
 
@@ -23,10 +21,22 @@
         <ion-col size="12" size-md="8">
           <ion-card>
             <ion-card-header>
-              <ion-card-title>Recent records</ion-card-title>
+              <ion-row>
+                <ion-col size-md="10"
+                  ><ion-card-title>Medical Documents</ion-card-title></ion-col
+                >
+                <ion-col size-md="2"
+                  ><ion-button fill="clear" size="small">
+                    <ion-icon name="add-outline" slot="end"></ion-icon>
+                    Add New
+                  </ion-button></ion-col
+                >
+              </ion-row>
             </ion-card-header>
             <ion-card-content>
-              <app-main-dashboard-records [records]="recentRecords()"></app-main-dashboard-records>
+              <app-main-dashboard-records
+                [records]="recentRecords()"
+              ></app-main-dashboard-records>
             </ion-card-content>
           </ion-card>
         </ion-col>
@@ -34,26 +44,33 @@
         <ion-col size="12" size-md="4">
           <ion-card>
             <ion-card-header>
-              <ion-card-title>Recent Doctor Acesses</ion-card-title>
+              <ion-card-title>Recent Doctor Accesses</ion-card-title>
             </ion-card-header>
-            <ion-card-content>
+            <ion-card-content class="no-padding">
               <ion-list lines="full">
-                <ion-item *ngFor="let rec of recentRecords()">
-                  <ion-label>
-                    <h3>{{ rec.title }}</h3>
-                    <p>{{ rec.date | date:'longDate' }}</p>
+                <app-doctor-access-card
+                  *ngFor="let access of recentAccesses()"
+                  [access]="access"
+                >
+                </app-doctor-access-card>
+
+                <ion-item *ngIf="recentAccesses().length === 0" lines="none">
+                  <ion-label class="ion-text-center">
+                    <p>No recent doctor accesses</p>
                   </ion-label>
-                  <ion-button
-                    slot="end"
-                    fill="clear"
-                    [routerLink]="['/records', rec.id]"
-                  >
-                    View
-                  </ion-button>
                 </ion-item>
               </ion-list>
             </ion-card-content>
           </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12">
+          <app-esculab-dashboard-card
+            [isConnected]="isEsculabConnected()"
+            [recentResults]="recentLabResults">
+          </app-esculab-dashboard-card>
         </ion-col>
       </ion-row>
     </ion-grid>

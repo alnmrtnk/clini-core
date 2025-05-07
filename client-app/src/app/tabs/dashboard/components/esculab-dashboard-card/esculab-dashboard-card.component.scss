@@ -1,0 +1,139 @@
+.esculab-card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.esculab-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.esculab-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: var(--ion-color-primary-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.esculab-logo ion-icon {
+  font-size: 24px;
+  color: #fff;
+}
+
+.esculab-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.esculab-info p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ion-color-medium);
+}
+
+.esculab-content {
+  padding: 16px;
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: var(--ion-color-light-tint);
+}
+
+.result-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.status-ready {
+  background-color: var(--ion-color-success-tint);
+}
+
+.status-ready ion-icon {
+  color: var(--ion-color-success);
+}
+
+.status-processing {
+  background-color: var(--ion-color-warning-tint);
+}
+
+.status-processing ion-icon {
+  color: var(--ion-color-warning);
+}
+
+.status-pending {
+  background-color: var(--ion-color-medium-tint);
+}
+
+.status-pending ion-icon {
+  color: var(--ion-color-medium);
+}
+
+.result-details {
+  flex: 1;
+}
+
+.result-details h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.result-details p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ion-color-medium);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.empty-state ion-icon {
+  font-size: 32px;
+  color: var(--ion-color-medium);
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.empty-state span {
+  font-size: 14px;
+  color: var(--ion-color-medium);
+}
+
+.esculab-footer {
+  padding: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
