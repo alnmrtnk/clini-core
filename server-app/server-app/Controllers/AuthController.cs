@@ -32,5 +32,21 @@ namespace server_app.Controllers
             var result = await _auth.LoginAsync(dto);
             return this.ToActionResult(result);
         }
+
+        [HttpGet("validate")]
+        public IActionResult Validate()
+        {
+            var tokenResult = _auth.ValidateToken();
+
+            if (!tokenResult.Success)
+                return this.ToActionResult(ServiceResult<Dictionary<string, string>>
+                           .Fail(tokenResult.ErrorMessage!, StatusCodes.Status401Unauthorized));
+
+            var dict = tokenResult.Data?
+                                  .Claims
+                                  .ToDictionary(c => c.Type, c => c.Value);
+
+            return this.ToActionResult(ServiceResult<Dictionary<string, string>>.Ok(dict));
+        }
     }
 }

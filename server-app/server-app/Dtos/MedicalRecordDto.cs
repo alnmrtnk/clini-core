@@ -2,10 +2,10 @@
 {
     public class MedicalRecordDto
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; } = null!;
-        public DateTime Date { get; set; }
-        public string RecordTypeName { get; set; } = null!;
+        public required Guid Id { get; set; }
+        public required string Title { get; set; } = null!;
+        public required DateTime Date { get; set; }
+        public required string RecordTypeName { get; set; } = null!;
 
         public string? Notes { get; set; }
 
@@ -15,16 +15,16 @@
 
     public class CreateMedicalRecordDto
     {
-        public Guid RecordTypeId { get; set; }
-        public string Title { get; set; } = null!;
-        public DateTime Date { get; set; }
+        public required Guid RecordTypeId { get; set; }
+        public required string Title { get; set; } = null!;
+        public required DateTime Date { get; set; }
         public string? Notes { get; set; }
     }
 
 
     public class UpdateMedicalRecordDto
     {
-        public string Title { get; set; } = null!;
+        public string? Title { get; set; } = null!;
 
         public string? Notes { get; set; }
     }

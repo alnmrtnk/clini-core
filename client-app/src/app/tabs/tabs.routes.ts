@@ -27,7 +27,11 @@ export const routes: Routes = [
           import('./medical-records/medical-records.page').then(
             (m) => m.MedicalRecordsPage
           ),
-        providers: [importProvidersFrom(NgxsModule.forFeature([EsculabState, RecordsState]))],
+        providers: [
+          importProvidersFrom(
+            NgxsModule.forFeature([EsculabState, RecordsState])
+          ),
+        ],
       },
       {
         path: 'medical-records/:id',
@@ -35,7 +39,11 @@ export const routes: Routes = [
           import('./medical-record-page/medical-record-page.component').then(
             (m) => m.MedicalRecordPageComponent
           ),
-        providers: [importProvidersFrom(NgxsModule.forFeature([EsculabState, RecordsState]))],
+        providers: [
+          importProvidersFrom(
+            NgxsModule.forFeature([EsculabState, RecordsState])
+          ),
+        ],
       },
       {
         path: 'doctor-access',
@@ -43,6 +51,7 @@ export const routes: Routes = [
           import('./doctor-access/doctor-access.page').then(
             (m) => m.DoctorAccessPage
           ),
+        providers: [importProvidersFrom(NgxsModule.forFeature([AccessState]))],
       },
       {
         path: 'settings',

@@ -12,6 +12,10 @@ export class AddAccess {
   static readonly type = '[Access] Add';
   constructor(public payload: Partial<DoctorAccess>) {}
 }
+export class ResetCreatedAccess {
+  static readonly type = '[Access] Reset Created';
+  constructor() {}
+}
 export class DeleteAccess {
   static readonly type = '[Access] Delete';
   constructor(public id: string) {}
@@ -19,11 +23,12 @@ export class DeleteAccess {
 
 export interface AccessStateModel {
   accesses: DoctorAccess[];
+  createdAccess: DoctorAccess | null;
 }
 
 @State<AccessStateModel>({
   name: 'accesses',
-  defaults: { accesses: [] },
+  defaults: { accesses: [], createdAccess: null },
 })
 @Injectable()
 export class AccessState {
@@ -34,32 +39,42 @@ export class AccessState {
     return state.accesses;
   }
 
+  @Selector()
+  static createdAccess(state: AccessStateModel) {
+    return state.createdAccess;
+  }
+
   @Action(LoadAccesses)
   load(ctx: StateContext<AccessStateModel>) {
     return this.service
       .getAllAccesses()
-      .pipe(tap((a) => ctx.setState({ accesses: a })));
+      .pipe(tap((a) => ctx.setState({ ...ctx.getState(), accesses: a })));
   }
 
   @Action(AddAccess)
   add(ctx: StateContext<AccessStateModel>, action: AddAccess) {
-    return this.service
-      .create(action.payload)
-      .pipe(
-        tap((a) =>
-          ctx.patchState({ accesses: [...ctx.getState().accesses, a] })
-        )
-      );
+    return this.service.create(action.payload).pipe(
+      tap((a) =>
+        ctx.patchState({
+          accesses: [...ctx.getState().accesses, a],
+          createdAccess: a,
+        })
+      )
+    );
+  }
+
+  @Action(ResetCreatedAccess)
+  reset(ctx: StateContext<AccessStateModel>) {
+    return ctx.patchState({
+      createdAccess: null,
+    });
   }
 
   @Action(DeleteAccess)
   delete(ctx: StateContext<AccessStateModel>, action: DeleteAccess) {
     return this.service.delete(action.id).pipe(
       tap(() => {
-        const accesses = ctx
-          .getState()
-          .accesses.filter((a) => a.id !== action.id);
-        ctx.setState({ accesses });
+        ctx.dispatch(LoadAccesses);
       })
     );
   }

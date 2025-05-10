@@ -2,14 +2,14 @@
 {
     public class User
     {
-        public Guid Id { get; set; }
-        public string Email { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!;
-        public string FullName { get; set; } = null!;
+        public required Guid Id { get; set; }
+        public required string Email { get; set; }
+        public required string PasswordHash { get; set; }
+        public required string FullName { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? EsculabPatientId { get; set; }
-        public string? EsculabPhoneNumber {  get; set; }
+        public string? PhoneNumber { get; set; } = null!;
+        public string? EsculabPatientId { get; set; } = null!;
+        public string? EsculabPhoneNumber { get; set; } = null!;
         public ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
         public ICollection<DoctorAccess> DoctorAccesses { get; set; } = new List<DoctorAccess>();
     }

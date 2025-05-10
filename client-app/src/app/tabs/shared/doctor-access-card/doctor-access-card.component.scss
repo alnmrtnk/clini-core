@@ -112,6 +112,12 @@
   align-items: center;
 }
 
+ion-badge {
+  display: inline-block;
+  min-width: 60px;
+  text-align: center;
+}
+
 @media (max-width: 576px) {
   .access-header {
     flex-direction: column;

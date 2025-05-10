@@ -2,27 +2,47 @@
   <div>
     <ion-card-header>
       <ion-card-title>Connect to Esculab</ion-card-title>
-      <ion-card-subtitle>Enter your phone number to access your lab results</ion-card-subtitle>
+      <ion-card-subtitle
+        >Enter your phone number to access your lab results</ion-card-subtitle
+      >
     </ion-card-header>
     <ion-card-content>
       <form [formGroup]="phoneForm" (ngSubmit)="submitPhone()">
         <ion-item>
-          <ion-label position="floating">Phone Number*</ion-label>
-          <ion-input 
-            type="tel" 
-            formControlName="phoneNumber" 
-            placeholder="+380XXXXXXXXX">
+          <ion-input
+            label="Phone Number*"
+            labelPlacement="stacked"
+            type="tel"
+            formControlName="phoneNumber"
+            placeholder="+380XXXXXXXXX"
+          >
           </ion-input>
-          <ion-note slot="error" *ngIf="phoneForm.get('phoneNumber')?.hasError('required') && phoneForm.get('phoneNumber')?.touched">
+          <ion-note
+            slot="error"
+            *ngIf="
+              phoneForm.get('phoneNumber')?.hasError('required') &&
+              phoneForm.get('phoneNumber')?.touched
+            "
+          >
             Phone number is required
           </ion-note>
-          <ion-note slot="error" *ngIf="phoneForm.get('phoneNumber')?.hasError('pattern') && phoneForm.get('phoneNumber')?.touched">
+          <ion-note
+            slot="error"
+            *ngIf="
+              phoneForm.get('phoneNumber')?.hasError('pattern') &&
+              phoneForm.get('phoneNumber')?.touched
+            "
+          >
             Please enter a valid phone number
           </ion-note>
         </ion-item>
-        
+
         <div class="ion-padding-top">
-          <ion-button expand="block" type="submit" [disabled]="!phoneForm.valid || loading()">
+          <ion-button
+            expand="block"
+            type="submit"
+            [disabled]="!phoneForm.valid || loading()"
+          >
             <ion-spinner name="dots" *ngIf="loading()"></ion-spinner>
             <span *ngIf="!loading()">Get Verification Code</span>
           </ion-button>
@@ -30,7 +50,7 @@
       </form>
     </ion-card-content>
   </div>
-  
+
   <!-- Error message -->
   <ion-card *ngIf="error() as error">
     <ion-card-content>
@@ -44,34 +64,62 @@
   <div>
     <ion-card-header>
       <ion-card-title>Verification Code</ion-card-title>
-      <ion-card-subtitle>Enter the 4-digit code sent to {{ phoneForm.get('phoneNumber')?.value }}</ion-card-subtitle>
+      <ion-card-subtitle
+        >Enter the 4-digit code sent to
+        {{ phoneForm.get("phoneNumber")?.value }}</ion-card-subtitle
+      >
     </ion-card-header>
     <ion-card-content>
       <form [formGroup]="verificationForm" (ngSubmit)="submitVerification()">
         <ion-item>
-          <ion-label position="floating">4-Digit Code*</ion-label>
-          <ion-input 
-            type="text" 
-            formControlName="verificationCode" 
+          <ion-label position="floating"></ion-label>
+          <ion-input
+            label="4-Digit Code*"
+            labelPlacement="stacked"
+            type="text"
+            formControlName="verificationCode"
             placeholder="0000"
             maxlength="4"
-            inputmode="numeric">
+            inputmode="numeric"
+          >
           </ion-input>
-          <ion-note slot="error" *ngIf="verificationForm.get('verificationCode')?.hasError('required') && verificationForm.get('verificationCode')?.touched">
+          <ion-note
+            slot="error"
+            *ngIf="
+              verificationForm.get('verificationCode')?.hasError('required') &&
+              verificationForm.get('verificationCode')?.touched
+            "
+          >
             Verification code is required
           </ion-note>
-          <ion-note slot="error" *ngIf="verificationForm.get('verificationCode')?.hasError('pattern') && verificationForm.get('verificationCode')?.touched">
+          <ion-note
+            slot="error"
+            *ngIf="
+              verificationForm.get('verificationCode')?.hasError('pattern') &&
+              verificationForm.get('verificationCode')?.touched
+            "
+          >
             Please enter a valid 4-digit code
           </ion-note>
         </ion-item>
-        
+
         <div class="ion-padding-top">
-          <ion-button expand="block" type="submit" [disabled]="!verificationForm.valid || loading()">
+          <ion-button
+            expand="block"
+            type="submit"
+            [disabled]="!verificationForm.valid || loading()"
+          >
             <ion-spinner name="dots" *ngIf="loading()"></ion-spinner>
             <span *ngIf="!loading()">Verify</span>
           </ion-button>
-          <ion-button expand="block" fill="outline" (click)="resendCode()" [disabled]="loading() || resendDisabled">
-            Resend Code {{ resendCountdown > 0 ? '(' + resendCountdown + 's)' : '' }}
+          <ion-button
+            expand="block"
+            fill="outline"
+            (click)="resendCode()"
+            [disabled]="loading() || resendDisabled"
+          >
+            Resend Code
+            {{ resendCountdown > 0 ? "(" + resendCountdown + "s)" : "" }}
           </ion-button>
           <ion-button expand="block" fill="clear" (click)="goBack()">
             Change Phone Number
@@ -80,7 +128,7 @@
       </form>
     </ion-card-content>
   </div>
-  
+
   <!-- Error message -->
   <ion-card *ngIf="error() as error">
     <ion-card-content>
@@ -100,25 +148,32 @@
       </div>
     </ion-card-content>
   </div>
-  
+
   <ion-list *ngIf="orders()?.length">
     <ion-list-header>
       <ion-label>Your Lab Results</ion-label>
     </ion-list-header>
-    
-    <ion-item *ngFor="let order of orders()" button detail (click)="viewOrderDetails(order)">
+
+    <ion-item
+      *ngFor="let order of orders()"
+      button
+      detail
+      (click)="viewOrderDetails(order)"
+    >
       <ion-icon name="flask-outline" slot="start" color="primary"></ion-icon>
       <ion-label>
         <h2>{{ order.packet }}</h2>
         <p>{{ formatDate(order.dt) }}</p>
         <p>{{ order.address }}</p>
       </ion-label>
-      <ion-badge slot="end" color="primary">{{ order.ready }}/{{ order.total }}</ion-badge>
+      <ion-badge slot="end" color="primary"
+        >{{ order.ready }}/{{ order.total }}</ion-badge
+      >
     </ion-item>
   </ion-list>
-  
+
   <ion-spinner *ngIf="loading()" class="loading-spinner"></ion-spinner>
-  
+
   <!-- Error message -->
   <ion-card *ngIf="error() as error">
     <ion-card-content>
@@ -154,8 +209,15 @@
           <p>Loading results...</p>
         </div>
 
-        <div *ngIf="!loading() && groupedResults.length === 0" class="ion-text-center ion-padding">
-          <ion-icon name="alert-circle-outline" color="warning" size="large"></ion-icon>
+        <div
+          *ngIf="!loading() && groupedResults.length === 0"
+          class="ion-text-center ion-padding"
+        >
+          <ion-icon
+            name="alert-circle-outline"
+            color="warning"
+            size="large"
+          ></ion-icon>
           <p>No detailed results available for this order.</p>
         </div>
 
@@ -177,7 +239,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let test of group.results" [class.abnormal]="test.state !== 'normal'">
+                <tr
+                  *ngFor="let test of group.results"
+                  [class.abnormal]="test.state !== 'normal'"
+                >
                   <td>{{ test.test }}</td>
                   <td>{{ test.result }} {{ test.units }}</td>
                   <td>{{ formatNormRange(test.norm) }}</td>
@@ -188,7 +253,10 @@
         </div>
 
         <div class="ion-padding-top">
-          <ion-button expand="block" (click)="importToMedicalRecords(selectedOrder)">
+          <ion-button
+            expand="block"
+            (click)="importToMedicalRecords(selectedOrder)"
+          >
             <ion-icon name="add-circle-outline" slot="start"></ion-icon>
             Import to Medical Records
           </ion-button>

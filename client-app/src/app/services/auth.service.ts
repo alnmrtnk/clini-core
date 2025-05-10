@@ -1,8 +1,10 @@
-import { Injectable, inject, computed, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map, tap } from 'rxjs/operators';
+// src/app/core/auth.service.ts
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, map, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 interface AuthResponse {
   token: string;
@@ -10,9 +12,17 @@ interface AuthResponse {
   email: string;
 }
 
+interface ServiceResult<T> {
+  success: boolean;
+  data: T | null;
+  errorMessage?: string;
+  errorCode?: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
+  private router = inject(Router);
   private tokenKey = 'clini_jwt';
   private userKey = 'clini_user';
 
@@ -27,7 +37,7 @@ export class AuthService {
 
   login(email: string, password: string) {
     return this.http
-      .post<{data: AuthResponse}>(`${environment.apiUrl}Auth/login`, {
+      .post<{ data: AuthResponse }>(`${environment.apiUrl}Auth/login`, {
         email,
         password,
       })
@@ -58,9 +68,11 @@ export class AuthService {
     localStorage.removeItem(this.userKey);
     this.token.set(null);
     this.user.set(null);
+    this.router.navigate(['/auth/login']);
   }
 
-  get authHeader() {
-    return { Authorization: `Bearer ${this.token()}` };
+  validate() {
+    const url = `${environment.apiUrl}Auth/validate`;
+    return this.http.get(url);
   }
 }

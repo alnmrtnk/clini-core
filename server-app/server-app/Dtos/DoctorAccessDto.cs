@@ -2,17 +2,18 @@
 {
     public class CreateDoctorAccessDto
     {
-        public string Name { get; set; } = null!;
-        public DateTime ExpiresAt { get; set; }
-        public string? TargetEmail { get; set; }
+        public required string Name { get; set; } = null!;
+        public required DateTime ExpiresAt { get; set; }
+        public string? TargetEmail { get; set; } = null!;
     }
 
     public class DoctorAccessDto
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
+        public required Guid Id { get; set; }
+        public required string Name { get; set; }
         public string? Token { get; set; }
-        public DateTime ExpiresAt { get; set; }
-        public bool Revoked { get; set; }
+        public string? TargetEmail { get; set; } = null!;
+        public required DateTime ExpiresAt { get; set; }
+        public bool Revoked { get; set; } = false;
     }
 }

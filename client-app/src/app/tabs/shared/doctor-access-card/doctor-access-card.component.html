@@ -1,0 +1,32 @@
+<ion-item lines="full">
+  <ion-icon
+    [name]="revoked() ? 'close-circle-outline' : 'checkmark-circle-outline'"
+    slot="start"
+    [color]="revoked() ? 'danger' : 'success'"
+  >
+  </ion-icon>
+
+  <ion-label>
+    <h3>{{ access().name }}</h3>
+    <p>{{ expirationText() }}</p>
+  </ion-label>
+
+  <ion-badge [color]="statusColor()">
+    {{ statusText() }}
+  </ion-badge>
+
+  <div *ngIf="showActions()" class="access-actions" slot="end">
+    @if (revoked()) {
+    <ion-button *ngIf="revoked()" fill="clear" (click)="onRenewClick()">
+      <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+    </ion-button>
+    } @else {
+    <ion-button
+      fill="clear"
+      color="danger"
+      (click)="revokeAccess.emit(access().id)"
+    >
+      <ion-icon slot="icon-only" name="close-circle-outline" /> </ion-button
+    >}
+  </div>
+</ion-item>

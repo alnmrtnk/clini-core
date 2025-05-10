@@ -1,18 +1,20 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { DoctorAccess } from 'src/app/models/doctor-access.model';
 
 @Component({
   selector: 'app-doctor-access-card',
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterLink],
+  imports: [IonicModule, CommonModule],
   styleUrls: ['./doctor-access-card.component.scss'],
   templateUrl: './doctor-access-card.component.html',
 })
 export class DoctorAccessCardComponent {
   readonly access = input.required<DoctorAccess>();
+  readonly showActions = input<boolean>(false);
+  readonly revokeAccess = output<string>();
+  readonly renewAccess  = output<{ id: string }>();
 
   readonly revoked = computed(() => {
     const a = this.access();
@@ -54,6 +56,10 @@ export class DoctorAccessCardComponent {
 
     return `Expires on ${this.formatDate(expiresAt)}`;
   });
+
+  onRenewClick() {
+    this.renewAccess.emit({ id: this.access().id });
+  }
 
   private formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {

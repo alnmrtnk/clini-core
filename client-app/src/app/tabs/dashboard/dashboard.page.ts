@@ -10,8 +10,9 @@ import { AuthService } from 'src/app/services/auth.service';
 import { MainDashboardRecordsComponent } from './components/main-dashboard-records/main-dashboard-records.component';
 import { AccessState, LoadAccesses } from 'src/app/store/doctor-access.state';
 import { DoctorAccess } from 'src/app/models/doctor-access.model';
-import { DoctorAccessCardComponent } from './components/doctor-access-card/doctor-access-card.component';
 import { EsculabDashboardCardComponent } from './components/esculab-dashboard-card/esculab-dashboard-card.component';
+import { DoctorAccessCardComponent } from '../shared/doctor-access-card/doctor-access-card.component';
+import { Router, RouterLink } from '@angular/router';
 
 interface LabResult {
   id: number;
@@ -35,6 +36,7 @@ interface LabResult {
 export class DashboardPage {
   private readonly store = inject(Store);
   private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly recordsSignal: Signal<MedicalRecord[]> = toSignal(
     this.store.select(RecordsState.records),
@@ -101,7 +103,7 @@ export class DashboardPage {
     }
   }
 
-  revokeAccess(accessId: string) {
-    console.log('Revoking access:', accessId);
+  navigate(path: string) {
+    this.router.navigate([path]);
   }
 }

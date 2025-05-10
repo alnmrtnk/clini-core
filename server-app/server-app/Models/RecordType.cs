@@ -2,8 +2,8 @@
 {
     public class RecordType
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
+        public required Guid Id { get; set; }
+        public required string Name { get; set; } = null!;
         public ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
     }
 }

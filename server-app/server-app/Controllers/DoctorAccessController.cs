@@ -6,7 +6,6 @@ using server_app.Services;
 
 namespace server_app.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class DoctorAccessController : ControllerBase
@@ -18,6 +17,7 @@ namespace server_app.Controllers
             _svc = svc;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDoctorAccessDto dto)
         {
@@ -25,6 +25,7 @@ namespace server_app.Controllers
             return this.ToActionResult(result);
         }
 
+        [Authorize]
         [HttpGet("shared-with-me")]
         public async Task<IActionResult> GetSharedWithMe()
         {
@@ -43,6 +44,7 @@ namespace server_app.Controllers
             return this.ToActionResult(result);
         }
 
+        [Authorize]
         [HttpGet("granted")]
         public async Task<IActionResult> GetGrantedAccesses()
         {
@@ -50,6 +52,7 @@ namespace server_app.Controllers
             return this.ToActionResult(result);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Revoke(Guid id)
         {

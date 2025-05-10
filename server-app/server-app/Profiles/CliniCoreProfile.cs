@@ -33,6 +33,10 @@ namespace server_app.Profiles
             CreateMap<CreateDoctorAccessDto, DoctorAccess>()
                 .ForMember(d => d.Id, o => o.MapFrom(_ => Guid.NewGuid()))
                 .ForMember(d => d.GrantedAt, o => o.MapFrom(_ => DateTime.UtcNow));
+
+            CreateMap<CreateDoctorCommentDto, DoctorComment>();
+            CreateMap<DoctorComment, DoctorCommentDto>();
+            CreateMap<DoctorCommentType, DoctorCommentTypeDto>();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace server_app.Repositories
     {
         Task<Guid> AddAsync(DoctorAccess dto);
         Task<DoctorAccess?> GetByTokenAsync(string token);
+        Task<DoctorAccess?> GetByUser(string? token);
         Task<IEnumerable<DoctorAccess>> GetValidAccessesForUserAsync(Guid userId);
         Task<IEnumerable<DoctorAccess>> GetValidAccessesByTokenAsync(string token);
         Task<IEnumerable<DoctorAccess>> GetGrantedAccessesByCurrentUserAsync();
@@ -35,6 +36,19 @@ namespace server_app.Repositories
             _context.DoctorAccesses.Add(dto);
             await _context.SaveChangesAsync();
             return dto.Id;
+        }
+
+        public async Task<DoctorAccess?> GetByUser(string? token)
+        {
+            try
+            {
+                var userId = CurrentUserId;
+                return await _context.DoctorAccesses.FirstOrDefaultAsync(x => x.TargetUserId == userId && !x.Revoked && x.ExpiresAt > DateTime.UtcNow);
+            }
+            catch
+            {
+                return await _context.DoctorAccesses.FirstOrDefaultAsync(x => x.Token == token && !x.Revoked && x.ExpiresAt > DateTime.UtcNow);
+            }
         }
 
         public async Task<DoctorAccess?> GetByTokenAsync(string token)
