@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { finalize, take } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -18,19 +19,25 @@ export class RegisterPage {
   email = '';
   password = '';
   confirmPassword = '';
-  agreeToTerms = false;
+  isLoading = false;
 
   constructor(private router: Router) {}
 
   register() {
-    // Implement register functionality
+    this.isLoading = true;
 
-    this.authService.register(this.email, this.password, this.fullName).subscribe(() => {
-      console.log('something happened');
-    });
-
-    // console.log('Register with:', this.fullName, this.email, this.password);
-    // this.router.navigateByUrl('/tabs');
+    this.authService
+      .register(this.email, this.password, this.fullName)
+      .pipe(
+        take(1),
+        finalize(() => (this.isLoading = false))
+      )
+      .subscribe({
+        next: () => this.router.navigateByUrl('/tabs/dashboard'),
+        error: (err) => {
+          console.error('Login failed', err);
+        },
+      });
   }
 
   goToLogin() {

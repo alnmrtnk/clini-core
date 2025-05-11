@@ -1,8 +1,6 @@
-// src/app/core/auth.service.ts
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map, tap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 
@@ -10,13 +8,6 @@ interface AuthResponse {
   token: string;
   userId: string;
   email: string;
-}
-
-interface ServiceResult<T> {
-  success: boolean;
-  data: T | null;
-  errorMessage?: string;
-  errorCode?: number;
 }
 
 @Injectable({ providedIn: 'root' })

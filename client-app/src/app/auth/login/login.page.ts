@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { take, finalize, debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -18,11 +19,23 @@ export class LoginPage {
 
   email = '';
   password = '';
+  isLoading = false;
 
-  login() {
-    this.authService.login(this.email, this.password).subscribe(() => {
-      this.router.navigateByUrl('/tabs/dashboard');
-    })
+  async login() {
+    this.isLoading = true;
+
+    this.authService
+      .login(this.email, this.password)
+      .pipe(
+        take(1),
+        finalize(() => (this.isLoading = false))
+      )
+      .subscribe({
+        next: () => this.router.navigateByUrl('/tabs/dashboard'),
+        error: (err) => {
+          console.error('Login failed', err);
+        },
+      });
   }
 
   forgotPassword() {

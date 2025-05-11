@@ -10,21 +10,34 @@
     </div>
   </div>
 
-  <div class="esculab-content" *ngIf="isConnected() && recentResults().length > 0">
+  <div
+    class="esculab-content"
+    *ngIf="isConnected() && recentResults().length > 0"
+  >
     <div class="results-list">
       <div class="result-item" *ngFor="let result of topResults()">
         <div class="result-details">
           <h4>{{ result.name }}</h4>
-          <p>{{ formatDate(result.date) }} · {{ result.resultCount }} results</p>
+          <p>
+            {{ formatDate(result.date) }} · {{ result.resultCount }} results
+          </p>
         </div>
-        <ion-button fill="clear" size="small" [routerLink]="['/tabs/medical-records/esculab']">
+        <ion-button
+          fill="clear"
+          size="small"
+          [routerLink]="['/tabs/medical-records']"
+          [queryParams]="{ segment: 'esculab' }"
+        >
           View
         </ion-button>
       </div>
     </div>
   </div>
 
-  <div class="esculab-content empty-state" *ngIf="isConnected() && recentResults().length === 0">
+  <div
+    class="esculab-content empty-state"
+    *ngIf="isConnected() && recentResults().length === 0"
+  >
     <ion-icon name="document-text-outline"></ion-icon>
     <p>No lab results found</p>
     <span>Your lab results will appear here once they're available</span>
@@ -36,13 +49,14 @@
     <span>Import your lab test results automatically</span>
   </div>
 
-  <div class="esculab-footer">
+  <div class="ion-text-center esculab-footer">
     <ion-button
-      expand="block"
+      shape="round"
       [fill]="isConnected() ? 'outline' : 'solid'"
       [routerLink]="['/tabs/medical-records']"
-      [queryParams]="{ segment: 'esculab' }">
-      {{ isConnected() ? 'View All Lab Results' : 'Connect to Esculab' }}
+      [queryParams]="{ segment: 'esculab' }"
+    >
+      {{ isConnected() ? "View All Lab Results" : "Connect to Esculab" }}
     </ion-button>
   </div>
 </div>

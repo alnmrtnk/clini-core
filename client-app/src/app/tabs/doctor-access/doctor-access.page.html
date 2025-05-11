@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-title>Doctor Access</ion-title>
   </ion-toolbar>
   <ion-segment [value]="currentSegment" (ionChange)="onSegmentChanged($event)">
@@ -13,10 +13,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div
-    *ngIf="currentSegment === 'active'"
-    class="container page-wrapper has-searchbar"
-  >
+  <div *ngIf="currentSegment === 'active'" class="page-wrapper has-searchbar">
     <ion-card *ngIf="accesses()?.length === 0">
       <ion-card-content>
         <div class="empty-state">
@@ -31,26 +28,25 @@
       </ion-card-content>
     </ion-card>
 
-    <div *ngIf="!!accesses()?.length">
-      <ion-list-header>
-        <ion-label>Active Access Grants</ion-label>
-      </ion-list-header>
+    <ion-card *ngIf="!!accesses()?.length">
+      <ion-card-header>
+        <ion-card-title>Active Access Grants</ion-card-title>
+      </ion-card-header>
 
-      <app-doctor-access-card
-        *ngFor="let access of accesses()"
-        [access]="access"
-        [showActions]="true"
-        (revokeAccess)="revokeAccess($event)"
-        (renewAccess)="onRenew($event)"
-        (click)="showAccessDetails(access)"
-      />
-    </div>
+      <ion-card-content>
+        <app-doctor-access-card
+          *ngFor="let access of accesses()"
+          [access]="access"
+          [showActions]="true"
+          (revokeAccess)="revokeAccess($event)"
+          (renewAccess)="onRenew($event)"
+          (click)="showAccessDetails(access)"
+        />
+      </ion-card-content>
+    </ion-card>
   </div>
 
-  <div
-    *ngIf="currentSegment === 'create'"
-    class="container page-wrapper has-searchbar"
-  >
+  <div *ngIf="currentSegment === 'create'" class="page-wrapper has-searchbar">
     <ion-card>
       <ion-card-header>
         <ion-card-title>Grant Access to a Doctor</ion-card-title>
@@ -138,7 +134,7 @@
   <ion-modal [isOpen]="showModal()" (close)="closeAccessModal()">
     <ng-template>
       <ion-header>
-        <ion-toolbar color="primary">
+        <ion-toolbar>
           <ion-title>
             {{modalForCreated ? 'Access Created' :
             displayedAccess()?.name}}</ion-title

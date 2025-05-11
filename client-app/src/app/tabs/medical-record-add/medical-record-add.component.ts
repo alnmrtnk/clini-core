@@ -1,21 +1,21 @@
-import { Component, inject, type OnInit, HostBinding } from '@angular/core';
+import { Component, inject, OnInit, HostBinding } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
   FormBuilder,
   Validators,
-  type FormControl,
+  FormControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient, HttpEventType } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AddRecord,
   LoadRecordTypes,
   RecordsState,
 } from 'src/app/store/medical-record.state';
-import type { CreateMedicalRecord } from 'src/app/models/medical-record.model';
+import { CreateMedicalRecord } from 'src/app/models/medical-record.model';
 import { Store } from '@ngxs/store';
 import { RecordType } from 'src/app/models/record-type.model';
 import { getIcon } from 'src/app/utils/record.utils';
@@ -40,7 +40,6 @@ export class MedicalRecordAddComponent implements OnInit {
 
   private router = inject(Router);
   private fb = inject(FormBuilder);
-  private http = inject(HttpClient);
   private store = inject(Store);
 
   form = this.fb.group<MedicalRecordForm>({
@@ -141,9 +140,11 @@ export class MedicalRecordAddComponent implements OnInit {
       notes: formValue.notes ?? '',
     };
 
+
     this.store
       .dispatch(new AddRecord(dto, this.selectedFiles))
       .subscribe(() => {
+        this.form.reset();
         if (!this.uploading()) {
           this.router.navigate(['/tabs/medical-records']);
         }

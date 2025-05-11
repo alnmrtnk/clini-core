@@ -31,10 +31,17 @@
 
             <ion-button
               expand="block"
+              shape="round"
               type="submit"
               color="primary"
               class="ion-margin-top"
+              [disabled]="isLoading"
             >
+              <ion-spinner
+                *ngIf="isLoading"
+                slot="start"
+                name="dots"
+              ></ion-spinner>
               Log In
             </ion-button>
           </form>
@@ -51,6 +58,7 @@
 
           <ion-button
             expand="block"
+            shape="round"
             fill="outline"
             color="primary"
             (click)="register()"

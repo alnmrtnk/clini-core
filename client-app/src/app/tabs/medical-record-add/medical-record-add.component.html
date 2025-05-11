@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/medical-records" [routerAnimation]="false"></ion-back-button>
     </ion-buttons>
@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="page-wrapper container">
+  <div class="page-wrapper">
     <form [formGroup]="form" (ngSubmit)="submit()">
       <ion-grid>
         <ion-row>

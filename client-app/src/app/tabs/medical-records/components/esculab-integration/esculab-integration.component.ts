@@ -199,11 +199,9 @@ export class EsculabIntegrationComponent {
     this.selectedOrder = order
     this.showOrderDetails = true
 
-    // Load order details if not already loaded
     if (!this.orderDetailsCache[order.idOrder]) {
       this.store.dispatch(new EsculabActions.GetOrderDetails(order.idOrder))
     } else {
-      // If already loaded, just group the results
       this.groupResultsByPacket(this.orderDetailsCache[order.idOrder])
     }
   }

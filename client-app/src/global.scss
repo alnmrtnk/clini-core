@@ -1,40 +1,20 @@
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
-
-/* custom styles imports */
 @use "./assets/styles/variables.scss";
 
-/* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 
-/* Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils that can be commented out */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/* Custom global styles */
-.medical-bg {
-  --background: radial-gradient(circle, #ffffff 0%, #e6f7ff 100%);
-}
-
 ion-content {
-  --background: radial-gradient(circle, #ffffff 0%, #e6f7ff 100%);
+  --background: var(--ion-color-light);
 }
 
 ion-card {
@@ -55,6 +35,16 @@ body.dark ion-card {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+:root {
+  ion-toolbar, ion-tab-bar {
+    --background: var(--ion-color-light);
+  }
+
+  ion-header {
+    box-shadow: none;
+  }
+}
+
 @media (min-width: 992px) {
   .tabs-container {
     &:has(.page-wrapper) {
@@ -73,6 +63,16 @@ body.dark ion-card {
         max-height: calc(100vh - var(--header-height));
         overflow-y: auto;
         transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+        padding: 16px;
+        background: var(--ion-color-light);
+
+        .page-content {
+          // border: 1px solid #000;
+          border-radius: 20px;
+          padding: 16px;
+          background: #fff;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
 
         &.has-searchbar {
           top: calc(var(--header-height) + var(--searchbar-height));

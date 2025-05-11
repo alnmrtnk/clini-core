@@ -10,16 +10,22 @@
         class="ion-tab-bar"
         [class.vertical]="isDesktop"
       >
-        <ion-button *ngIf="isDesktop" (click)="expanded = !expanded"
+        <ion-button
+          *ngIf="isDesktop"
+          (click)="expanded = !expanded"
+          fill="clear"
           ><ion-icon name="menu-outline"></ion-icon
         ></ion-button>
+
         <ion-tab-button
           *ngFor="let tab of tabs"
           [tab]="tab.id"
-          [layout]="isDesktop ? 'icon-start' : 'icon-top'"
+          layout="icon-start"
         >
           <ion-icon [name]="tab.icon"></ion-icon>
-          <ion-label *ngIf="isDesktop && expanded">{{tab.label}}</ion-label>
+          <ion-label *ngIf="isDesktop" [style.opacity]="expanded ? '1' : '0'">
+            {{tab.label}}
+          </ion-label>
         </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>

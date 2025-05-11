@@ -109,8 +109,10 @@ export class DoctorAccessPage {
   }
 
   showAccessDetails(access: DoctorAccess) {
-    this.modalForCreated = false;
-    this.store.dispatch(new SetDisplayedAccess(access));
+    if (!access.revoked && new Date(access.expiresAt) > new Date()) {
+      this.modalForCreated = false;
+      this.store.dispatch(new SetDisplayedAccess(access));
+    }
   }
 
   createAccess() {

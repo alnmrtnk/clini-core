@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-settings',
@@ -10,6 +11,8 @@ import { FormsModule } from '@angular/forms';
   styleUrl: 'settings.page.scss',
 })
 export class SettingsPage {
+  private readonly authService = inject(AuthService);
+
   settings = {
     automaticBackup: true,
     appointmentReminders: true,
@@ -58,7 +61,6 @@ export class SettingsPage {
   }
 
   logout() {
-    console.log('Logout');
-    // Implement logout functionality
+    this.authService.logout();
   }
 }

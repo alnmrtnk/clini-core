@@ -1,7 +1,10 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/auth/login" [routerAnimation]="false"></ion-back-button>
+      <ion-back-button
+        defaultHref="/auth/login"
+        [routerAnimation]="false"
+      ></ion-back-button>
     </ion-buttons>
     <ion-title>Create Account</ion-title>
   </ion-toolbar>
@@ -53,24 +56,19 @@
               ></ion-input>
             </ion-item>
 
-            <ion-item lines="none">
-              <ion-checkbox
-                [(ngModel)]="agreeToTerms"
-                name="agreeToTerms"
-              ></ion-checkbox>
-              <ion-label class="ion-padding-start">
-                I agree to the <a href="#">Terms of Service</a> and
-                <a href="#">Privacy Policy</a>
-              </ion-label>
-            </ion-item>
-
             <ion-button
+              shape="round"
               expand="block"
               type="submit"
               color="primary"
               class="ion-margin-top"
-              [disabled]="!agreeToTerms"
+              [disabled]="isLoading"
             >
+              <ion-spinner
+                *ngIf="isLoading"
+                slot="start"
+                name="dots"
+              ></ion-spinner>
               Create Account
             </ion-button>
           </form>
