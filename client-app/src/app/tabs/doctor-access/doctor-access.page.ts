@@ -1,5 +1,5 @@
-import { Component, effect, inject } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { Component, computed, inject } from '@angular/core';
+import { IonicModule, SegmentChangeEventDetail } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -19,10 +19,11 @@ import {
   AddAccess,
   DeleteAccess,
   LoadAccesses,
-  ResetCreatedAccess,
+  SetDisplayedAccess,
 } from 'src/app/store/doctor-access.state';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { DoctorAccessCardComponent } from '../shared/doctor-access-card/doctor-access-card.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-doctor-access',
@@ -40,15 +41,24 @@ import { DoctorAccessCardComponent } from '../shared/doctor-access-card/doctor-a
 export class DoctorAccessPage {
   private readonly store = inject(Store);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
   readonly accesses = toSignal(this.store.select(AccessState.accesses));
-  readonly createdAccess = toSignal(
-    this.store.select(AccessState.createdAccess)
+  readonly displayedAccess = toSignal(
+    this.store.select(AccessState.displayedAccess)
   );
 
-  currentSegment = 'active';
+  currentSegment: 'active' | 'create' = 'active';
   accessForm: FormGroup;
   tomorrow: string = new Date(Date.now() + 86400000).toISOString();
-  showAccessModal = false;
+
+  modalForCreated = false;
+
+  showModal = computed(() => {
+    const a = this.displayedAccess();
+    return a !== null && a !== undefined;
+  });
 
   constructor() {
     this.accessForm = this.formBuilder.group({
@@ -66,22 +76,41 @@ export class DoctorAccessPage {
           ?.setValue(this.calculateExpirationDate(days));
       }
     });
-
-    effect(() => {
-      if (this.createdAccess()) {
-        this.showAccessModal = true;
-      }
-    });
   }
 
   ngOnInit() {
     this.store.dispatch(new LoadAccesses());
+
+    this.route.queryParamMap.subscribe((params) => {
+      const seg = params.get('segment');
+      if (seg === 'active' || seg === 'create') {
+        this.currentSegment = seg;
+      }
+    });
+  }
+
+  onSegmentChanged(event: CustomEvent<SegmentChangeEventDetail>) {
+    const newSeg = event.detail.value;
+
+    if (newSeg === 'active' || newSeg === 'create') {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { segment: newSeg },
+        queryParamsHandling: 'merge',
+      });
+      this.currentSegment = newSeg;
+    }
   }
 
   calculateExpirationDate(days: number): string {
     const date = new Date();
     date.setDate(date.getDate() + days);
     return date.toISOString();
+  }
+
+  showAccessDetails(access: DoctorAccess) {
+    this.modalForCreated = false;
+    this.store.dispatch(new SetDisplayedAccess(access));
   }
 
   createAccess() {
@@ -94,7 +123,9 @@ export class DoctorAccessPage {
         targetEmail: formValue.targetEmail || undefined,
       };
 
+      this.modalForCreated = true;
       this.store.dispatch(new AddAccess(accessData));
+      console.log(this.modalForCreated);
     }
   }
 
@@ -120,8 +151,7 @@ export class DoctorAccessPage {
   }
 
   closeAccessModal() {
-    this.showAccessModal = false;
-    this.store.dispatch(new ResetCreatedAccess());
+    this.store.dispatch(new SetDisplayedAccess());
     this.currentSegment = 'active';
   }
 
@@ -135,19 +165,19 @@ export class DoctorAccessPage {
   }
 
   getAccessLink() {
-    const a = this.createdAccess();
+    const a = this.displayedAccess();
     if (a) return `https://clinicore.app/access/${a.token}`;
     return '';
   }
 
   copyAccessLink() {
-    const a = this.createdAccess();
+    const a = this.displayedAccess();
     if (a) navigator.clipboard.writeText(this.getAccessLink());
     // Show toast or notification that link was copied
   }
 
   resendEmail() {
-    const a = this.createdAccess();
+    const a = this.displayedAccess();
     if (a) console.log('Resending email for access:', a.id);
     // Show toast or notification that email was sent
   }

@@ -12,9 +12,9 @@ export class AddAccess {
   static readonly type = '[Access] Add';
   constructor(public payload: Partial<DoctorAccess>) {}
 }
-export class ResetCreatedAccess {
-  static readonly type = '[Access] Reset Created';
-  constructor() {}
+export class SetDisplayedAccess {
+  static readonly type = '[Access] Set Displayed Access';
+  constructor(public displayedAccess: DoctorAccess | null = null) {}
 }
 export class DeleteAccess {
   static readonly type = '[Access] Delete';
@@ -23,12 +23,12 @@ export class DeleteAccess {
 
 export interface AccessStateModel {
   accesses: DoctorAccess[];
-  createdAccess: DoctorAccess | null;
+  displayedAccess: DoctorAccess | null;
 }
 
 @State<AccessStateModel>({
   name: 'accesses',
-  defaults: { accesses: [], createdAccess: null },
+  defaults: { accesses: [], displayedAccess: null },
 })
 @Injectable()
 export class AccessState {
@@ -40,8 +40,8 @@ export class AccessState {
   }
 
   @Selector()
-  static createdAccess(state: AccessStateModel) {
-    return state.createdAccess;
+  static displayedAccess(state: AccessStateModel) {
+    return state.displayedAccess;
   }
 
   @Action(LoadAccesses)
@@ -55,18 +55,18 @@ export class AccessState {
   add(ctx: StateContext<AccessStateModel>, action: AddAccess) {
     return this.service.create(action.payload).pipe(
       tap((a) =>
-        ctx.patchState({
+        ctx.setState({
           accesses: [...ctx.getState().accesses, a],
-          createdAccess: a,
+          displayedAccess: a,
         })
       )
     );
   }
 
-  @Action(ResetCreatedAccess)
-  reset(ctx: StateContext<AccessStateModel>) {
+  @Action(SetDisplayedAccess)
+  reset(ctx: StateContext<AccessStateModel>, action: SetDisplayedAccess) {
     return ctx.patchState({
-      createdAccess: null,
+      displayedAccess: action.displayedAccess,
     });
   }
 

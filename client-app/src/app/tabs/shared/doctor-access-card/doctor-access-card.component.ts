@@ -14,12 +14,12 @@ export class DoctorAccessCardComponent {
   readonly access = input.required<DoctorAccess>();
   readonly showActions = input<boolean>(false);
   readonly revokeAccess = output<string>();
-  readonly renewAccess  = output<{ id: string }>();
+  readonly renewAccess = output<{ id: string }>();
 
   readonly revoked = computed(() => {
     const a = this.access();
     return a.revoked || new Date(a.expiresAt) < new Date();
-  })
+  });
 
   readonly statusText = computed(() => {
     const a = this.access();
@@ -57,7 +57,13 @@ export class DoctorAccessCardComponent {
     return `Expires on ${this.formatDate(expiresAt)}`;
   });
 
-  onRenewClick() {
+  onRevokeClick(event: Event) {
+    event.stopPropagation();
+    this.revokeAccess.emit(this.access().id);
+  }
+
+  onRenewClick(event: Event) {
+    event.stopPropagation();
     this.renewAccess.emit({ id: this.access().id });
   }
 

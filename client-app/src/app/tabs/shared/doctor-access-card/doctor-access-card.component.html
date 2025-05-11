@@ -17,15 +17,11 @@
 
   <div *ngIf="showActions()" class="access-actions" slot="end">
     @if (revoked()) {
-    <ion-button *ngIf="revoked()" fill="clear" (click)="onRenewClick()">
+    <ion-button *ngIf="revoked()" fill="clear" (click)="onRenewClick($event)">
       <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
     </ion-button>
     } @else {
-    <ion-button
-      fill="clear"
-      color="danger"
-      (click)="revokeAccess.emit(access().id)"
-    >
+    <ion-button fill="clear" color="danger" (click)="onRevokeClick($event)">
       <ion-icon slot="icon-only" name="close-circle-outline" /> </ion-button
     >}
   </div>

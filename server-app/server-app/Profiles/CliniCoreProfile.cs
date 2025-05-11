@@ -18,6 +18,11 @@ namespace server_app.Profiles
                 .ForMember(d => d.RecordTypeName, o => o.MapFrom(s => s.RecordType.Name))
                 .ForMember(d => d.Files, o => o.MapFrom(s => s.Files));
 
+            CreateMap<RecordType, RecordTypeDto>()
+                .ForMember(d => d.MedicalRecords, o => o.MapFrom(s => s.MedicalRecords));
+
+            CreateMap<RecordTypeDto, RecordType>();
+
             CreateMap<MedicalRecordFile, MedicalRecordFileDto>();
 
             CreateMap<CreateMedicalRecordDto, MedicalRecord>()

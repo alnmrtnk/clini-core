@@ -1,126 +1,106 @@
-import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { MedicalRecord } from '../models/medical-record.model';
-import { MedicalRecordService } from '../services/medical-record.service';
-import { tap } from 'rxjs/operators';
+import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
 import { Injectable } from '@angular/core';
+import { tap } from 'rxjs/operators';
+import { HttpEventType } from '@angular/common/http';
+
+import { MedicalRecordService } from '../services/medical-record.service';
 import { RecordTypeService } from '../services/record-type.service';
-import { RecordType } from '../models/record-type.model';
+import type { MedicalRecord } from '../models/medical-record.model';
+import type { RecordType } from '../models/record-type.model';
+import type { CreateMedicalRecord } from '../models/medical-record.model';
 
 export class LoadRecords {
   static readonly type = '[Record] Load';
-  constructor() {}
 }
-
 export class LoadRecord {
   static readonly type = '[Record] Load by Id';
   constructor(public id: string) {}
 }
-export class AddRecord {
-  static readonly type = '[Record] Add';
-  constructor(public payload: Partial<MedicalRecord>) {}
-}
-export class UpdateRecord {
-  static readonly type = '[Record] Update';
-  constructor(public id: string, public changes: Partial<MedicalRecord>) {}
-}
-export class DeleteRecord {
-  static readonly type = '[Record] Delete';
-  constructor(public id: string) {}
-}
-
 export class LoadRecordTypes {
   static readonly type = '[Record] Get Types';
-  constructor() {}
+}
+
+export class AddRecord {
+  static readonly type = '[Record] Add';
+  constructor(public dto: CreateMedicalRecord, public files: File[]) {}
 }
 
 export interface RecordsStateModel {
   selectedRecord: MedicalRecord | null;
   records: MedicalRecord[];
   recordTypes: RecordType[];
+  uploading: boolean;
+  uploadingProgress: number;
 }
 
 @State<RecordsStateModel>({
   name: 'records',
-  defaults: { selectedRecord: null, records: [], recordTypes: [] },
+  defaults: {
+    selectedRecord: null,
+    records: [],
+    recordTypes: [],
+    uploading: false,
+    uploadingProgress: 0,
+  },
 })
 @Injectable()
 export class RecordsState {
   constructor(
     private recordService: MedicalRecordService,
-    private recordTypeService: RecordTypeService
+    private recordTypeService: RecordTypeService,
+    private store: Store
   ) {}
 
-  @Selector()
-  static records(state: RecordsStateModel) {
-    return state.records;
+  @Selector() static records(s: RecordsStateModel) {
+    return s.records;
   }
-
-  @Selector()
-  static selectedRecord(state: RecordsStateModel) {
-    return state.selectedRecord;
+  @Selector() static recordTypes(s: RecordsStateModel) {
+    return s.recordTypes;
+  }
+  @Selector() static selectedRecord(s: RecordsStateModel) {
+    return s.selectedRecord;
+  }
+  @Selector() static uploading(s: RecordsStateModel) {
+    return s.uploading;
+  }
+  @Selector() static uploadingProgress(s: RecordsStateModel) {
+    return s.uploadingProgress;
   }
 
   @Action(LoadRecords)
-  load({ getState, setState }: StateContext<RecordsStateModel>) {
+  load(ctx: StateContext<RecordsStateModel>) {
     return this.recordService
       .getAll()
-      .pipe(tap((records) => setState({ ...getState(), records })));
+      .pipe(tap((records) => ctx.patchState({ records })));
   }
 
   @Action(LoadRecord)
-  loadRecord({ getState, setState }: StateContext<RecordsStateModel>, {id}: LoadRecord) {
+  loadRecord(ctx: StateContext<RecordsStateModel>, { id }: LoadRecord) {
     return this.recordService
       .getById(id)
-      .pipe(tap((record) => setState({ ...getState(), selectedRecord: record })));
+      .pipe(tap((record) => ctx.patchState({ selectedRecord: record })));
   }
 
   @Action(LoadRecordTypes)
-  loadTypes({ getState, setState }: StateContext<RecordsStateModel>) {
+  loadTypes(ctx: StateContext<RecordsStateModel>) {
     return this.recordTypeService
       .getAll()
-      .pipe(tap((recordTypes) => setState({ ...getState(), recordTypes })));
+      .pipe(tap((recordTypes) => ctx.patchState({ recordTypes })));
   }
 
   @Action(AddRecord)
-  add(
-    { getState, patchState }: StateContext<RecordsStateModel>,
-    { payload }: AddRecord
-  ) {
-    return this.recordService
-      .create(payload)
-      .pipe(
-        tap((newRec) =>
-          patchState({ records: [...getState().records, newRec] })
-        )
-      );
-  }
-
-  @Action(UpdateRecord)
-  update(
-    { getState, setState }: StateContext<RecordsStateModel>,
-    { id, changes }: UpdateRecord
-  ) {
-    return this.recordService.update(id, changes).pipe(
-      tap(() => {
-        const records = getState().records.map((r) =>
-          r.id === id ? { ...r, ...changes } : r
-        );
-        setState({ ...getState(), records });
+  add(ctx: StateContext<RecordsStateModel>, { dto, files }: AddRecord) {
+    ctx.patchState({ uploading: true, uploadingProgress: 0 });
+    return this.recordService.upload(dto, files).pipe(
+      tap((event) => {
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          const progress = Math.round((100 * event.loaded) / event.total);
+          ctx.patchState({ uploadingProgress: progress });
+        } else if (event.type === HttpEventType.Response) {
+          ctx.patchState({ uploading: false, uploadingProgress: 100 });
+          this.store.dispatch(new LoadRecords());
+        }
       })
     );
-  }
-
-  @Action(DeleteRecord)
-  delete(
-    { getState, setState }: StateContext<RecordsStateModel>,
-    { id }: DeleteRecord
-  ) {
-    return this.recordService
-      .delete(id)
-      .pipe(
-        tap(() =>
-          setState({ ...getState(), records: getState().records.filter((r) => r.id !== id) })
-        )
-      );
   }
 }

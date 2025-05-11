@@ -11,3 +11,10 @@ ion-item-divider {
   color: var(--ion-color-medium);
   font-weight: bold;
 }
+@media (min-width: 992px) {
+  ion-fab {
+    position: fixed;
+    top: calc(100vh - 64px);
+    right: 8px;
+  }
+}

@@ -1,0 +1,190 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/medical-records" [routerAnimation]="false"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add Medical Record</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="page-wrapper container">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="6">
+            <ion-item>
+              <ion-select
+                label="Record Type*"
+                labelPlacement="stacked"
+                formControlName="recordTypeId"
+                interface="action-sheet"
+                placeholder="Select record type"
+              >
+                <ion-select-option
+                  *ngFor="let t of recordTypes()"
+                  [value]="t.id"
+                >
+                  <ion-icon
+                    slot="start"
+                    [name]="getRecordTypeIcon(t)"
+                  ></ion-icon>
+                  {{ t.name }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-note
+              color="danger"
+              *ngIf="
+                form.get('recordTypeId')?.touched &&
+                form.get('recordTypeId')?.hasError('required')
+              "
+            >
+              Record Type is required
+            </ion-note>
+          </ion-col>
+
+          <ion-col size="12" size-md="6">
+            <ion-item>
+              <ion-input
+                label="Title*"
+                labelPlacement="stacked"
+                type="text"
+                formControlName="title"
+                placeholder="Enter a title"
+              ></ion-input>
+            </ion-item>
+            <ion-note
+              color="danger"
+              *ngIf="
+                form.get('title')?.touched &&
+                form.get('title')?.hasError('required')
+              "
+            >
+              Title is required
+            </ion-note>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12" size-md="6">
+            <ion-item>
+              <ion-datetime-button
+                label="Date*"
+                labelPlacement="stacked"
+                datetime="recordDate"
+              ></ion-datetime-button>
+              <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime
+                    id="recordDate"
+                    presentation="date"
+                    formControlName="date"
+                    [max]=""
+                  >
+                  </ion-datetime>
+                </ng-template>
+              </ion-modal>
+            </ion-item>
+            <ion-note
+              color="danger"
+              *ngIf="
+                form.get('date')?.touched &&
+                form.get('date')?.hasError('required')
+              "
+            >
+              Date is required
+            </ion-note>
+          </ion-col>
+
+          <ion-col size="12" size-md="6">
+            <ion-item>
+              <ion-textarea
+                label="Notes"
+                labelPlacement="stacked"
+                formControlName="notes"
+                placeholder="Add any additional notes"
+                rows="3"
+                autoGrow="true"
+              >
+              </ion-textarea>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <div class="file-section">
+        <h4 class="file-section-title">
+          <ion-icon name="document-attach-outline"></ion-icon>
+          Attach Files
+        </h4>
+
+        <div
+          class="file-drop-zone"
+          [class.dragging]="dragging"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+        >
+          <div class="drop-zone-content">
+            <ion-icon
+              name="cloud-upload-outline"
+              class="upload-icon"
+            ></ion-icon>
+            <p *ngIf="!selectedFiles.length">
+              Drag & drop files here, or click to select
+            </p>
+            <p *ngIf="selectedFiles.length">
+              {{ selectedFiles.length }} file(s) selected
+            </p>
+            <ion-button size="small" fill="outline"> Browse Files </ion-button>
+            <input type="file" multiple (change)="onFilesSelected($event)" />
+          </div>
+        </div>
+
+        <div class="selected-files" *ngIf="selectedFiles.length > 0">
+          <h5>Selected Files</h5>
+          <ion-list lines="full">
+            <ion-item *ngFor="let file of selectedFiles; let i = index">
+              <ion-icon
+                [name]="getFileIcon(file)"
+                slot="start"
+                color="primary"
+              ></ion-icon>
+              <ion-label>
+                <h2 class="file-name">{{ file.name }}</h2>
+                <p>{{ getFileSize(file) }}</p>
+              </ion-label>
+              <ion-button
+                fill="clear"
+                slot="end"
+                color="danger"
+                (click)="removeFile(i)"
+              >
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </div>
+
+        <div class="submit-container">
+          <ion-button
+            expand="block"
+            type="submit"
+            [disabled]="form.invalid || uploading()"
+          >
+            <ion-icon name="save-outline" slot="start"></ion-icon>
+            {{ uploading() ? "Uploading..." : "Save Medical Record" }}
+          </ion-button>
+
+          <div class="upload-progress" *ngIf="uploading()">
+            <ion-progress-bar
+              [value]="uploadProgress() ?? 0 / 100"
+            ></ion-progress-bar>
+            <p class="progress-text">Uploading: {{ uploadProgress() }}%</p>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</ion-content>

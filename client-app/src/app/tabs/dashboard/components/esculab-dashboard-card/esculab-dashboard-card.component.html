@@ -40,7 +40,8 @@
     <ion-button
       expand="block"
       [fill]="isConnected() ? 'outline' : 'solid'"
-      [routerLink]="['/tabs/medical-records/esculab']">
+      [routerLink]="['/tabs/medical-records']"
+      [queryParams]="{ segment: 'esculab' }">
       {{ isConnected() ? 'View All Lab Results' : 'Connect to Esculab' }}
     </ion-button>
   </div>

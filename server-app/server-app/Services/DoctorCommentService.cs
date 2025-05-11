@@ -15,7 +15,7 @@ namespace server_app.Services
         Task<ServiceResult<bool>> DeleteAsync(Guid id);
     }
 
-    public class DoctorCommentService
+    public class DoctorCommentService : IDoctorCommentService
     {
         private readonly IDoctorCommentRepository _repo;
         private readonly IDoctorAccessRepository _accessRepository;

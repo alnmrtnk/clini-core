@@ -12,7 +12,7 @@ import { AccessState, LoadAccesses } from 'src/app/store/doctor-access.state';
 import { DoctorAccess } from 'src/app/models/doctor-access.model';
 import { EsculabDashboardCardComponent } from './components/esculab-dashboard-card/esculab-dashboard-card.component';
 import { DoctorAccessCardComponent } from '../shared/doctor-access-card/doctor-access-card.component';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 interface LabResult {
   id: number;

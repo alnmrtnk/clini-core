@@ -5,7 +5,7 @@ import { RecordType } from '../models/record-type.model';
 
 @Injectable({ providedIn: 'root' })
 export class RecordTypeService extends BaseEntityService<RecordType> {
-  protected baseUrl = 'RecordType';
+  protected baseUrl = 'RecordTypes';
 
   constructor(http: HttpClient) {
     super(http);

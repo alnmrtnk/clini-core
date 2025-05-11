@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MedicalRecord } from 'src/app/models/medical-record.model';
 import { recordIconMap } from 'src/app/data/record-icon-map';
 import { Router } from '@angular/router';
+import { getIcon } from 'src/app/utils/record.utils';
 
 @Component({
   selector: 'app-main-dashboard-records',
@@ -25,10 +26,14 @@ export class MainDashboardRecordsComponent {
   }
 
   getIcon(record: MedicalRecord): string {
-    return recordIconMap.get(record.recordTypeName) ?? '';
+    return getIcon(record.recordTypeName);
   }
 
   viewDocument(record: MedicalRecord) {
     this.router.navigate(['/tabs/medical-records', record.id]);
+  }
+
+  navigateToAll() {
+    this.router.navigate(['/tabs/medical-records'])
   }
 }

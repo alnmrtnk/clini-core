@@ -82,6 +82,9 @@ builder.Services.AddSingleton<IAmazonS3>(_ =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
 builder.Services.AddScoped<IDoctorAccessRepository, DoctorAccessRepository>();
+builder.Services.AddScoped<IMedicalRecordFileRepository, MedicalRecordFileRepository>();
+builder.Services.AddScoped<IDoctorCommentRepository, DoctorCommentRepository>();
+builder.Services.AddScoped<IRecordTypeRepository, RecordTypeRepository>();
 
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -90,7 +93,8 @@ builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
 builder.Services.AddScoped<IDoctorAccessService, DoctorAccessService>();
 builder.Services.AddScoped<IEsculabService, EsculabService>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
-builder.Services.AddScoped<IMedicalRecordFileRepository, MedicalRecordFileRepository>();
+builder.Services.AddScoped<IRecordTypeService, RecordTypeService>();
+builder.Services.AddScoped<IDoctorCommentService, DoctorCommentService>();
 
 builder.Services.AddHttpClient<EsculabService>();
 

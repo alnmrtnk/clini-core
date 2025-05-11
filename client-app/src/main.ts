@@ -11,7 +11,7 @@ import {
 } from '@ionic/angular/standalone';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { JwtInterceptor } from './app/interceptors/jwt.interceptor';
 import { NgxsModule } from '@ngxs/store';
 import { importProvidersFrom } from '@angular/core';
@@ -21,7 +21,7 @@ import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
+    provideIonicAngular({ animated: false }),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     importProvidersFrom(
       NgxsModule.forRoot([]),

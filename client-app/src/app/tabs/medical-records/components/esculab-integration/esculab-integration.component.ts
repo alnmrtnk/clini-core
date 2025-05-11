@@ -182,7 +182,6 @@ export class EsculabIntegrationComponent {
         this.store.dispatch(new EsculabActions.GetAllOrders());
       },
       error: () => {
-        console.log('no token found');
         this.currentStep = 'phone';
       },
     });
