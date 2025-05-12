@@ -17,7 +17,7 @@ export const routes: Routes = [
           import('./dashboard/dashboard.page').then((m) => m.DashboardPage),
         providers: [
           importProvidersFrom(
-            NgxsModule.forFeature([RecordsState, AccessState])
+            NgxsModule.forFeature([RecordsState, AccessState, EsculabState])
           ),
         ],
       },

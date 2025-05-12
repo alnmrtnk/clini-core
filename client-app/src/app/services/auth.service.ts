@@ -57,6 +57,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
+    localStorage.removeItem('esculab_token');
     this.token.set(null);
     this.user.set(null);
     this.router.navigate(['/auth/login']);

@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import {
@@ -9,16 +9,23 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { EsculabActions, EsculabState } from 'src/app/store/esculab.state';
+import { Store } from '@ngxs/store';
+import {
+  AcceptToken,
+  ClearError,
+  EsculabState,
+  FindPatient,
+  GetAllOrders,
+  GetOrderDetails,
+  RequestCode,
+} from 'src/app/store/esculab.state';
 import { EsculabOrderDto, LabResultDto } from 'src/app/models/esculab.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 interface GroupedLabResults {
-  name: string
-  date: string
-  results: LabResultDto[]
+  name: string;
+  date: string;
+  results: LabResultDto[];
 }
 
 @Component({
@@ -49,9 +56,9 @@ export class EsculabIntegrationComponent {
   resendCountdown = 0;
   countdownInterval: any;
   orderDetailsCache: { [key: number]: LabResultDto[] } = {};
-  showOrderDetails = false
-  selectedOrder: EsculabOrderDto | null = null
-  groupedResults: GroupedLabResults[] = []
+  showOrderDetails = false;
+  selectedOrder: EsculabOrderDto | null = null;
+  groupedResults: GroupedLabResults[] = [];
 
   constructor() {
     this.phoneForm = this.formBuilder.group({
@@ -81,7 +88,7 @@ export class EsculabIntegrationComponent {
         this.orderDetailsCache = od;
 
         if (this.selectedOrder && od[this.selectedOrder.idOrder]) {
-          this.groupResultsByPacket(od[this.selectedOrder.idOrder])
+          this.groupResultsByPacket(od[this.selectedOrder.idOrder]);
         }
       }
     });
@@ -93,19 +100,17 @@ export class EsculabIntegrationComponent {
     if (this.phoneForm.valid) {
       const phoneNumber = this.phoneForm.get('phoneNumber')?.value;
 
-      this.store.dispatch(new EsculabActions.ClearError());
+      this.store.dispatch(new ClearError());
 
-      this.store
-        .dispatch(new EsculabActions.RequestCode(phoneNumber))
-        .subscribe({
-          next: () => {
-            this.currentStep = 'verification';
-            this.startResendCountdown();
-          },
-          error: () => {
-            // Error is handled by the state and displayed via the error$ observable
-          },
-        });
+      this.store.dispatch(new RequestCode(phoneNumber)).subscribe({
+        next: () => {
+          this.currentStep = 'verification';
+          this.startResendCountdown();
+        },
+        error: () => {
+          // Error is handled by the state and displayed via the error$ observable
+        },
+      });
     }
   }
 
@@ -114,10 +119,10 @@ export class EsculabIntegrationComponent {
       const verificationCode =
         this.verificationForm.get('verificationCode')?.value;
 
-      this.store.dispatch(new EsculabActions.ClearError());
+      this.store.dispatch(new ClearError());
 
       this.store
-        .dispatch(new EsculabActions.AcceptToken({ code: verificationCode }))
+        .dispatch(new AcceptToken({ code: verificationCode }))
         .subscribe({
           next: () => {
             this.currentStep = 'results';
@@ -134,18 +139,16 @@ export class EsculabIntegrationComponent {
     if (!this.resendDisabled) {
       const phoneNumber = this.phoneForm.get('phoneNumber')?.value;
 
-      this.store.dispatch(new EsculabActions.ClearError());
+      this.store.dispatch(new ClearError());
 
-      this.store
-        .dispatch(new EsculabActions.RequestCode(phoneNumber))
-        .subscribe({
-          next: () => {
-            this.startResendCountdown();
-          },
-          error: () => {
-            // Error is handled by the state and displayed via the error$ observable
-          },
-        });
+      this.store.dispatch(new RequestCode(phoneNumber)).subscribe({
+        next: () => {
+          this.startResendCountdown();
+        },
+        error: () => {
+          // Error is handled by the state and displayed via the error$ observable
+        },
+      });
     }
   }
 
@@ -172,14 +175,14 @@ export class EsculabIntegrationComponent {
       clearInterval(this.countdownInterval);
     }
 
-    this.store.dispatch(new EsculabActions.ClearError());
+    this.store.dispatch(new ClearError());
   }
 
   fetchLabOrders() {
-    this.store.dispatch(new EsculabActions.FindPatient()).subscribe({
+    this.store.dispatch(new FindPatient()).subscribe({
       next: () => {
         this.currentStep = 'results';
-        this.store.dispatch(new EsculabActions.GetAllOrders());
+        this.store.dispatch(new GetAllOrders());
       },
       error: () => {
         this.currentStep = 'phone';
@@ -188,7 +191,7 @@ export class EsculabIntegrationComponent {
   }
 
   loadOrderDetails(orderId: number) {
-    this.store.dispatch(new EsculabActions.GetOrderDetails(orderId));
+    this.store.dispatch(new GetOrderDetails(orderId));
   }
 
   getOrderDetails(orderId: number): LabResultDto[] | undefined {
@@ -196,104 +199,108 @@ export class EsculabIntegrationComponent {
   }
 
   viewOrderDetails(order: EsculabOrderDto) {
-    this.selectedOrder = order
-    this.showOrderDetails = true
+    this.selectedOrder = order;
+    this.showOrderDetails = true;
 
     if (!this.orderDetailsCache[order.idOrder]) {
-      this.store.dispatch(new EsculabActions.GetOrderDetails(order.idOrder))
+      this.store.dispatch(new GetOrderDetails(order.idOrder));
     } else {
-      this.groupResultsByPacket(this.orderDetailsCache[order.idOrder])
+      this.groupResultsByPacket(this.orderDetailsCache[order.idOrder]);
     }
   }
 
   closeOrderDetails() {
-    this.showOrderDetails = false
-    this.selectedOrder = null
-    this.groupedResults = []
+    this.showOrderDetails = false;
+    this.selectedOrder = null;
+    this.groupedResults = [];
   }
 
   groupResultsByPacket(results: LabResultDto[]) {
     // Group results by packet
-    const groupMap = new Map<string, LabResultDto[]>()
+    const groupMap = new Map<string, LabResultDto[]>();
 
     results.forEach((result) => {
-      const packetName = result.packet || "Other Tests"
+      const packetName = result.packet || 'Other Tests';
       if (!groupMap.has(packetName)) {
-        groupMap.set(packetName, [])
+        groupMap.set(packetName, []);
       }
-      groupMap.get(packetName)?.push(result)
-    })
+      groupMap.get(packetName)?.push(result);
+    });
 
     // Convert map to array of grouped results
-    this.groupedResults = Array.from(groupMap.entries()).map(([name, results]) => {
-      // Get the date from the first result in the group
-      const date = results[0]?.utime ? this.formatDateTime(results[0].utime) : ""
+    this.groupedResults = Array.from(groupMap.entries()).map(
+      ([name, results]) => {
+        // Get the date from the first result in the group
+        const date = results[0]?.utime
+          ? this.formatDateTime(results[0].utime)
+          : '';
 
-      return {
-        name,
-        date,
-        results,
+        return {
+          name,
+          date,
+          results,
+        };
       }
-    })
+    );
   }
 
   formatDateTime(date: Date): string {
-    return new Date(date).toLocaleString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 
   formatDate(dateString: string): string {
-    const date = new Date(dateString)
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   }
 
   formatNormRange(normString: string | undefined): string {
-    if (!normString) return "Not specified"
+    if (!normString) return 'Not specified';
 
     // Remove the JSON-like formatting and extract just the ranges
     try {
-      const normObj = JSON.parse(normString.replace(/'/g, '"'))
+      const normObj = JSON.parse(normString.replace(/'/g, '"'));
       return Object.keys(normObj)
         .map((key) => key)
-        .join(", ")
+        .join(', ');
     } catch (e) {
-      return normString.replace(/[{}"]/g, "")
+      return normString.replace(/[{}"]/g, '');
     }
   }
 
   downloadResults() {
     // Implement PDF download functionality
-    console.log("Downloading results for order:", this.selectedOrder?.idOrder)
+    console.log('Downloading results for order:', this.selectedOrder?.idOrder);
     // In a real app, this would generate and download a PDF
   }
 
   importToMedicalRecords(order: EsculabOrderDto) {
-    this.closeOrderDetails()
+    this.closeOrderDetails();
 
     // Navigate to add record page with pre-filled data
-    this.router.navigate(["/tabs/medical-records/add"], {
+    this.router.navigate(['/tabs/medical-records/add'], {
       queryParams: {
-        type: "labTest",
-        source: "esculab",
+        type: 'labTest',
+        source: 'esculab',
         orderId: order.idOrder,
         date: order.dt,
         title: order.packet,
       },
-    })
+    });
   }
 
   ngOnDestroy() {
     if (this.countdownInterval) {
-      clearInterval(this.countdownInterval)
+      clearInterval(this.countdownInterval);
     }
   }
 }

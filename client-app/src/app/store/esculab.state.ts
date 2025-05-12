@@ -9,47 +9,45 @@ import {
 } from '../models/esculab.model';
 import { EsculabService } from '../services/esculab.service';
 
-export namespace EsculabActions {
-  export class RequestCode {
-    static readonly type = '[Esculab] Request Code';
-    constructor(public phone: string) {}
-  }
+export class RequestCode {
+  static readonly type = '[Esculab] Request Code';
+  constructor(public phone: string) {}
+}
 
-  export class AcceptToken {
-    static readonly type = '[Esculab] Accept Token';
-    constructor(public payload: { code: string }) {}
-  }
+export class AcceptToken {
+  static readonly type = '[Esculab] Accept Token';
+  constructor(public payload: { code: string }) {}
+}
 
-  export class FindPatient {
-    static readonly type = '[Esculab] Find Patient';
-  }
+export class FindPatient {
+  static readonly type = '[Esculab] Find Patient';
+}
 
-  export class GetAllOrders {
-    static readonly type = '[Esculab] Get All Orders';
-  }
+export class GetAllOrders {
+  static readonly type = '[Esculab] Get All Orders';
+}
 
-  export class GetOrderDetails {
-    static readonly type = '[Esculab] Get Order Details';
-    constructor(public orderId: number) {}
-  }
+export class GetOrderDetails {
+  static readonly type = '[Esculab] Get Order Details';
+  constructor(public orderId: number) {}
+}
 
-  export class SetSelectedOrder {
-    static readonly type = '[Esculab] Set Selected Order';
-    constructor(public orderId: number) {}
-  }
+export class SetSelectedOrder {
+  static readonly type = '[Esculab] Set Selected Order';
+  constructor(public orderId: number) {}
+}
 
-  export class ClearEsculabState {
-    static readonly type = '[Esculab] Clear State';
-  }
+export class ClearEsculabState {
+  static readonly type = '[Esculab] Clear State';
+}
 
-  export class SetError {
-    static readonly type = '[Esculab] Set Error';
-    constructor(public error: string) {}
-  }
+export class SetError {
+  static readonly type = '[Esculab] Set Error';
+  constructor(public error: string) {}
+}
 
-  export class ClearError {
-    static readonly type = '[Esculab] Clear Error';
-  }
+export class ClearError {
+  static readonly type = '[Esculab] Clear Error';
 }
 
 export type EsculabStateModel = {
@@ -130,11 +128,8 @@ export class EsculabState {
     return !!state.esculabToken;
   }
 
-  @Action(EsculabActions.RequestCode)
-  requestCode(
-    ctx: StateContext<EsculabStateModel>,
-    action: EsculabActions.RequestCode
-  ) {
+  @Action(RequestCode)
+  requestCode(ctx: StateContext<EsculabStateModel>, action: RequestCode) {
     const state = ctx.getState();
     ctx.patchState({ loading: true, error: undefined });
 
@@ -156,11 +151,8 @@ export class EsculabState {
     );
   }
 
-  @Action(EsculabActions.AcceptToken)
-  acceptToken(
-    ctx: StateContext<EsculabStateModel>,
-    action: EsculabActions.AcceptToken
-  ) {
+  @Action(AcceptToken)
+  acceptToken(ctx: StateContext<EsculabStateModel>, action: AcceptToken) {
     const state = ctx.getState();
     const uuid = state.uuid;
 
@@ -193,7 +185,7 @@ export class EsculabState {
     );
   }
 
-  @Action(EsculabActions.FindPatient)
+  @Action(FindPatient)
   findPatient(ctx: StateContext<EsculabStateModel>) {
     const state = ctx.getState();
     const token = state.esculabToken ?? localStorage.getItem('esculab_token');
@@ -224,7 +216,7 @@ export class EsculabState {
     );
   }
 
-  @Action(EsculabActions.GetAllOrders)
+  @Action(GetAllOrders)
   getAllOrders(ctx: StateContext<EsculabStateModel>) {
     const state = ctx.getState();
     const token = state.esculabToken ?? localStorage.getItem('esculab_token');
@@ -256,10 +248,10 @@ export class EsculabState {
     );
   }
 
-  @Action(EsculabActions.GetOrderDetails)
+  @Action(GetOrderDetails)
   getOrderDetails(
     ctx: StateContext<EsculabStateModel>,
-    action: EsculabActions.GetOrderDetails
+    action: GetOrderDetails
   ) {
     const state = ctx.getState();
     const token = state.esculabToken ?? localStorage.getItem('esculab_token');
@@ -299,17 +291,17 @@ export class EsculabState {
     );
   }
 
-  @Action(EsculabActions.SetSelectedOrder)
+  @Action(SetSelectedOrder)
   setSelectedOrder(
     ctx: StateContext<EsculabStateModel>,
-    action: EsculabActions.SetSelectedOrder
+    action: SetSelectedOrder
   ) {
     ctx.patchState({
       selectedOrderId: action.orderId,
     });
   }
 
-  @Action(EsculabActions.ClearEsculabState)
+  @Action(ClearEsculabState)
   clearState(ctx: StateContext<EsculabStateModel>) {
     ctx.setState({
       loading: false,
@@ -318,17 +310,14 @@ export class EsculabState {
     });
   }
 
-  @Action(EsculabActions.SetError)
-  setError(
-    ctx: StateContext<EsculabStateModel>,
-    action: EsculabActions.SetError
-  ) {
+  @Action(SetError)
+  setError(ctx: StateContext<EsculabStateModel>, action: SetError) {
     ctx.patchState({
       error: action.error,
     });
   }
 
-  @Action(EsculabActions.ClearError)
+  @Action(ClearError)
   clearError(ctx: StateContext<EsculabStateModel>) {
     ctx.patchState({
       error: undefined,

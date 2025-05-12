@@ -33,7 +33,7 @@ export class RegisterPage {
         finalize(() => (this.isLoading = false))
       )
       .subscribe({
-        next: () => this.router.navigateByUrl('/tabs/dashboard'),
+        next: () => this.router.navigateByUrl('/auth/login'),
         error: (err) => {
           console.error('Login failed', err);
         },

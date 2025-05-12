@@ -17,9 +17,9 @@
     <div class="results-list">
       <div class="result-item" *ngFor="let result of topResults()">
         <div class="result-details">
-          <h4>{{ result.name }}</h4>
+          <h4>{{ result.packet }}</h4>
           <p>
-            {{ formatDate(result.date) }} · {{ result.resultCount }} results
+            {{ formatDate(result.dt) }} · {{ result.ready }} results
           </p>
         </div>
         <ion-button

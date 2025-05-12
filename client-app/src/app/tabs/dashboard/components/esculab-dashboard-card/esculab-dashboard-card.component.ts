@@ -2,6 +2,7 @@ import { Component, computed, input } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { EsculabOrderDto } from 'src/app/models/esculab.model';
 
 interface LabResult {
   id: number;
@@ -19,13 +20,15 @@ interface LabResult {
 })
 export class EsculabDashboardCardComponent {
   readonly isConnected = input(false);
-  readonly recentResults = input<LabResult[]>([]);
+  readonly recentResults = input<EsculabOrderDto[]>([]);
 
   readonly topResults = computed(() => this.recentResults().slice(0, 3));
 
-  formatDate(date: Date): string {
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
-      month: 'short',
+      year: 'numeric',
+      month: 'long',
       day: 'numeric',
     });
   }

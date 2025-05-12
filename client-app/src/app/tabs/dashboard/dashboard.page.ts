@@ -13,6 +13,12 @@ import { DoctorAccess } from 'src/app/models/doctor-access.model';
 import { EsculabDashboardCardComponent } from './components/esculab-dashboard-card/esculab-dashboard-card.component';
 import { DoctorAccessCardComponent } from '../shared/doctor-access-card/doctor-access-card.component';
 import { Router } from '@angular/router';
+import {
+  EsculabState,
+  FindPatient,
+  GetAllOrders,
+} from 'src/app/store/esculab.state';
+import { EsculabOrderDto } from 'src/app/models/esculab.model';
 
 interface LabResult {
   id: number;
@@ -50,6 +56,17 @@ export class DashboardPage {
     }
   );
 
+  private readonly esculabResults = toSignal(
+    this.store.select(EsculabState.getAllOrders),
+    {
+      initialValue: [],
+    }
+  );
+  private readonly patient = toSignal(
+    this.store.select(EsculabState.getPatient),
+    { initialValue: null }
+  );
+
   readonly recentRecords = computed<MedicalRecord[]>(() => {
     const arr = this.recordsSignal();
     return [...arr]
@@ -68,31 +85,16 @@ export class DashboardPage {
       .slice(0, 4);
   });
 
-  isEsculabConnected(): boolean {
-    return true;
-  }
+  readonly recentEsculabResults = computed<EsculabOrderDto[]>(() => {
+    const arr = this.esculabResults();
+    return [...arr]
+      .sort((a, b) => new Date(b.dt).getTime() - new Date(a.dt).getTime())
+      .slice(0, 4);
+  });
 
-  // Mock data for recent lab results
-  recentLabResults: LabResult[] = [
-    {
-      id: 1,
-      name: 'Complete Blood Count',
-      date: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000),
-      resultCount: 12,
-    },
-    {
-      id: 2,
-      name: 'Lipid Panel',
-      date: new Date(new Date().getTime() - 5 * 24 * 60 * 60 * 1000),
-      resultCount: 5,
-    },
-    {
-      id: 3,
-      name: 'Thyroid Function',
-      date: new Date(),
-      resultCount: 3,
-    },
-  ];
+  isEsculabConnected = computed(
+    () => this.patient() !== null && this.patient() !== undefined
+  );
 
   ngOnInit() {
     const userId = this.auth.currentUserId();
@@ -100,6 +102,8 @@ export class DashboardPage {
     if (userId) {
       this.store.dispatch(new LoadRecords());
       this.store.dispatch(new LoadAccesses());
+      this.store.dispatch(new GetAllOrders());
+      this.store.dispatch(new FindPatient());
     }
   }
 
