@@ -1,4 +1,5 @@
-﻿using server_app.Dtos;
+﻿using AutoMapper;
+using server_app.Dtos;
 using server_app.Helpers;
 using server_app.Models;
 using server_app.Repositories;
@@ -9,7 +10,7 @@ namespace server_app.Services
     {
         Task<ServiceResult<DoctorAccessDto>> CreateAsync(CreateDoctorAccessDto dto);
         Task<ServiceResult<bool>> ValidateAsync(Guid? userId, string? token);
-        Task<ServiceResult<IEnumerable<MedicalRecordDto>>> GetAccessibleRecordsAsync(Guid? userId, string? token);
+        Task<ServiceResult<IEnumerable<MedicalRecordGroupDto>>> GetAccessibleRecordsAsync(Guid? userId, string? token);
         Task<ServiceResult<IEnumerable<DoctorAccessDto>>> GetGrantedAccessesAsync();
         Task<ServiceResult<bool>> RevokeAsync(Guid id);
     }
@@ -19,12 +20,14 @@ namespace server_app.Services
         private readonly IDoctorAccessRepository _repo;
         private readonly IUserRepository _users;
         private readonly IMedicalRecordRepository _records;
+        private readonly IMapper _map;
 
-        public DoctorAccessService(IDoctorAccessRepository repo, IUserRepository users, IMedicalRecordRepository records)
+        public DoctorAccessService(IDoctorAccessRepository repo, IUserRepository users, IMedicalRecordRepository records, IMapper mapper)
         {
             _repo = repo;
             _users = users;
             _records = records;
+            _map = mapper;
         }
 
         public async Task<ServiceResult<DoctorAccessDto>> CreateAsync(CreateDoctorAccessDto dto)
@@ -46,7 +49,7 @@ namespace server_app.Services
             }
             else
             {
-                access.Token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+                access.Token = Guid.NewGuid().ToString("N");
             }
 
             await _repo.AddAsync(access);
@@ -71,26 +74,39 @@ namespace server_app.Services
             return ServiceResult<bool>.Ok(valid);
         }
 
-        public async Task<ServiceResult<IEnumerable<MedicalRecordDto>>> GetAccessibleRecordsAsync(Guid? userId, string? token)
+        public async Task<ServiceResult<IEnumerable<MedicalRecordGroupDto>>> GetAccessibleRecordsAsync(Guid? userId, string? token)
         {
             var entries = userId.HasValue
-                ? await _repo.GetValidAccessesForUserAsync(userId.Value)
-                : await _repo.GetValidAccessesByTokenAsync(token!);
+                 ? await _repo.GetValidAccessesForUserAsync(userId.Value)
+                 : await _repo.GetValidAccessesByTokenAsync(token!);
 
             var ownerIds = entries
                 .Where(e => !e.Revoked && e.ExpiresAt > DateTime.UtcNow)
                 .Select(e => e.OwnerUserId)
-                .Distinct();
+                .Distinct()
+                .ToList();
 
-            var result = new List<MedicalRecordDto>();
+            if (!ownerIds.Any())
+                return ServiceResult<IEnumerable<MedicalRecordGroupDto>>.Ok(Array.Empty<MedicalRecordGroupDto>());
 
-            foreach (var ownerId in ownerIds)
-            {
-                var records = await _records.GetByUserIdAsync(ownerId);
-                result.AddRange(records);
-            }
+            var dbRecs = await _records.GetByUserIdsAsync(ownerIds);
 
-            return ServiceResult<IEnumerable<MedicalRecordDto>>.Ok(result);
+            var groups = dbRecs
+                .GroupBy(r => r.UserId)
+                .Select(g =>
+                {
+                    var representative = g.First().User;
+                    return new MedicalRecordGroupDto
+                    {
+                        OwnerUserId = representative.Id,
+                        OwnerName = representative.FullName,
+                        OwnerEmail = representative.Email,
+                        Records = _map.Map<List<MedicalRecordDto>>(g.ToList())
+                    };
+                })
+                .ToList();
+
+            return ServiceResult<IEnumerable<MedicalRecordGroupDto>>.Ok(groups);
         }
 
         public async Task<ServiceResult<IEnumerable<DoctorAccessDto>>> GetGrantedAccessesAsync()

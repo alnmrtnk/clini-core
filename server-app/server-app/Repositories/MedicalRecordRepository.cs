@@ -10,7 +10,7 @@ namespace server_app.Repositories
     {
         Task<IEnumerable<MedicalRecordDto>> GetAllAsync();
         Task<MedicalRecordDto> GetByIdAsync(Guid id);
-        Task<IEnumerable<MedicalRecordDto>> GetByUserIdAsync(Guid userId);
+        Task<IEnumerable<MedicalRecordDto>> GetByUserIdsAsync(List<Guid> userId);
         Task<Guid> AddAsync(CreateMedicalRecordDto dto);
         Task<bool> UpdateAsync(Guid id, UpdateMedicalRecordDto dto);
         Task<bool> DeleteAsync(Guid id);
@@ -45,12 +45,13 @@ namespace server_app.Repositories
                     .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId)
             );
 
-        public async Task<IEnumerable<MedicalRecordDto>> GetByUserIdAsync(Guid userId) =>
+        public async Task<IEnumerable<MedicalRecordDto>> GetByUserIdsAsync(List<Guid> userIds) =>
             _map.Map<IEnumerable<MedicalRecordDto>>(
                 await _db.MedicalRecords
                     .Include(x => x.Files)
                     .Include(x => x.RecordType)
-                    .Where(x => x.UserId == userId)
+                    .Include(x => x.User)
+                    .Where(x => userIds.Contains(x.UserId))
                     .ToListAsync()
             );
 

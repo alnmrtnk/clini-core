@@ -24,15 +24,15 @@ export class AppComponent {
 
   ngOnInit() {
     this.screenService.checkScreenSize();
-    this.authService
-      .validate()
-      .pipe(
-        take(1),
-        catchError(() => {
-          this.authService.logout();
-          return of(null);
-        })
-      )
-      .subscribe();
+    // this.authService
+    //   .validate()
+    //   .pipe(
+    //     take(1),
+    //     catchError(() => {
+    //       this.authService.logout();
+    //       return of(null);
+    //     })
+    //   )
+    //   .subscribe();
   }
 }

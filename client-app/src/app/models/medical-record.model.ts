@@ -22,3 +22,10 @@ export type MedicalRecordFile = {
   s3Key: string;
   url: string;
 };
+
+export type MedicalRecordGroupDto = {
+  ownerUserId: string;
+  ownerName: string;
+  ownerEmail: string;
+  records: MedicalRecord[];
+}

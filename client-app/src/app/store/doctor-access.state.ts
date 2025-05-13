@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { DoctorAccess } from '../models/doctor-access.model';
 import { DoctorAccessService } from '../services/doctor-access.service';
 import { tap } from 'rxjs/operators';
+import { MedicalRecordGroupDto } from '../models/medical-record.model';
 
 export class LoadAccesses {
   static readonly type = '[Access] Load';
@@ -21,14 +22,20 @@ export class DeleteAccess {
   constructor(public id: string) {}
 }
 
+export class LoadSharedRecords {
+  static readonly type = '[Access] Get Shared Records';
+  constructor(public token: string) {}
+}
+
 export interface AccessStateModel {
   accesses: DoctorAccess[];
   displayedAccess: DoctorAccess | null;
+  sharedRecords: MedicalRecordGroupDto[];
 }
 
 @State<AccessStateModel>({
   name: 'accesses',
-  defaults: { accesses: [], displayedAccess: null },
+  defaults: { accesses: [], displayedAccess: null, sharedRecords: [] },
 })
 @Injectable()
 export class AccessState {
@@ -44,6 +51,11 @@ export class AccessState {
     return state.displayedAccess;
   }
 
+  @Selector()
+  static sharedRecords(state: AccessStateModel) {
+    return state.sharedRecords;
+  }
+
   @Action(LoadAccesses)
   load(ctx: StateContext<AccessStateModel>) {
     return this.service
@@ -55,7 +67,7 @@ export class AccessState {
   add(ctx: StateContext<AccessStateModel>, action: AddAccess) {
     return this.service.create(action.payload).pipe(
       tap((a) =>
-        ctx.setState({
+        ctx.patchState({
           accesses: [...ctx.getState().accesses, a],
           displayedAccess: a,
         })
@@ -77,5 +89,14 @@ export class AccessState {
         ctx.dispatch(LoadAccesses);
       })
     );
+  }
+
+  @Action(LoadSharedRecords)
+  loadShared(ctx: StateContext<AccessStateModel>, action: LoadSharedRecords) {
+    return this.service.getSharedPublic(action.token).pipe(
+      tap((sharedRecords) => {
+        ctx.patchState({sharedRecords})
+      })
+    )
   }
 }

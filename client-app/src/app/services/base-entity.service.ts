@@ -14,7 +14,10 @@ export abstract class BaseEntityService<T> {
 
   constructor(protected http: HttpClient) {}
 
-  getAll(queryParams?: { [key: string]: any }, path: string = ''): Observable<T[]> {
+  getAll(
+    queryParams?: { [key: string]: any },
+    path: string = ''
+  ): Observable<T[]> {
     const url = this.apiUrl + path;
 
     let params = new HttpParams();
@@ -28,6 +31,13 @@ export abstract class BaseEntityService<T> {
     return this.http
       .get<Response<T[]>>(url, { params })
       .pipe(map((r) => r.data));
+  }
+
+  getCustom<U>(path: string, params?: Record<string, any>): Observable<U> {
+    const url = this.buildUrl(path);
+    return this.http
+      .get<Response<U>>(url, { params })
+      .pipe(map((response) => response.data));
   }
 
   getById(id: string): Observable<T> {
@@ -48,5 +58,12 @@ export abstract class BaseEntityService<T> {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  protected buildUrl(path = ''): string {
+    const segs = [this.apiUrl, path]
+      .filter((s) => !!s)
+      .map((s) => s.replace(/^\/|\/$/g, ''));
+    return segs.join('/');
   }
 }

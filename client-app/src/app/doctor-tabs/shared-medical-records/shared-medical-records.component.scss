@@ -1,0 +1,353 @@
+:host {
+  --record-border-radius: 16px;
+  --item-border-radius: 12px;
+  --section-spacing: 24px;
+  --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  --transition-speed: 0.3s;
+  --comment-bubble-bg: #f0f7ff;
+  --comment-bubble-border: #d0e2ff;
+  --new-comment-bg: #e6f7e6;
+  --new-comment-border: #c3e6cb;
+
+  .wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+}
+
+.rounded-toolbar {
+  --border-radius: 0 0 16px 16px;
+  margin-bottom: 8px;
+}
+
+.welcome-card {
+  margin-bottom: var(--section-spacing);
+  border-radius: var(--record-border-radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+
+  ion-card-header {
+    text-align: center;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .header-icon {
+    font-size: 48px;
+    color: var(--ion-color-primary);
+    margin-bottom: 16px;
+  }
+}
+
+// Patient group section
+.group-section {
+  background: white;
+  border-radius: var(--record-border-radius);
+  margin-bottom: var(--section-spacing);
+  padding: 20px;
+  box-shadow: var(--card-shadow);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.patient-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ion-color-light);
+
+  ion-icon {
+    font-size: 36px;
+    color: var(--ion-color-primary);
+    margin-right: 16px;
+  }
+
+  .patient-info {
+    flex: 1;
+  }
+}
+
+.owner-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: var(--ion-color-dark);
+}
+
+.owner-email {
+  font-size: 0.9rem;
+  margin: 0;
+  color: var(--ion-color-medium);
+}
+
+// Records container
+.records-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.record-wrapper {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--item-border-radius);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background: white;
+  transition: box-shadow var(--transition-speed) ease;
+
+  &:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Record item
+.record-item {
+  --padding-start: 16px;
+  --padding-end: 12px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --background: var(--ion-color-light-tint);
+  --border-radius: var(--item-border-radius) var(--item-border-radius) 0 0;
+
+  .record-icon {
+    color: var(--ion-color-primary);
+    font-size: 22px;
+  }
+}
+
+.record-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--ion-color-dark);
+  font-size: 1.1rem;
+}
+
+.record-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  ion-badge {
+    font-weight: normal;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .record-date {
+    display: flex;
+    align-items: center;
+    color: var(--ion-color-medium);
+    font-size: 0.85rem;
+
+    ion-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+.comment-toggle-btn {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  height: 36px;
+  width: 36px;
+  margin: 0;
+  position: relative;
+
+  ion-icon {
+    font-size: 18px;
+    color: var(--ion-color-primary);
+  }
+}
+
+.comment-indicator {
+  position: absolute;
+  top: -2px;
+  right: -8px;
+  background: var(--ion-color-primary);
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+// Comment section
+.comment-section {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  background: white;
+
+  &.expanded {
+    max-height: 800px; // Increased to accommodate comments
+  }
+}
+
+// Existing comments
+.existing-comments {
+  padding: 16px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  border-bottom: 1px dashed var(--ion-color-light-shade);
+}
+
+.comment-bubble {
+  background: var(--comment-bubble-bg);
+  border: 1px solid var(--comment-bubble-border);
+  border-radius: 12px;
+  padding: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+
+  &.new-comment {
+    background: var(--new-comment-bg);
+    border-color: var(--new-comment-border);
+    animation: highlightNew 3s ease;
+  }
+}
+
+@keyframes highlightNew {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  10% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  20% {
+    box-shadow: 0 0 0 4px rgba(var(--ion-color-success-rgb), 0.3);
+  }
+  80% {
+    box-shadow: 0 0 0 4px rgba(var(--ion-color-success-rgb), 0);
+  }
+  100% {
+    background: var(--comment-bubble-bg);
+    border-color: var(--comment-bubble-border);
+  }
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+}
+
+.doctor-name {
+  font-weight: 600;
+  color: var(--ion-color-primary);
+}
+
+.comment-time {
+  color: var(--ion-color-medium);
+}
+
+.comment-text {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--ion-color-dark);
+}
+
+// New comment input
+.new-comment-container {
+  padding: 16px;
+}
+
+.comment-input-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--ion-color-medium);
+}
+
+.comment-item {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --background: white;
+  margin: 0;
+}
+
+.comment-textarea {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --background: var(--ion-color-light-tint);
+  --border-radius: 8px;
+  margin: 0;
+  width: 100%;
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 0 0;
+  gap: 10px;
+}
+
+.clear-btn,
+.save-btn {
+  --border-radius: 20px;
+  font-weight: 500;
+}
+
+.save-btn {
+  --box-shadow: 0 4px 8px rgba(var(--ion-color-primary-rgb), 0.3);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+
+  ion-icon {
+    font-size: 72px;
+    color: var(--ion-color-medium);
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: var(--ion-color-dark);
+  }
+
+  p {
+    margin-bottom: 28px;
+    color: var(--ion-color-medium);
+    max-width: 280px;
+    line-height: 1.5;
+  }
+}
+
+.files-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}

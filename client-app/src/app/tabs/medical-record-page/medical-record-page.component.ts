@@ -73,7 +73,7 @@ export class MedicalRecordPageComponent implements OnInit {
   openFile(file: MedicalRecordFile) {
     this.selectedFile = file;
     this.safeFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(file.url);
-    console.log(this.safeFileUrl);
+  
     this.showFileViewer = true;
   }
 
@@ -87,11 +87,6 @@ export class MedicalRecordPageComponent implements OnInit {
     const record = this.record();
     if (!record || !record.files || record.files.length === 0) return;
 
-    // In a real app, this would handle batch downloading of files
-    // For now, we'll just log the action
-    console.log('Downloading all files:', record.files);
-
-    // Alternatively, you could trigger downloads for each file
     record.files.forEach((file) => {
       window.open(file.url, '_blank');
     });
