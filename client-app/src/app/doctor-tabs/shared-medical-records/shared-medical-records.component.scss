@@ -196,7 +196,7 @@
   background: white;
 
   &.expanded {
-    max-height: 800px; // Increased to accommodate comments
+    max-height: unset; // Increased to accommodate comments
   }
 }
 

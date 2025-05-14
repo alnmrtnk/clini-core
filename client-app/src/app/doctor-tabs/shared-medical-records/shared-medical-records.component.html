@@ -123,15 +123,15 @@
                 <div
                   *ngFor="let comment of getCommentsForRecord(record.id)"
                   class="comment-bubble"
-                  [class.new-comment]="comment.isNew"
+                  
                 >
                   <div class="comment-header">
-                    <span class="doctor-name">{{ comment.doctorName }}</span>
+                    <span class="doctor-name">You</span>
                     <span class="comment-time">{{
-                      comment.timestamp | date : "MMM d, y, h:mm a"
+                      comment.date | date : "MMM d, y, h:mm a"
                     }}</span>
                   </div>
-                  <div class="comment-text">{{ comment.text }}</div>
+                  <div class="comment-text">{{ comment.content }}</div>
                 </div>
               </div>
 
@@ -156,13 +156,12 @@
 
                 <!-- Type selector -->
                 <ion-item lines="none">
-                  <ion-label>Comment Type</ion-label>
                   <ion-select
                     name="commentType-{{ record.id }}"
                     [ngModelOptions]="{ standalone: true }"
                     [(ngModel)]="newComments[record.id].typeId"
                     interface="action-sheet"
-                    placeholder="Select record type"
+                    placeholder="Select comment type"
                   >
                     <ion-select-option
                       *ngFor="let t of commentTypes()"
