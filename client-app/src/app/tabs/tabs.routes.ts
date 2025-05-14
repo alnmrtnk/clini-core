@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 import { importProvidersFrom } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
+import { VaccinationsState } from '../store/vaccination.state';
+import { MeasurementsState } from '../store/health-measurement.state';
 import { RecordsState } from '../store/medical-record.state';
 import { EsculabState } from '../store/esculab.state';
 import { AccessState } from '../store/doctor-access.state';
@@ -56,6 +58,27 @@ export const routes: Routes = [
             NgxsModule.forFeature([EsculabState, RecordsState])
           ),
         ],
+      },
+      {
+        path: 'vaccinations',
+        loadComponent: () =>
+          import('./vaccinations/vaccinations.page').then(
+            (m) => m.VaccinationsPage
+          ),
+      },
+      {
+        path: 'vaccinations/add',
+        loadComponent: () =>
+          import(
+            './vaccinations/components/add-vaccination/add-vaccination.component'
+          ).then((m) => m.AddVaccinationComponent),
+      },
+      {
+        path: 'health-tracking',
+        loadComponent: () =>
+          import('./health-tracking/health-tracking.page').then(
+            (m) => m.HealthTrackingPage
+          ),
       },
       {
         path: 'doctor-access',

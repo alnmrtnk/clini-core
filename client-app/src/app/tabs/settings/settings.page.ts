@@ -16,6 +16,7 @@ export class SettingsPage {
   settings = {
     automaticBackup: true,
     appointmentReminders: true,
+    vaccinationReminders: true,
     labResultsNotifications: true,
     esculabConnected: false,
   };
@@ -43,6 +44,11 @@ export class SettingsPage {
   connectLab(lab: string) {
     console.log('Connect to lab:', lab);
     // Implement connect to lab functionality
+  }
+
+  connectHealthDevice() {
+    console.log('Connect health device');
+    // Implement connect health device functionality
   }
 
   showAbout() {

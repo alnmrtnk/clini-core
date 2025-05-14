@@ -15,6 +15,8 @@ export class TabsPage implements OnInit {
   public readonly tabs: { label: string; icon: string; id: string }[] = [
     { label: 'Dashboard', icon: 'home-outline', id: 'dashboard' },
     { label: 'Records', icon: 'document-text-outline', id: 'medical-records' },
+    { label: 'Vaccinations', icon: 'fitness-outline', id: 'vaccinations' },
+    { label: 'Health', icon: 'pulse-outline', id: 'health-tracking' },
     { label: 'Doctors', icon: 'people-outline', id: 'doctor-access' },
     { label: 'Settings', icon: 'settings-outline', id: 'settings' },
   ];
