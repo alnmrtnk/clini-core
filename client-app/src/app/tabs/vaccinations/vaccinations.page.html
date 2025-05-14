@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-title>Vaccinations</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addVaccination()">
@@ -24,81 +24,53 @@
     </ion-segment>
 
     <div [ngSwitch]="currentSegment">
+      <!-- UPCOMING -->
       <div *ngSwitchCase="'upcoming'">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-subtitle>Due in 14 days</ion-card-subtitle>
-            <ion-card-title>Flu Vaccine</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p>Annual influenza vaccination</p>
-            <p>Recommended date: April 10, 2025</p>
-            <ion-button
-              expand="block"
-              color="primary"
-              (click)="scheduleVaccination('flu')"
-            >
-              Schedule Appointment
-            </ion-button>
-          </ion-card-content>
-        </ion-card>
-
-        <ion-card>
-          <ion-card-header>
-            <ion-card-subtitle>Due in 45 days</ion-card-subtitle>
-            <ion-card-title>Tetanus Booster</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p>10-year tetanus booster shot</p>
-            <p>Recommended date: May 15, 2025</p>
-            <ion-button
-              expand="block"
-              color="primary"
-              (click)="scheduleVaccination('tetanus')"
-            >
-              Schedule Appointment
-            </ion-button>
-          </ion-card-content>
-        </ion-card>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" size-md="6">
+             <div class="grid">
+               <ion-card *ngFor="let v of upcoming$ | async">
+                <ion-card-header>
+                  <ion-card-subtitle>
+                    Due in {{ dueInDays(v.dateAdministered) }} days
+                  </ion-card-subtitle>
+                  <ion-card-title>{{ v.vaccineName }}</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <p>Recommended date:
+                    {{ v.dateAdministered | date:'MMMM d, yyyy' }}
+                  </p>
+                </ion-card-content>
+              </ion-card>
+             </div>
+            </ion-col>
+            <ion-col size="12" size-md="6">
+              <app-vaccination-calendar *ngIf="upcoming$ | async as upcoming"
+                [vaccinations]="upcoming">
+              </app-vaccination-calendar>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </div>
 
+      <!-- COMPLETED -->
       <div *ngSwitchCase="'completed'">
         <ion-list>
-          <ion-item>
+          <ion-item *ngFor="let v of completed$ | async">
             <ion-icon
               name="checkmark-circle"
               color="success"
               slot="start"
             ></ion-icon>
             <ion-label>
-              <h2>COVID-19 Booster</h2>
-              <p>January 5, 2025</p>
-              <p>City Medical Center</p>
+              <h2>{{ v.vaccineName }}</h2>
+              <p>{{ v.dateAdministered | date:'MMMM d, yyyy' }}</p>
             </ion-label>
             <ion-button
               fill="clear"
               slot="end"
-              (click)="viewVaccinationDetails('covid')"
-            >
-              Details
-            </ion-button>
-          </ion-item>
-
-          <ion-item>
-            <ion-icon
-              name="checkmark-circle"
-              color="success"
-              slot="start"
-            ></ion-icon>
-            <ion-label>
-              <h2>Hepatitis B (3rd dose)</h2>
-              <p>October 12, 2024</p>
-              <p>Community Health Clinic</p>
-            </ion-label>
-            <ion-button
-              fill="clear"
-              slot="end"
-              (click)="viewVaccinationDetails('hepb')"
+              (click)="viewVaccinationDetails(v.id)"
             >
               Details
             </ion-button>
@@ -106,37 +78,21 @@
         </ion-list>
       </div>
 
+      <!-- ALL -->
       <div *ngSwitchCase="'all'">
-        <!-- Combined view of upcoming and completed vaccinations -->
         <ion-list-header>
           <ion-label>Upcoming</ion-label>
         </ion-list-header>
-
-        <ion-item>
+        <ion-item *ngFor="let v of upcoming$ | async">
           <ion-icon name="time" color="warning" slot="start"></ion-icon>
           <ion-label>
-            <h2>Flu Vaccine</h2>
-            <p>Due: April 10, 2025</p>
+            <h2>{{ v.vaccineName }}</h2>
+            <p>Due: {{ v.dateAdministered | date:'MMMM d, yyyy' }}</p>
           </ion-label>
           <ion-button
             fill="clear"
             slot="end"
-            (click)="scheduleVaccination('flu')"
-          >
-            Schedule
-          </ion-button>
-        </ion-item>
-
-        <ion-item>
-          <ion-icon name="time" color="warning" slot="start"></ion-icon>
-          <ion-label>
-            <h2>Tetanus Booster</h2>
-            <p>Due: May 15, 2025</p>
-          </ion-label>
-          <ion-button
-            fill="clear"
-            slot="end"
-            (click)="scheduleVaccination('tetanus')"
+            (click)="scheduleVaccination(v.id)"
           >
             Schedule
           </ion-button>
@@ -145,40 +101,20 @@
         <ion-list-header>
           <ion-label>Completed</ion-label>
         </ion-list-header>
-
-        <ion-item>
+        <ion-item *ngFor="let v of completed$ | async">
           <ion-icon
             name="checkmark-circle"
             color="success"
             slot="start"
           ></ion-icon>
           <ion-label>
-            <h2>COVID-19 Booster</h2>
-            <p>January 5, 2025</p>
+            <h2>{{ v.vaccineName }}</h2>
+            <p>{{ v.dateAdministered | date:'MMMM d, yyyy' }}</p>
           </ion-label>
           <ion-button
             fill="clear"
             slot="end"
-            (click)="viewVaccinationDetails('covid')"
-          >
-            Details
-          </ion-button>
-        </ion-item>
-
-        <ion-item>
-          <ion-icon
-            name="checkmark-circle"
-            color="success"
-            slot="start"
-          ></ion-icon>
-          <ion-label>
-            <h2>Hepatitis B (3rd dose)</h2>
-            <p>October 12, 2024</p>
-          </ion-label>
-          <ion-button
-            fill="clear"
-            slot="end"
-            (click)="viewVaccinationDetails('hepb')"
+            (click)="viewVaccinationDetails(v.id)"
           >
             Details
           </ion-button>

@@ -19,7 +19,12 @@ export const routes: Routes = [
           import('./dashboard/dashboard.page').then((m) => m.DashboardPage),
         providers: [
           importProvidersFrom(
-            NgxsModule.forFeature([RecordsState, AccessState, EsculabState])
+            NgxsModule.forFeature([
+              RecordsState,
+              AccessState,
+              EsculabState,
+              VaccinationsState,
+            ])
           ),
         ],
       },
@@ -65,6 +70,9 @@ export const routes: Routes = [
           import('./vaccinations/vaccinations.page').then(
             (m) => m.VaccinationsPage
           ),
+        providers: [
+          importProvidersFrom(NgxsModule.forFeature([VaccinationsState])),
+        ],
       },
       {
         path: 'vaccinations/add',
@@ -72,6 +80,9 @@ export const routes: Routes = [
           import(
             './vaccinations/components/add-vaccination/add-vaccination.component'
           ).then((m) => m.AddVaccinationComponent),
+        providers: [
+          importProvidersFrom(NgxsModule.forFeature([VaccinationsState])),
+        ],
       },
       {
         path: 'health-tracking',

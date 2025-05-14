@@ -17,7 +17,6 @@ export class TabsPage implements OnInit {
     { label: 'Records', icon: 'document-text-outline', id: 'medical-records' },
     { label: 'Vaccinations', icon: 'fitness-outline', id: 'vaccinations' },
     { label: 'Health', icon: 'pulse-outline', id: 'health-tracking' },
-    { label: 'Doctors', icon: 'people-outline', id: 'doctor-access' },
     { label: 'Settings', icon: 'settings-outline', id: 'settings' },
   ];
   public expanded = false;

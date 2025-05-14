@@ -17,6 +17,8 @@ import { NgxsModule } from '@ngxs/store';
 import { importProvidersFrom } from '@angular/core';
 import { environment } from './environments/environment';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -27,6 +29,10 @@ bootstrapApplication(AppComponent, {
       NgxsModule.forRoot([]),
       NgxsLoggerPluginModule.forRoot({
         disabled: environment.production,
+      }),
+      CalendarModule.forRoot({
+        provide: DateAdapter,
+        useFactory: adapterFactory,
       })
     ),
     provideHttpClient(withInterceptors([JwtInterceptor])),

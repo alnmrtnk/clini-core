@@ -53,7 +53,7 @@
             </ion-card-header>
             <ion-card-content>
               <ion-list lines="full">
-                <ion-item *ngFor="let vac of vaccinationsSignal()">
+                <ion-item *ngFor="let vac of upcomingVaccinations()">
                   <ion-label>
                     <h3>{{ vac.vaccineName }}</h3>
                     <p>Due {{ vac.dateAdministered | date:'shortDate' }}</p>

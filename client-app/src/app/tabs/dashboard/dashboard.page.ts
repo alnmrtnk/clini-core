@@ -24,6 +24,7 @@ import {
   GetAllOrders,
 } from 'src/app/store/esculab.state';
 import { EsculabOrderDto } from 'src/app/models/esculab.model';
+import { HealthChartComponent } from 'src/app/shared/components/health-chart/health-chart.component';
 
 interface LabResult {
   id: number;
@@ -34,13 +35,7 @@ interface LabResult {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [
-    IonicModule,
-    CommonModule,
-    MainDashboardRecordsComponent,
-    DoctorAccessCardComponent,
-    EsculabDashboardCardComponent,
-  ],
+  imports: [IonicModule, CommonModule, RouterLink, HealthChartComponent],
   templateUrl: 'dashboard.page.html',
   styleUrl: 'dashboard.page.scss',
 })
@@ -99,6 +94,7 @@ export class DashboardPage {
         .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())
         .slice(0, 5);
     });
+
   readonly recentAccesses = computed<DoctorAccess[]>(() => {
     const arr = this.doctorAccesses();
 

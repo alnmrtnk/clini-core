@@ -22,11 +22,72 @@ namespace server_app.Services
             _r = r;
         }
 
-        public async Task<ServiceResult<IEnumerable<VaccinationDto>>> GetAllAsync()
+        public Task<ServiceResult<IEnumerable<VaccinationDto>>> GetAllAsync()
         {
-            var data = await _r.GetAllAsync();
-            return ServiceResult<IEnumerable<VaccinationDto>>.Ok(data);
+            var now = DateTime.UtcNow;
+            var mockData = new List<VaccinationDto>
+            {
+                // Past doses
+                new VaccinationDto {
+                    Id = Guid.NewGuid(),
+                    VaccineName = "Pfizer-BioNTech",
+                    DateAdministered = now.AddDays(-60)
+                },
+                new VaccinationDto {
+                    Id = Guid.NewGuid(),
+                    VaccineName = "Moderna",
+                    DateAdministered = now.AddDays(-45)
+                },
+                new VaccinationDto {
+                    Id = Guid.NewGuid(),
+                    VaccineName = "Johnson & Johnson (Janssen)",
+                    DateAdministered = now.AddDays(-30)
+                },
+                new VaccinationDto {
+                    Id = Guid.NewGuid(),
+                    VaccineName = "Novavax",
+                    DateAdministered = now.AddDays(-15)
+                },
+                new VaccinationDto {
+                    Id = Guid.NewGuid(),
+                    VaccineName = "Sinopharm",
+                    DateAdministered = now.AddDays(-7)
+                },
+
+                // Upcoming appointments
+                new VaccinationDto {
+                    Id = Guid.NewGuid(),
+                    VaccineName = "Pfizer-BioNTech",
+                    DateAdministered = now.AddDays(7)
+                },
+                new VaccinationDto {
+                    Id = Guid.NewGuid(),
+                    VaccineName = "Moderna",
+                    DateAdministered = now.AddDays(14)
+                },
+                new VaccinationDto {
+                    Id = Guid.NewGuid(),
+                    VaccineName = "Johnson & Johnson (Janssen)",
+                    DateAdministered = now.AddDays(21)
+                },
+                new VaccinationDto {
+                    Id = Guid.NewGuid(),
+                    VaccineName = "Novavax",
+                    DateAdministered = now.AddDays(30)
+                },
+                new VaccinationDto {
+                    Id = Guid.NewGuid(),
+                    VaccineName = "Sinovac",
+                    DateAdministered = now.AddDays(60)
+                }
+            };
+
+            return Task.FromResult(
+                ServiceResult<IEnumerable<VaccinationDto>>.Ok(mockData)
+            );
         }
+
+
 
         public async Task<ServiceResult<VaccinationDto>> GetByIdAsync(Guid id)
         {

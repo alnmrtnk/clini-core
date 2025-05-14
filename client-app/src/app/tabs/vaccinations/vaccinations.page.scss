@@ -16,3 +16,7 @@ ion-card {
 ion-icon {
   color: #fff;
 }
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
