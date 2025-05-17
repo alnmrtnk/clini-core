@@ -9,14 +9,10 @@ import { RecordsState } from '../../store/medical-record.state';
 import { VaccinationsState } from '../../store/vaccination.state';
 import { MedicalRecord } from '../../models/medical-record.model';
 import { Vaccination } from '../../models/vaccination.model';
-import { of } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import { MainDashboardRecordsComponent } from './components/main-dashboard-records/main-dashboard-records.component';
 import { AccessState, LoadAccesses } from 'src/app/store/doctor-access.state';
 import { DoctorAccess } from 'src/app/models/doctor-access.model';
-import { EsculabDashboardCardComponent } from './components/esculab-dashboard-card/esculab-dashboard-card.component';
-import { DoctorAccessCardComponent } from '../shared/doctor-access-card/doctor-access-card.component';
 import { Router } from '@angular/router';
 import {
   EsculabState,
@@ -76,7 +72,7 @@ export class DashboardPage {
     const arr = this.recordsSignal();
     return [...arr]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 4);
+      .slice(0, 5);
   });
 
   readonly upcomingVaccinations: Signal<(Vaccination & { dueDate: Date })[]> =

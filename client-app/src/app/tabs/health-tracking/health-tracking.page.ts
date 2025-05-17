@@ -1,111 +1,92 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
-import { add, addOutline } from 'ionicons/icons';
+
+type Measurement = {
+  value: string;
+  date: string;        // ISO string
+  status: string;
+  statusText: string;
+};
 
 @Component({
   selector: 'app-health-tracking',
+  standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, SharedComponentsModule],
   templateUrl: 'health-tracking.page.html',
-  styleUrl: 'health-tracking.page.scss',
+  styleUrls: ['health-tracking.page.scss'],
 })
 export class HealthTrackingPage implements OnInit {
-  currentParameter = 'bloodPressure';
-  recentMeasurements: any[] = [];
+  currentParameter: 'bloodPressure' | 'bloodSugar' | 'weight' = 'bloodPressure';
+  recentMeasurements: Measurement[] = [];
+
+  constructor(private alertCtrl: AlertController) {}
 
   ngOnInit() {
-    this.loadMeasurements();
+    this.loadMeasurements(this.currentParameter);
   }
 
   parameterChanged() {
-    this.loadMeasurements();
+    this.loadMeasurements(this.currentParameter);
   }
 
-  getParameterTitle() {
+  private loadMeasurements(param: string) {
+    const raw = localStorage.getItem(param) || '[]';
+    const all: Measurement[] = JSON.parse(raw);
+    // filter last 30 days
+    const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    this.recentMeasurements = all
+      .map(m => ({ ...m, date: m.date }))
+      .filter(m => new Date(m.date).getTime() >= thirtyDaysAgo)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
+
+  async addMeasurement() {
+    const alert = await this.alertCtrl.create({
+      header: `New ${this.getParameterTitle()}`,
+      inputs: [
+        { name: 'value', type: 'text', placeholder: 'Enter value (e.g. 120/80 or 5.5)' }
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Save',
+          handler: (data) => {
+            if (data.value) {
+              this.saveMeasurement(data.value);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  private saveMeasurement(value: string) {
+    const param = this.currentParameter;
+    const raw = localStorage.getItem(param) || '[]';
+    const all: Measurement[] = JSON.parse(raw);
+
+    const newEntry: Measurement = {
+      value,
+      date: new Date().toISOString(),
+      status: 'primary',
+      statusText: 'Recorded',
+    };
+
+    all.push(newEntry);
+    localStorage.setItem(param, JSON.stringify(all));
+    this.loadMeasurements(param);
+  }
+
+  getParameterTitle(): string {
     switch (this.currentParameter) {
-      case 'bloodPressure':
-        return 'Blood Pressure';
-      case 'bloodSugar':
-        return 'Blood Sugar';
-      case 'weight':
-        return 'Weight';
-      default:
-        return '';
+      case 'bloodPressure': return 'Blood Pressure';
+      case 'bloodSugar':   return 'Blood Sugar';
+      case 'weight':       return 'Weight';
+      default:             return '';
     }
-  }
-
-  loadMeasurements() {
-    // This would normally fetch from a service
-    if (this.currentParameter === 'bloodPressure') {
-      this.recentMeasurements = [
-        {
-          value: '120/80 mmHg',
-          date: new Date(),
-          status: 'success',
-          statusText: 'Normal',
-        },
-        {
-          value: '125/82 mmHg',
-          date: new Date(Date.now() - 86400000),
-          status: 'success',
-          statusText: 'Normal',
-        },
-        {
-          value: '135/85 mmHg',
-          date: new Date(Date.now() - 172800000),
-          status: 'warning',
-          statusText: 'Elevated',
-        },
-      ];
-    } else if (this.currentParameter === 'bloodSugar') {
-      this.recentMeasurements = [
-        {
-          value: '95 mg/dL',
-          date: new Date(),
-          status: 'success',
-          statusText: 'Normal',
-        },
-        {
-          value: '105 mg/dL',
-          date: new Date(Date.now() - 86400000),
-          status: 'success',
-          statusText: 'Normal',
-        },
-        {
-          value: '120 mg/dL',
-          date: new Date(Date.now() - 172800000),
-          status: 'warning',
-          statusText: 'Elevated',
-        },
-      ];
-    } else if (this.currentParameter === 'weight') {
-      this.recentMeasurements = [
-        {
-          value: '70 kg',
-          date: new Date(),
-          status: 'success',
-          statusText: 'Normal',
-        },
-        {
-          value: '70.5 kg',
-          date: new Date(Date.now() - 86400000),
-          status: 'success',
-          statusText: 'Normal',
-        },
-        {
-          value: '71 kg',
-          date: new Date(Date.now() - 172800000),
-          status: 'success',
-          statusText: 'Normal',
-        },
-      ];
-    }
-  }
-
-  addMeasurement() {
-    console.log('Add measurement');
-    // Implement add measurement functionality
   }
 }

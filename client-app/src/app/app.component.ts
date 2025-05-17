@@ -5,6 +5,7 @@ import { RouterOutlet } from '@angular/router';
 import { ScreenService } from './services/screen.service';
 import { AuthService } from './services/auth.service';
 import { catchError, of, take } from 'rxjs';
+import { seedAllMeasurements } from './utils/mock-measurements';
 
 @Component({
   selector: 'app-root',
@@ -34,5 +35,7 @@ export class AppComponent {
     //     })
     //   )
     //   .subscribe();
+
+    seedAllMeasurements(50);
   }
 }
