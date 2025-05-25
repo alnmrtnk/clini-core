@@ -13,9 +13,10 @@ namespace server_app.Dtos
 
         public required Guid UserId { get; set; }
 
-        public List<MedicalRecordFileDto> Files { get; set; } = new();
+        public UserDto User { get; set; } = null!;
 
-        public required UserDto User { get; set; } = null!;
+        public IList<MedicalRecordFileDto> Files { get; set; } = new List<MedicalRecordFileDto>();
+        public IList<DoctorCommentDto> DoctorComments { get; set; } = new List<DoctorCommentDto>();
     }
 
 

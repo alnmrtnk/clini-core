@@ -1,3 +1,5 @@
+import { DoctorCommentDto } from "./doctor-comment.model";
+
 export type MedicalRecord = {
   id: string;
   userId: string;
@@ -6,6 +8,7 @@ export type MedicalRecord = {
   date: string;
   notes?: string;
   files: MedicalRecordFile[];
+  doctorComments: DoctorCommentDto[];
 };
 
 export type CreateMedicalRecord = {

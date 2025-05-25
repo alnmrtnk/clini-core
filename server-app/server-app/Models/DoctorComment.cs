@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace server_app.Models
 {
@@ -18,6 +19,7 @@ namespace server_app.Models
 
         public DoctorAccess DoctorAccess { get; set; } = null!;
 
+        [JsonIgnore]
         public MedicalRecord MedicalRecord { get; set; } = null!;
 
         public DoctorCommentType DoctorCommentType { get; set; } = null!;

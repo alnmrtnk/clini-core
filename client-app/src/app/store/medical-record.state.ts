@@ -1,6 +1,6 @@
 import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { HttpEventType } from '@angular/common/http';
 
 import { MedicalRecordService } from '../services/medical-record.service';
@@ -8,6 +8,7 @@ import { RecordTypeService } from '../services/record-type.service';
 import type { MedicalRecord } from '../models/medical-record.model';
 import type { RecordType } from '../models/record-type.model';
 import type { CreateMedicalRecord } from '../models/medical-record.model';
+import { of } from 'rxjs';
 
 export class LoadRecords {
   static readonly type = '[Record] Load';
@@ -100,6 +101,10 @@ export class RecordsState {
           ctx.patchState({ uploading: false, uploadingProgress: 100 });
           this.store.dispatch(new LoadRecords());
         }
+      }),
+      catchError(() => {
+        ctx.patchState({ uploadingProgress: 0 });
+        return of(null);
       })
     );
   }

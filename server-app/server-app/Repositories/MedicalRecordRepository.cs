@@ -33,6 +33,8 @@ namespace server_app.Repositories
                 await _db.MedicalRecords
                     .Include(x => x.Files)
                     .Include(x => x.RecordType)
+                    .Include(x => x.DoctorComments).ThenInclude(y => y.DoctorAccess)
+                    .Include(x => x.DoctorComments).ThenInclude(y => y.DoctorCommentType)
                     .Where(x => x.UserId == CurrentUserId)
                     .ToListAsync()
             );
@@ -42,6 +44,8 @@ namespace server_app.Repositories
                 await _db.MedicalRecords
                     .Include(x => x.Files)
                     .Include(x => x.RecordType)
+                    .Include(x => x.DoctorComments).ThenInclude(y => y.DoctorAccess)
+                    .Include(x => x.DoctorComments).ThenInclude(y => y.DoctorCommentType)
                     .FirstOrDefaultAsync(x => x.Id == id && x.UserId == CurrentUserId)
             );
 
@@ -50,6 +54,8 @@ namespace server_app.Repositories
                 await _db.MedicalRecords
                     .Include(x => x.Files)
                     .Include(x => x.RecordType)
+                    .Include(x => x.DoctorComments).ThenInclude(y => y.DoctorAccess)
+                    .Include(x => x.DoctorComments).ThenInclude(y => y.DoctorCommentType)
                     .Include(x => x.User)
                     .Where(x => userIds.Contains(x.UserId))
                     .ToListAsync()

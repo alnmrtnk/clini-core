@@ -3,7 +3,6 @@ using server_app.Dtos.Esculab;
 using server_app.Extensions;
 using server_app.Helpers;
 using server_app.Repositories;
-using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
 

@@ -140,7 +140,7 @@ namespace server_app.Services
                 : ServiceResult<bool>.Fail("Record not found", StatusCodes.Status404NotFound);
         }
 
-        private List<MedicalRecordFileDto> BuildFileDtosAsync(List<MedicalRecordFileDto> files)
+        private List<MedicalRecordFileDto> BuildFileDtosAsync(IList<MedicalRecordFileDto> files)
         {
             var result = new List<MedicalRecordFileDto>();
 

@@ -3,18 +3,14 @@ using server_app.Data;
 using server_app.Repositories;
 using server_app.Services;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Amazon.S3;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -61,13 +57,10 @@ builder.Services.AddCors(options =>
     );
 });
 
-// AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// HttpContext
 builder.Services.AddHttpContextAccessor();
 
-// S3
 builder.Services.AddSingleton<IAmazonS3>(_ =>
 {
     var config = new AmazonS3Config
@@ -78,7 +71,6 @@ builder.Services.AddSingleton<IAmazonS3>(_ =>
     return new AmazonS3Client("test", "test", config);
 });
 
-// Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
 builder.Services.AddScoped<IDoctorAccessRepository, DoctorAccessRepository>();
@@ -86,7 +78,6 @@ builder.Services.AddScoped<IMedicalRecordFileRepository, MedicalRecordFileReposi
 builder.Services.AddScoped<IDoctorCommentRepository, DoctorCommentRepository>();
 builder.Services.AddScoped<IRecordTypeRepository, RecordTypeRepository>();
 
-// Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
@@ -102,7 +93,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new() { Title = "server_app API", Version = "v1" });
 
-    // Add JWT Bearer auth
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -131,7 +121,6 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
