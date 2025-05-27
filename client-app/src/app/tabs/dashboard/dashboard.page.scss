@@ -1,5 +1,9 @@
 ion-card {
   border-radius: 12px;
+
+  ion-thumbnail {
+    --padding: 10px;
+  }
 }
 
 ion-row {
@@ -26,6 +30,10 @@ ion-card-content {
 ion-grid, ion-col {
   --padding: 0;
   padding: 0;
+}
+
+ion-list {
+  --background: transparent;
 }
 
 @media (max-width: 1024px) {

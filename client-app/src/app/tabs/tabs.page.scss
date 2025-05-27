@@ -39,43 +39,14 @@ ion-tabs {
   width: 100%;
 }
 
-.ion-tab-bar.vertical {
-  position: relative;
-  padding-top: 56px;
-  align-items: flex-start;
-  flex-direction: column;
-  height: 100%;
-  width: var(--menu-collapsed-width);
-  transition: width 0.3s ease-in-out;
+ion-tab-bar.desktop {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
-  ion-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    margin: 0;
-    z-index: 10;
-  }
-
-  ion-tab-button {
-    height: 56px;
-    justify-content: flex-start;
-    padding-left: 10px;
-    width: 100%;
-    transition: padding-left 0.3s ease-in-out;
-
-    ion-icon {
-      font-size: 24px !important;
-      --ionicon-width: 24px !important;
-      --ionicon-height: 24px !important;
-      min-width: 24px !important;
-      min-height: 24px !important;
-      transition: none;
-    }
-
-    ion-label {
-      opacity: 0;
-      max-width: 0;
-      transition: max-width opacity 0.3s ease-in-out;
-    }
-  }
+ion-label {
+  font-size: 18px;
+  font-weight: 600;
 }

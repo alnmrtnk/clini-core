@@ -37,23 +37,25 @@
       >
         Please enter a valid phone number
       </ion-note>
-      <div class="ion-padding-top">
-        <ion-button
-          expand="block"
-          type="submit"
-          [disabled]="!phoneForm.valid || loading()"
-        >
-          <ion-spinner name="dots" *ngIf="loading()"></ion-spinner>
-          <span *ngIf="!loading()">Get Verification Code</span>
-        </ion-button>
-      </div>
+      <ion-row class="ion-padding-top ion-justify-content-center">
+        <ion-col class="ion-justify-content-center" [style.display]="'flex'">
+          <ion-button
+            type="submit"
+            shape="round"
+            [disabled]="!phoneForm.valid || loading()"
+          >
+            <ion-spinner name="dots" *ngIf="loading()"></ion-spinner>
+            <span *ngIf="!loading()">Get Verification Code</span>
+          </ion-button>
+        </ion-col>
+      </ion-row>
     </form>
   </ion-card-content>
-  <ion-card *ngIf="error() as error">
-    <ion-card-content>
-      <ion-text color="danger">{{ error }}</ion-text>
-    </ion-card-content>
-  </ion-card>
+  <ion-row>
+    <ion-col>
+      <ion-text *ngIf="error() as error" class="ion-margin-start ion-margin-bottom" color="danger">{{ error }}</ion-text>
+    </ion-col>
+  </ion-row>
 </ng-container>
 
 <ng-container *ngIf="currentStep === 'verification'">
@@ -97,6 +99,7 @@
       <div class="ion-padding-top">
         <ion-button
           expand="block"
+          shape="round"
           type="submit"
           [disabled]="!verificationForm.valid || loading()"
         >
@@ -105,6 +108,7 @@
         </ion-button>
         <ion-button
           expand="block"
+          shape="round"
           fill="outline"
           (click)="resendCode()"
           [disabled]="loading() || resendDisabled"
@@ -112,17 +116,17 @@
           Resend Code
           {{ resendCountdown > 0 ? "(" + resendCountdown + "s)" : "" }}
         </ion-button>
-        <ion-button expand="block" fill="clear" (click)="goBack()">
+        <ion-button expand="block" fill="clear" shape="round" (click)="goBack()" >
           Change Phone Number
         </ion-button>
       </div>
     </form>
   </ion-card-content>
-  <ion-card *ngIf="error() as error">
-    <ion-card-content>
-      <ion-text color="danger">{{ error }}</ion-text>
-    </ion-card-content>
-  </ion-card>
+  <ion-row>
+    <ion-col>
+      <ion-text *ngIf="error() as error" class="ion-margin-start ion-margin-bottom" color="danger">{{ error }}</ion-text>
+    </ion-col>
+  </ion-row>
 </ng-container>
 
 <ng-container *ngIf="currentStep === 'results'">

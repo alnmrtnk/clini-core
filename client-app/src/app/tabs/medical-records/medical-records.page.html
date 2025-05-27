@@ -1,14 +1,3 @@
-<ion-header class="large">
-  <ion-toolbar>
-    <ion-title>Medical Records</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="addNewRecord()">
-        <ion-icon slot="icon-only" name="add-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
   <div class="page-wrapper">
     <ion-segment
@@ -32,7 +21,7 @@
         <ion-list>
           <ng-container *ngFor="let group of groupedRecords()">
             <ion-item-group>
-              <ion-item-divider sticky color="secondary">
+              <ion-item-divider sticky>
                 <ion-label>{{ group.label }}</ion-label>
               </ion-item-divider>
 

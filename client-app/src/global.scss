@@ -13,13 +13,21 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
+body,
+ion-app,
 ion-content {
-  --background: var(--ion-color-light);
+  font-family: 'Ancizar Sans', sans-serif;
+}
+
+ion-content {
+  --background: transparent;
 }
 
 ion-card {
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+  border: 1px solid var(--ion-color-light-shade);
+  background: rgba(var(--ion-color-light-rgb), 0.7);
 }
 
 ion-card-title {
@@ -27,7 +35,74 @@ ion-card-title {
   font-weight: 600;
 }
 
-body.dark ion-content {
+ion-list {
+  background: transparent !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+  border-radius: 8px;
+}
+
+body {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Base: soft pastel conic gradient */
+body:not(.dark)::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: 
+    conic-gradient(
+      from 200deg at 50% 50%,
+      #cce7f0 0%,   /* pale sky blue */
+      #d6f4ff 30%,  /* very light aqua */
+      #eafcf1 60%,  /* mint whisper */
+      #f9f6ff 100%  /* almost-white lavender */
+    );
+  filter: blur(100px);
+  transform: rotate(10deg) scale(1.1);
+  z-index: -2;
+}
+
+/* Overlay: stronger pastel blobs */
+body:not(.dark)::after {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  background:
+    /* cream blob */
+    radial-gradient(circle at 25% 20%, rgba(255,250,240,0.5) 0%, transparent 10%),
+    /* **bolder mint blob** */
+    radial-gradient(circle at 70% 30%, rgba(150,225,180,0.8) 0%, transparent 20%) 200px 200px / 180px 180px,
+    /* pale lavender blob */
+    radial-gradient(circle at 40% 70%, rgba(245,240,255,0.5) 0%, transparent 20%),
+    /* light sky blob */
+    radial-gradient(circle at 80% 75%, rgba(215,235,255,0.5) 0%, transparent 10%);
+  filter: blur(60px);
+  mix-blend-mode: screen;
+  transform: scale(1.05);
+  z-index: -1;
+}
+
+
+ion-item,
+ion-card-content ion-list {
+  --background: transparent;
+}
+
+body.dark {
   --background: radial-gradient(circle, #1e1e1e 0%, #121212 100%);
 }
 
@@ -36,8 +111,9 @@ body.dark ion-card {
 }
 
 :root {
-  ion-toolbar, ion-tab-bar {
-    --background: var(--ion-color-light);
+  ion-toolbar,
+  ion-tab-bar {
+    --background: transparent;
   }
 
   ion-header {
@@ -48,23 +124,14 @@ body.dark ion-card {
 @media (min-width: 992px) {
   .tabs-container {
     &:has(.page-wrapper) {
-      ion-header {
-        left: var(--menu-collapsed-width);
-        position: fixed;
-        width: calc(100vw - var(--menu-collapsed-width));
-        transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
-      }
-
       .page-wrapper {
-        top: var(--header-height);
-        left: var(--menu-collapsed-width);
-        width: calc(100vw - var(--menu-collapsed-width));
+        top: 57px;
+        width: 100vw;
         position: fixed;
-        max-height: calc(100vh - var(--header-height));
+        max-height: calc(100vh - 57px);
         overflow-y: auto;
         transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
-        padding: 16px;
-        background: var(--ion-color-light);
+        padding: 40px;
 
         .page-content {
           // border: 1px solid #000;
@@ -75,24 +142,8 @@ body.dark ion-card {
         }
 
         &.has-searchbar {
-          top: calc(var(--header-height) + var(--searchbar-height));
-          max-height: calc(
-            100vh - calc(var(--header-height) + var(--searchbar-height))
-          );
-        }
-      }
-    }
-
-    &.expanded {
-      &:has(.page-wrapper) {
-        ion-header {
-          left: var(--menu-expanded-width);
-          width: calc(100vw - var(--menu-expanded-width));
-        }
-
-        .page-wrapper {
-          left: var(--menu-expanded-width);
-          width: calc(100vw - var(--menu-expanded-width));
+          top: calc(57px + var(--searchbar-height));
+          max-height: calc(100vh - 57px - var(--searchbar-height));
         }
       }
     }

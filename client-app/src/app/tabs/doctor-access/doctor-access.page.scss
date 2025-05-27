@@ -10,6 +10,11 @@ ion-card {
   margin: 0 auto;
 }
 
+ion-header  {
+  top: 57px;
+
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;
