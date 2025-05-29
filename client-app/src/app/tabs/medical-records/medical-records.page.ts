@@ -1,4 +1,12 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -27,7 +35,7 @@ type RecordGroup = {
   templateUrl: 'medical-records.page.html',
   styleUrl: 'medical-records.page.scss',
 })
-export class MedicalRecordsPage implements OnInit {
+export class MedicalRecordsPage implements OnInit, AfterViewInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(Store);
@@ -35,6 +43,8 @@ export class MedicalRecordsPage implements OnInit {
   readonly records = toSignal<MedicalRecord[]>(
     this.store.select(RecordsState.records)
   );
+
+  @ViewChild('seg', { read: ElementRef }) segEl!: ElementRef<HTMLElement>;
 
   currentSegment: 'personal' | 'esculab' = 'personal';
 
@@ -55,8 +65,14 @@ export class MedicalRecordsPage implements OnInit {
     });
   }
 
-  onSegmentChanged(event: CustomEvent<SegmentChangeEventDetail>) {
-    const newSeg = event.detail.value;
+  ngAfterViewInit() {
+    setTimeout(() => this.updateBg(), 0);
+  }
+
+  segmentChanged(ev: CustomEvent<SegmentChangeEventDetail>) {
+    const newSeg = ev.detail.value as 'personal' | 'esculab';
+
+    this.currentSegment = newSeg;
 
     if (newSeg === 'personal' || newSeg === 'esculab') {
       this.router.navigate([], {
@@ -64,13 +80,35 @@ export class MedicalRecordsPage implements OnInit {
         queryParams: { segment: newSeg },
         queryParamsHandling: 'merge',
       });
-      this.currentSegment = newSeg;
     }
+
+    setTimeout(() => this.updateBg(), 0);
   }
 
-  searchRecords(event: any) {
-    const query = event.detail.value;
-    console.log('Searching for:', query);
+  private updateBg() {
+    const host = this.segEl.nativeElement;
+    const active = host.querySelector<HTMLElement>('.segment-button-checked');
+    if (!active) {
+      const btn = host.querySelector<HTMLElement>('.in-segment');
+      console.log(btn!.getBoundingClientRect().width)
+      host.style.setProperty('--bg-left', `4px`);
+      host.style.setProperty(
+        '--bg-width',
+        `${btn!.getBoundingClientRect().width}px`
+      );
+      return;
+    }
+
+    const hostRect = host.getBoundingClientRect();
+    const btnRect = active.getBoundingClientRect();
+
+    const left = btnRect.left - hostRect.left;
+    const width = btnRect.width;
+
+    console.log(left);
+
+    host.style.setProperty('--bg-left', `${left}px`);
+    host.style.setProperty('--bg-width', `${width}px`);
   }
 
   viewRecord(id: string) {

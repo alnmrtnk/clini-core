@@ -1,131 +1,135 @@
-<ion-header>
-  <ion-segment [value]="currentSegment" (ionChange)="onSegmentChanged($event)">
-    <ion-segment-button value="active">
-      <ion-label>Active Accesses</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="create">
-      <ion-label>Grant Access</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-</ion-header>
-
 <ion-content class="ion-padding">
-  <div *ngIf="currentSegment === 'active'" class="page-wrapper has-searchbar">
-    <ion-card *ngIf="accesses()?.length === 0">
-      <ion-card-content>
-        <div class="empty-state">
-          <ion-icon name="people-outline"></ion-icon>
-          <h3>No Active Accesses</h3>
-          <p>You haven't granted access to any doctors yet.</p>
-          <ion-button (click)="currentSegment = 'create'">
-            <ion-icon name="add-outline" slot="start"></ion-icon>
-            Grant Access
-          </ion-button>
-        </div>
-      </ion-card-content>
-    </ion-card>
+  <div class="page-wrapper">
+    <ion-segment
+      [value]="currentSegment"
+      (ionChange)="onSegmentChanged($event)"
+      class="custom"
+    >
+      <ion-segment-button value="active">
+        <ion-label>Active Accesses</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="create">
+        <ion-label>Grant Access</ion-label>
+      </ion-segment-button>
+    </ion-segment>
 
-    <ion-card *ngIf="!!accesses()?.length">
-      <ion-card-header>
-        <ion-card-title>Active Access Grants</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <app-doctor-access-card
-          *ngFor="let access of accesses()"
-          [access]="access"
-          [showActions]="true"
-          (revokeAccess)="revokeAccess($event)"
-          (renewAccess)="onRenew($event)"
-          (click)="showAccessDetails(access)"
-        />
-      </ion-card-content>
-    </ion-card>
-  </div>
-
-  <div *ngIf="currentSegment === 'create'" class="page-wrapper has-searchbar">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Grant Access to a Doctor</ion-card-title>
-        <ion-card-subtitle
-          >Provide temporary access to your medical data</ion-card-subtitle
-        >
-      </ion-card-header>
-      <ion-card-content>
-        <form [formGroup]="accessForm" (ngSubmit)="createAccess()">
-          <ion-item>
-            <ion-input
-              label="Doctor Name*"
-              labelPlacement="stacked"
-              formControlName="name"
-              placeholder="Dr. John Smith"
-            ></ion-input>
-            <ion-note
-              slot="error"
-              *ngIf="accessForm.get('name')?.hasError('required') && accessForm.get('name')?.touched"
-            >
-              Doctor name is required
-            </ion-note>
-          </ion-item>
-
-          <ion-item>
-            <ion-input
-              label="Email (Optional)"
-              labelPlacement="stacked"
-              type="email"
-              formControlName="targetEmail"
-              placeholder="doctor@example.com"
-            ></ion-input>
-            <ion-note
-              slot="error"
-              *ngIf="accessForm.get('targetEmail')?.hasError('email') && accessForm.get('targetEmail')?.touched"
-            >
-              Please enter a valid email address
-            </ion-note>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">Access Duration*</ion-label>
-            <ion-select formControlName="duration" interface="action-sheet">
-              <ion-select-option value="1">24 hours</ion-select-option>
-              <ion-select-option value="3">3 days</ion-select-option>
-              <ion-select-option value="7">7 days</ion-select-option>
-              <ion-select-option value="30">30 days</ion-select-option>
-              <ion-select-option value="custom">Custom</ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item *ngIf="accessForm.get('duration')?.value === 'custom'">
-            <ion-label position="stacked">Expiration Date*</ion-label>
-            <ion-datetime-button
-              datetime="expirationDate"
-            ></ion-datetime-button>
-            <ion-modal [keepContentsMounted]="true">
-              <ng-template>
-                <ion-datetime
-                  id="expirationDate"
-                  formControlName="expiresAt"
-                  [min]="tomorrow"
-                  presentation="date"
-                >
-                </ion-datetime>
-              </ng-template>
-            </ion-modal>
-          </ion-item>
-
-          <div class="ion-padding-top">
-            <ion-button
-              expand="block"
-              type="submit"
-              [disabled]="!accessForm.valid"
-            >
-              <ion-icon name="key-outline" slot="start"></ion-icon>
-              Generate Access
+    <div *ngIf="currentSegment === 'active'">
+      <ion-card *ngIf="accesses()?.length === 0">
+        <ion-card-content>
+          <div class="empty-state">
+            <ion-icon name="people-outline"></ion-icon>
+            <h3>No Active Accesses</h3>
+            <p>You haven't granted access to any doctors yet.</p>
+            <ion-button (click)="currentSegment = 'create'">
+              <ion-icon name="add-outline" slot="start"></ion-icon>
+              Grant Access
             </ion-button>
           </div>
-        </form>
-      </ion-card-content>
-    </ion-card>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngIf="!!accesses()?.length">
+        <ion-card-header>
+          <ion-card-title>Active Access Grants</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <app-doctor-access-card
+            *ngFor="let access of accesses()"
+            [access]="access"
+            [showActions]="true"
+            (revokeAccess)="revokeAccess($event)"
+            (renewAccess)="onRenew($event)"
+            (click)="showAccessDetails(access)"
+          />
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div *ngIf="currentSegment === 'create'">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Grant Access to a Doctor</ion-card-title>
+          <ion-card-subtitle
+            >Provide temporary access to your medical data</ion-card-subtitle
+          >
+        </ion-card-header>
+        <ion-card-content>
+          <form [formGroup]="accessForm" (ngSubmit)="createAccess()">
+            <ion-item>
+              <ion-input
+                label="Doctor Name*"
+                labelPlacement="stacked"
+                formControlName="name"
+                placeholder="Dr. John Smith"
+              ></ion-input>
+              <ion-note
+                slot="error"
+                *ngIf="accessForm.get('name')?.hasError('required') && accessForm.get('name')?.touched"
+              >
+                Doctor name is required
+              </ion-note>
+            </ion-item>
+
+            <ion-item>
+              <ion-input
+                label="Email (Optional)"
+                labelPlacement="stacked"
+                type="email"
+                formControlName="targetEmail"
+                placeholder="doctor@example.com"
+              ></ion-input>
+              <ion-note
+                slot="error"
+                *ngIf="accessForm.get('targetEmail')?.hasError('email') && accessForm.get('targetEmail')?.touched"
+              >
+                Please enter a valid email address
+              </ion-note>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="floating">Access Duration*</ion-label>
+              <ion-select formControlName="duration" interface="action-sheet">
+                <ion-select-option value="1">24 hours</ion-select-option>
+                <ion-select-option value="3">3 days</ion-select-option>
+                <ion-select-option value="7">7 days</ion-select-option>
+                <ion-select-option value="30">30 days</ion-select-option>
+                <ion-select-option value="custom">Custom</ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <ion-item *ngIf="accessForm.get('duration')?.value === 'custom'">
+              <ion-label position="stacked">Expiration Date*</ion-label>
+              <ion-datetime-button
+                datetime="expirationDate"
+              ></ion-datetime-button>
+              <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime
+                    id="expirationDate"
+                    formControlName="expiresAt"
+                    [min]="tomorrow"
+                    presentation="date"
+                  >
+                  </ion-datetime>
+                </ng-template>
+              </ion-modal>
+            </ion-item>
+
+            <div class="ion-padding-top">
+              <ion-button
+                expand="block"
+                type="submit"
+                [disabled]="!accessForm.valid"
+              >
+                <ion-icon name="key-outline" slot="start"></ion-icon>
+                Generate Access
+              </ion-button>
+            </div>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
 
   <ion-modal [isOpen]="showModal()" (close)="closeAccessModal()">

@@ -16,7 +16,7 @@
 body,
 ion-app,
 ion-content {
-  font-family: 'Ancizar Sans', sans-serif;
+  font-family: "Ancizar Sans", sans-serif;
 }
 
 ion-content {
@@ -25,8 +25,8 @@ ion-content {
 
 ion-card {
   border-radius: 12px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
-  border: 1px solid var(--ion-color-light-shade);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 12px;
+  //border: 1px solid var(--ion-color-light-shade);
   background: rgba(var(--ion-color-light-rgb), 0.7);
 }
 
@@ -58,44 +58,15 @@ body {
   overflow: hidden;
 }
 
-/* Base: soft pastel conic gradient */
 body:not(.dark)::before {
   content: "";
-  position: absolute;
-  inset: -20%;
-  background: 
-    conic-gradient(
-      from 200deg at 50% 50%,
-      #cce7f0 0%,   /* pale sky blue */
-      #d6f4ff 30%,  /* very light aqua */
-      #eafcf1 60%,  /* mint whisper */
-      #f9f6ff 100%  /* almost-white lavender */
-    );
-  filter: blur(100px);
-  transform: rotate(10deg) scale(1.1);
-  z-index: -2;
-}
-
-/* Overlay: stronger pastel blobs */
-body:not(.dark)::after {
-  content: "";
-  position: absolute;
-  inset: -15%;
-  background:
-    /* cream blob */
-    radial-gradient(circle at 25% 20%, rgba(255,250,240,0.5) 0%, transparent 10%),
-    /* **bolder mint blob** */
-    radial-gradient(circle at 70% 30%, rgba(150,225,180,0.8) 0%, transparent 20%) 200px 200px / 180px 180px,
-    /* pale lavender blob */
-    radial-gradient(circle at 40% 70%, rgba(245,240,255,0.5) 0%, transparent 20%),
-    /* light sky blob */
-    radial-gradient(circle at 80% 75%, rgba(215,235,255,0.5) 0%, transparent 10%);
-  filter: blur(60px);
-  mix-blend-mode: screen;
+  position: fixed;
+  inset: 0;
+  background: url("/assets/icon/background.png") center/cover no-repeat;
+  //filter: blur(20px);
   transform: scale(1.05);
   z-index: -1;
 }
-
 
 ion-item,
 ion-card-content ion-list {
@@ -131,21 +102,70 @@ body.dark ion-card {
         max-height: calc(100vh - 57px);
         overflow-y: auto;
         transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
-        padding: 40px;
+        padding: 20px 40px;
 
         .page-content {
-          // border: 1px solid #000;
           border-radius: 20px;
           padding: 16px;
           background: #fff;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
-
-        &.has-searchbar {
-          top: calc(57px + var(--searchbar-height));
-          max-height: calc(100vh - 57px - var(--searchbar-height));
-        }
       }
+    }
+  }
+}
+
+ion-segment.custom {
+  position: relative;
+  display: flex;
+  width: fit-content;
+  margin: 16px auto;
+  padding: 4px;
+  border-radius: 12px;
+  --background: #e8e8e8;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    height: calc(100% - 8px);
+    left: var(--bg-left, 0);
+    width: var(--bg-width, 0);
+    background: var(--ion-color-light);
+    border-radius: 8px;
+    transition: left 0.3s ease, width 0.3s ease;
+    z-index: 0;
+  }
+
+  ion-segment-button {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-width: 160px;
+    border-radius: 8px;
+    padding: 0 12px;
+    --color: #888888;
+    --color-checked: #000;
+    --background-checked: transparent;
+    font-weight: 500;
+    text-transform: capitalize;
+    transition: color 0.2s;
+    --indicator-display: none;
+    --indicator-color: transparent !important;
+    --indicator-color-checked: transparent !important;
+
+    &.segment-button-checked {
+      color: var(--color-checked);
+    }
+
+    &:hover {
+      opacity: 0.4;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb), 0.3);
     }
   }
 }

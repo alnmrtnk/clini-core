@@ -1,9 +1,6 @@
 <ion-content>
   <div class="page-wrapper">
-    <ion-segment
-      [value]="currentSegment"
-      (ionChange)="onSegmentChanged($event)"
-    >
+    <ion-segment #seg class="custom" (ionChange)="segmentChanged($event)">
       <ion-segment-button value="personal">
         <ion-label>Personal</ion-label>
       </ion-segment-button>
