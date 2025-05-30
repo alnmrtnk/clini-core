@@ -6,7 +6,7 @@
         public required string Name { get; set; }
         public required Guid OwnerUserId { get; set; }
         public Guid? TargetUserId { get; set; }
-        public string? TargetUserEmail { get; set; } = null!;
+        public string? TargetUserEmail { get; set; }
         public string? Token { get; set; }
         public required DateTime ExpiresAt { get; set; }
         public bool Revoked { get; set; } = false;

@@ -39,13 +39,14 @@ namespace server_app.Services
                 ExpiresAt = dto.ExpiresAt,
             };
 
-            if (!string.IsNullOrWhiteSpace(dto.TargetEmail))
+            if (!string.IsNullOrWhiteSpace(dto.TargetUserEmail))
             {
-                var targetUser = await _users.GetEntityByEmailAsync(dto.TargetEmail);
+                var targetUser = await _users.GetEntityByEmailAsync(dto.TargetUserEmail);
                 if (targetUser == null)
                     return ServiceResult<DoctorAccessDto>.Fail("User not found", StatusCodes.Status404NotFound);
 
                 access.TargetUserId = targetUser.Id;
+                access.TargetUserEmail = targetUser.Email;
             }
             else
             {
@@ -119,7 +120,8 @@ namespace server_app.Services
                 Name = a.Name,
                 Token = a.Token,
                 ExpiresAt = a.ExpiresAt,
-                Revoked = a.Revoked
+                Revoked = a.Revoked,
+                TargetUserEmail = a.TargetUserEmail
             });
 
             return ServiceResult<IEnumerable<DoctorAccessDto>>.Ok(result);

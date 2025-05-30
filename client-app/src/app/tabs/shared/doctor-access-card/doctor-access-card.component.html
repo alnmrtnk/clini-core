@@ -7,7 +7,8 @@
   </ion-icon>
 
   <ion-label>
-    <h3>{{ access().name }}</h3>
+    <h3>{{ access().name }} </h3>
+    <p *ngIf="access().targetUserEmail">{{access().targetUserEmail}}</p>
     <p>{{ expirationText() }}</p>
   </ion-label>
 

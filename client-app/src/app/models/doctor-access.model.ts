@@ -1,14 +1,14 @@
 export interface CreateDoctorAccess {
   name: string;
   expiresAt: Date;
-  targetEmail?: string;
+  targetUserEmail?: string;
 }
 
 export interface DoctorAccess {
   id: string;
   name: string;
   token?: string;
-  targetEmail?: string;
+  targetUserEmail?: string;
   expiresAt: Date;
   revoked: boolean;
 }

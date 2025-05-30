@@ -32,6 +32,7 @@ import {
 import { QRCodeComponent } from 'angularx-qrcode';
 import { DoctorAccessCardComponent } from '../shared/doctor-access-card/doctor-access-card.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-doctor-access',
@@ -51,6 +52,7 @@ export class DoctorAccessPage implements OnInit, AfterViewInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly toastCtrl = inject(ToastController);
 
   readonly accesses = toSignal(this.store.select(AccessState.accesses));
   readonly displayedAccess = toSignal(
@@ -73,7 +75,7 @@ export class DoctorAccessPage implements OnInit, AfterViewInit {
   constructor() {
     this.accessForm = this.formBuilder.group({
       name: ['', Validators.required],
-      targetEmail: ['', Validators.email],
+      targetUserEmail: ['', Validators.email],
       duration: ['7', Validators.required],
       expiresAt: [this.calculateExpirationDate(7), Validators.required],
     });
@@ -136,8 +138,6 @@ export class DoctorAccessPage implements OnInit, AfterViewInit {
     const left = btnRect.left - hostRect.left;
     const width = btnRect.width;
 
-    console.log(left);
-
     host.style.setProperty('--bg-left', `${left}px`);
     host.style.setProperty('--bg-width', `${width}px`);
   }
@@ -149,30 +149,47 @@ export class DoctorAccessPage implements OnInit, AfterViewInit {
   }
 
   showAccessDetails(access: DoctorAccess) {
-    if (!access.revoked && new Date(access.expiresAt) > new Date()) {
+    if (
+      !access.revoked &&
+      !!access.token &&
+      new Date(access.expiresAt) > new Date()
+    ) {
       this.modalForCreated = false;
       this.store.dispatch(new SetDisplayedAccess(access));
     }
   }
 
-  createAccess() {
+  async createAccess() {
     if (this.accessForm.valid) {
       const formValue = this.accessForm.value;
 
       const accessData: CreateDoctorAccess = {
         name: formValue.name,
         expiresAt: new Date(formValue.expiresAt),
-        targetEmail: formValue.targetEmail || undefined,
+        targetUserEmail: formValue.targetUserEmail || undefined,
       };
 
       this.modalForCreated = true;
-      this.store.dispatch(new AddAccess(accessData));
-      console.log(this.modalForCreated);
+      await this.store.dispatch(new AddAccess(accessData));
+      const toast = await this.toastCtrl.create({
+        message: 'New access created.',
+        duration: 2000,
+        position: 'bottom',
+        icon: 'checkmark-circle-outline',
+      });
+      await toast.present();
     }
   }
 
-  revokeAccess(accessId: string) {
-    this.store.dispatch(new DeleteAccess(accessId));
+  async revokeAccess(accessId: string) {
+    await this.store.dispatch(new DeleteAccess(accessId));
+    const toast = await this.toastCtrl.create({
+      message: 'Access revoked.',
+      duration: 2000,
+      position: 'bottom',
+      icon: 'trash-outline',
+    });
+    await toast.present();
   }
 
   onRenew({ id }: { id: string }) {
@@ -183,7 +200,7 @@ export class DoctorAccessPage implements OnInit, AfterViewInit {
 
       this.accessForm.patchValue({
         name: old.name,
-        targetEmail: old.targetEmail ?? '',
+        targetUserEmail: old.targetUserEmail ?? '',
         duration: 'custom',
         expiresAt: this.calculateExpirationDate(7),
       });
@@ -200,7 +217,7 @@ export class DoctorAccessPage implements OnInit, AfterViewInit {
   resetForm() {
     this.accessForm.reset({
       name: '',
-      targetEmail: '',
+      targetUserEmail: '',
       duration: '7',
       expiresAt: this.calculateExpirationDate(7),
     });
@@ -208,20 +225,23 @@ export class DoctorAccessPage implements OnInit, AfterViewInit {
 
   getAccessLink() {
     const a = this.displayedAccess();
-    if (a) return `https://clinicore.app/access/${a.token}`;
+    if (a) return `http://localhost:4200/medical-records/${a.token}`;
     return '';
   }
 
-  copyAccessLink() {
+  async copyAccessLink() {
     const a = this.displayedAccess();
-    if (a) navigator.clipboard.writeText(this.getAccessLink());
-    // Show toast or notification that link was copied
-  }
+    if (a) {
+      await navigator.clipboard.writeText(this.getAccessLink());
 
-  resendEmail() {
-    const a = this.displayedAccess();
-    if (a) console.log('Resending email for access:', a.id);
-    // Show toast or notification that email was sent
+      const toast = await this.toastCtrl.create({
+        message: 'Access link copied to clipboard.',
+        duration: 2000,
+        position: 'bottom',
+        icon: 'copy-outline',
+      });
+      await toast.present();
+    }
   }
 
   formatDate(date: Date): string {

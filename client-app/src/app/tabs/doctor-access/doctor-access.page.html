@@ -77,12 +77,12 @@
                 label="Email (Optional)"
                 labelPlacement="stacked"
                 type="email"
-                formControlName="targetEmail"
+                formControlName="targetUserEmail"
                 placeholder="doctor@example.com"
               ></ion-input>
               <ion-note
                 slot="error"
-                *ngIf="accessForm.get('targetEmail')?.hasError('email') && accessForm.get('targetEmail')?.touched"
+                *ngIf="accessForm.get('targetUserEmail')?.hasError('email') && accessForm.get('targetUserEmail')?.touched"
               >
                 Please enter a valid email address
               </ion-note>
@@ -188,20 +188,6 @@
         <div class="email-status" *ngIf="!displayedAccess()?.token">
           <h3>Email Invitation</h3>
           <p>An invitation has been sent to {{ displayedAccess()?.name }}</p>
-        </div>
-
-        <div class="modal-actions">
-          <ion-button expand="block" (click)="closeAccessModal()">
-            Done
-          </ion-button>
-          <ion-button
-            expand="block"
-            fill="outline"
-            *ngIf="displayedAccess()"
-            (click)="resendEmail()"
-          >
-            Resend Email
-          </ion-button>
         </div>
       </div>
     </ion-content>
