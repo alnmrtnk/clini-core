@@ -105,8 +105,6 @@ export class MedicalRecordsPage implements OnInit, AfterViewInit {
     const left = btnRect.left - hostRect.left;
     const width = btnRect.width;
 
-    console.log(left);
-
     host.style.setProperty('--bg-left', `${left}px`);
     host.style.setProperty('--bg-width', `${width}px`);
   }

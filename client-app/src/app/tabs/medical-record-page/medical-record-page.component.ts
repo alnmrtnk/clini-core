@@ -37,6 +37,14 @@ export class MedicalRecordPageComponent implements OnInit {
   selectedFile: MedicalRecordFile | null = null;
   safeFileUrl: SafeResourceUrl | null = null;
 
+  iconForCommentType(typeName: string): string {
+    switch (typeName.toLowerCase()) {
+      case 'prescription':      return 'document-text-outline';
+      case 'reccomendations':   return 'medkit-outline';
+      default:                  return 'chatbubble-ellipses-outline';
+    }
+  }
+
   ngOnInit() {
     this.loadRecord();
   }

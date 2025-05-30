@@ -41,7 +41,11 @@ namespace server_app.Profiles
                 .ForMember(d => d.GrantedAt, o => o.MapFrom(_ => DateTime.UtcNow));
 
             CreateMap<CreateDoctorCommentDto, DoctorComment>();
-            CreateMap<DoctorComment, DoctorCommentDto>();
+            CreateMap<DoctorComment, DoctorCommentDto>()
+                .ForMember(d => d.DoctorCommentTypeName,
+                           o => o.MapFrom(s => s.DoctorCommentType.Name))
+                .ForMember(d => d.DoctorCommentTypeId,
+                           o => o.MapFrom(s => s.DoctorCommentType.Id));
             CreateMap<DoctorCommentType, DoctorCommentTypeDto>();
         }
     }

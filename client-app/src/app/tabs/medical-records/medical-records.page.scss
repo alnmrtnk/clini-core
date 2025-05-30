@@ -9,6 +9,19 @@ ion-item-divider {
   font-size: 18px;
 }
 
+.comment-indicator {
+  --border-radius: 12px;
+  font-size: 0.85rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 12px;
+  ion-icon {
+    font-size: 1rem;
+    margin-right: 4px;
+  }
+  ion-label {
+    padding-right: 4px;
+  }
+}
+
 @media (min-width: 992px) {
   ion-fab {
     position: fixed;

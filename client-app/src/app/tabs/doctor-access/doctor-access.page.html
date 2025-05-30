@@ -4,6 +4,7 @@
       [value]="currentSegment"
       (ionChange)="onSegmentChanged($event)"
       class="custom"
+      #seg
     >
       <ion-segment-button value="active">
         <ion-label>Active Accesses</ion-label>
@@ -131,78 +132,78 @@
       </ion-card>
     </div>
   </div>
+</ion-content>
 
-  <ion-modal [isOpen]="showModal()" (close)="closeAccessModal()">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>
-            {{modalForCreated ? 'Access Created' :
-            displayedAccess()?.name}}</ion-title
-          >
-          <ion-buttons slot="end">
-            <ion-button (click)="closeAccessModal()">
-              <ion-icon slot="icon-only" name="close"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding">
-        <div *ngIf="displayedAccess()" class="access-created-content">
-          @if(modalForCreated) {
-          <div class="success-icon">
-            <ion-icon name="checkmark-circle"></ion-icon>
-          </div>
+<ion-modal [isOpen]="showModal()" (close)="closeAccessModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>
+          {{modalForCreated ? 'Access Created' :
+          displayedAccess()?.name}}</ion-title
+        >
+        <ion-buttons slot="end">
+          <ion-button (click)="closeAccessModal()">
+            <ion-icon slot="icon-only" name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <div *ngIf="displayedAccess()" class="access-created-content">
+        @if(modalForCreated) {
+        <div class="success-icon">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </div>
 
-          <h2>Access Granted Successfully</h2>
-          }
+        <h2>Access Granted Successfully</h2>
+        }
 
-          <p *ngIf="displayedAccess() as access">
-            Access for {{ access.name }} is valid until {{
-            formatDate(access.expiresAt) }}
-          </p>
+        <p *ngIf="displayedAccess() as access">
+          Access for {{ access.name }} is valid until {{
+          formatDate(access.expiresAt) }}
+        </p>
 
-          <div class="qr-container" *ngIf="displayedAccess()?.token">
-            <h3>QR Code</h3>
-            <div class="qr-code">
-              <qrcode
-                [qrdata]="getAccessLink()"
-                [width]="256"
-                [errorCorrectionLevel]="'M'"
-              ></qrcode>
-            </div>
-          </div>
-
-          <div class="access-link" *ngIf="displayedAccess()">
-            <h3>Access Link</h3>
-            <ion-item>
-              <ion-input readonly [value]="getAccessLink()"></ion-input>
-              <ion-button slot="end" fill="clear" (click)="copyAccessLink()">
-                <ion-icon slot="icon-only" name="copy-outline"></ion-icon>
-              </ion-button>
-            </ion-item>
-          </div>
-
-          <div class="email-status" *ngIf="!displayedAccess()?.token">
-            <h3>Email Invitation</h3>
-            <p>An invitation has been sent to {{ displayedAccess()?.name }}</p>
-          </div>
-
-          <div class="modal-actions">
-            <ion-button expand="block" (click)="closeAccessModal()">
-              Done
-            </ion-button>
-            <ion-button
-              expand="block"
-              fill="outline"
-              *ngIf="displayedAccess()"
-              (click)="resendEmail()"
-            >
-              Resend Email
-            </ion-button>
+        <div class="qr-container" *ngIf="displayedAccess()?.token">
+          <h3>QR Code</h3>
+          <div class="qr-code">
+            <qrcode
+              [qrdata]="getAccessLink()"
+              [width]="256"
+              [errorCorrectionLevel]="'M'"
+            ></qrcode>
           </div>
         </div>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
-</ion-content>
+
+        <div class="access-link" *ngIf="displayedAccess()">
+          <h3>Access Link</h3>
+          <ion-item>
+            <ion-input readonly [value]="getAccessLink()"></ion-input>
+            <ion-button slot="end" fill="clear" (click)="copyAccessLink()">
+              <ion-icon slot="icon-only" name="copy-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </div>
+
+        <div class="email-status" *ngIf="!displayedAccess()?.token">
+          <h3>Email Invitation</h3>
+          <p>An invitation has been sent to {{ displayedAccess()?.name }}</p>
+        </div>
+
+        <div class="modal-actions">
+          <ion-button expand="block" (click)="closeAccessModal()">
+            Done
+          </ion-button>
+          <ion-button
+            expand="block"
+            fill="outline"
+            *ngIf="displayedAccess()"
+            (click)="resendEmail()"
+          >
+            Resend Email
+          </ion-button>
+        </div>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

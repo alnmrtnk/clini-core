@@ -1,4 +1,12 @@
-import { Component, computed, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { IonicModule, SegmentChangeEventDetail } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import {
@@ -38,7 +46,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: 'doctor-access.page.html',
   styleUrl: 'doctor-access.page.scss',
 })
-export class DoctorAccessPage {
+export class DoctorAccessPage implements OnInit, AfterViewInit {
   private readonly store = inject(Store);
   private readonly formBuilder = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
@@ -54,6 +62,8 @@ export class DoctorAccessPage {
   tomorrow: string = new Date(Date.now() + 86400000).toISOString();
 
   modalForCreated = false;
+
+  @ViewChild('seg', { read: ElementRef }) segEl!: ElementRef<HTMLElement>;
 
   showModal = computed(() => {
     const a = this.displayedAccess();
@@ -89,17 +99,47 @@ export class DoctorAccessPage {
     });
   }
 
-  onSegmentChanged(event: CustomEvent<SegmentChangeEventDetail>) {
-    const newSeg = event.detail.value;
+  ngAfterViewInit() {
+    setTimeout(() => this.updateBg(), 0);
+  }
 
+  onSegmentChanged(event: CustomEvent<SegmentChangeEventDetail>) {
+    const newSeg = event.detail.value as 'active' | 'create';
+    this.currentSegment = newSeg;
     if (newSeg === 'active' || newSeg === 'create') {
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { segment: newSeg },
         queryParamsHandling: 'merge',
       });
-      this.currentSegment = newSeg;
     }
+    setTimeout(() => this.updateBg(), 0);
+  }
+
+  private updateBg() {
+    const host = this.segEl.nativeElement;
+    const active = host.querySelector<HTMLElement>('.segment-button-checked');
+    if (!active) {
+      const btn = host.querySelector<HTMLElement>('.in-segment');
+      console.log(btn!.getBoundingClientRect().width);
+      host.style.setProperty('--bg-left', `4px`);
+      host.style.setProperty(
+        '--bg-width',
+        `${btn!.getBoundingClientRect().width}px`
+      );
+      return;
+    }
+
+    const hostRect = host.getBoundingClientRect();
+    const btnRect = active.getBoundingClientRect();
+
+    const left = btnRect.left - hostRect.left;
+    const width = btnRect.width;
+
+    console.log(left);
+
+    host.style.setProperty('--bg-left', `${left}px`);
+    host.style.setProperty('--bg-width', `${width}px`);
   }
 
   calculateExpirationDate(days: number): string {

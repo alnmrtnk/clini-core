@@ -1,33 +1,99 @@
-ion-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
+.page-wrapper > div {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.loading-container, .error-container, .no-files-container {
+/* Loading state */
+.loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 32px 16px;
-  text-align: center;
+  margin-top: 40px;
+  ion-spinner {
+    margin-bottom: 12px;
+  }
+  p {
+    font-size: 1rem;
+    color: var(--ion-color-medium);
+  }
 }
 
-.loading-container ion-spinner, .error-container ion-icon, .no-files-container ion-icon {
-  font-size: 48px;
+/* Error state */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  ion-icon {
+    font-size: 48px;
+    margin-bottom: 8px;
+  }
+  p {
+    font-size: 1rem;
+    color: var(--ion-color-danger);
+    margin-bottom: 12px;
+    text-align: center;
+  }
 }
 
-.error-container ion-icon {
-  color: var(--ion-color-danger);
-}
-
-.no-files-container ion-icon {
-  color: var(--ion-color-medium);
+.edit-btn {
+  margin: auto;
+  ion-icon {
+    font-size: 24px;
+  }
 }
 
 .files-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  span {
+    font-weight: 600;
+  }
+  ion-button {
+    --padding-start: 4px;
+    --padding-end: 4px;
+    font-size: 0.85rem;
+  }
+}
+
+
+/* Doctor Comments card spacing */
+ion-card[ng-reflect-ng-if] + ion-card {
+  margin-top: 24px;
+}
+
+/* Comment list styling */
+.comment-date {
+  font-size: 0.75rem;
+  color: var(--ion-color-medium);
+  margin: 4px 0;
+}
+
+.comment-text {
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+/* Avatar in comment item */
+ion-avatar {
+  width: 32px;
+  height: 32px;
+  img {
+    object-fit: cover;
+  }
+}
+
+/* Ensure list items wrap nicely */
+ion-list[lines="full"] ion-item {
+  align-items: flex-start;
+}
+
+/* Responsive tweaks */
+@media (min-width: 768px) {
+  .page-wrapper>div {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
 }

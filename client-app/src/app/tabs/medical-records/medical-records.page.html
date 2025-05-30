@@ -37,6 +37,17 @@
                   <h2>{{ rec.title }}</h2>
                   <p>{{ rec.date | date: 'MMMM d, yyyy' }}</p>
                 </ion-label>
+
+                <ion-chip
+                  *ngIf="rec.doctorComments?.length"
+                  slot="end"
+                  color="tertiary"
+
+                  class="comment-indicator"
+                >
+                  <ion-icon name="chatbubbles-outline"></ion-icon>
+                  <ion-label>{{ rec.doctorComments.length }}</ion-label>
+                </ion-chip>
               </ion-item>
             </ion-item-group>
           </ng-container>
