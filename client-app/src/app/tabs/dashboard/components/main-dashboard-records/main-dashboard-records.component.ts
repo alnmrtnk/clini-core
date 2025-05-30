@@ -36,4 +36,8 @@ export class MainDashboardRecordsComponent {
   navigateToAll() {
     this.router.navigate(['/tabs/medical-records'])
   }
+
+  navigateToAdd() {
+    this.router.navigate(['/tabs/medical-records/add']);
+  }
 }

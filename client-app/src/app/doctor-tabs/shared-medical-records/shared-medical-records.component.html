@@ -1,206 +1,213 @@
 <ion-content class="ion-padding">
-  <div class="wrapper">
-    <ion-card class="welcome-card">
-      <ion-card-header>
-        <ion-card-title>Welcome, Doctor</ion-card-title>
-        <ion-card-subtitle
-          >Review patient records shared with you</ion-card-subtitle
+  <div [class.page-wrapper]="!isToken">
+    <div class="wrapper">
+      @if (isToken) {
+      <ion-card class="welcome-card">
+        <ion-card-header>
+          <ion-card-title>Welcome, Doctor</ion-card-title>
+          <ion-card-subtitle
+            >Review patient records shared with you</ion-card-subtitle
+          >
+        </ion-card-header>
+      </ion-card>
+      }
+
+      <ng-container *ngIf="sharedGroups().length > 0; else noShared">
+        <section
+          *ngFor="let group of sharedGroups()"
+          class="group-section ion-margin-bottom"
         >
-      </ion-card-header>
-    </ion-card>
-
-    <ng-container *ngIf="sharedGroups().length > 0; else noShared">
-      <section
-        *ngFor="let group of sharedGroups()"
-        class="group-section ion-margin-bottom"
-      >
-        <div class="patient-header">
-          <ion-icon name="person-circle-outline"></ion-icon>
-          <div class="patient-info">
-            <h2 class="owner-name">{{ group.ownerName }}</h2>
-            <p class="owner-email">{{ group.ownerEmail }}</p>
+          <div class="patient-header">
+            <ion-icon name="person-circle-outline"></ion-icon>
+            <div class="patient-info">
+              <h2 class="owner-name">{{ group.ownerName }}</h2>
+              <p class="owner-email">{{ group.ownerEmail }}</p>
+            </div>
           </div>
-        </div>
 
-        <div class="records-container">
-          <div *ngFor="let record of group.records" class="record-wrapper">
-            <ion-item class="record-item" lines="none" button detail="false">
-              <ion-icon
-                name="document-text-outline"
-                slot="start"
-                class="record-icon"
-              ></ion-icon>
-              <ion-label>
-                <h3 class="record-title">{{ record.title }}</h3>
-                <div class="record-meta">
-                  <ion-badge color="tertiary">{{
-                    record.recordType.name
-                  }}</ion-badge>
-                  <span class="record-date">
-                    <ion-icon name="calendar-outline"></ion-icon>
-                    {{ record.date | date : "mediumDate" }}
-                  </span>
-                </div>
-              </ion-label>
-              <ion-button
-                fill="clear"
-                size="small"
-                class="comment-toggle-btn"
-                (click)="toggleComments(record.id)"
-              >
-                <div class="comment-indicator" *ngIf="hasComments(record.id)">
-                  {{ getCommentCount(record.id) }}
-                </div>
+          <div class="records-container">
+            <div *ngFor="let record of group.records" class="record-wrapper">
+              <ion-item class="record-item" lines="none" button detail="false">
                 <ion-icon
-                  [name]="
-                    isCommentVisible(record.id)
-                      ? 'chevron-up-outline'
-                      : 'chatbubble-outline'
-                  "
-                  slot="icon-only"
+                  name="document-text-outline"
+                  slot="start"
+                  class="record-icon"
                 ></ion-icon>
-              </ion-button>
-            </ion-item>
-
-            <div
-              class="comment-section"
-              [class.expanded]="isCommentVisible(record.id)"
-            >
-              <ion-card-content>
-                <ion-item *ngIf="record.notes" lines="none">
-                  <ion-label>
-                    <h3>Notes</h3>
-                    <p>{{ record.notes }}</p>
-                  </ion-label>
-                </ion-item>
-                <ion-item *ngIf="!record.files || !record.files.length" lines="none">
-                  <ion-label>
-                    <h3>Files</h3>
-                    <p>No files attached to this record</p>
-                  </ion-label>
-                </ion-item>
-              </ion-card-content>
-              <ng-container *ngIf="record.files && !!record.files.length">
-                <ion-card-header>
-                  <ion-card-title>
-                    <div class="files-header">
-                      <span>Files ({{ record.files.length }})</span>
-                      <ion-button
-                        fill="clear"
-                        size="small"
-                        (click)="downloadAllFiles(record)"
-                      >
-                        <ion-icon
-                          name="download-outline"
-                          slot="start"
-                        ></ion-icon>
-                        Download All
-                      </ion-button>
-                    </div>
-                  </ion-card-title>
-                </ion-card-header>
-
-                <ion-card-content>
-                  <app-document-gallery
-                    [files]="record.files || []"
-                    (fileSelected)="openFile($event)"
-                  >
-                  </app-document-gallery>
-                </ion-card-content>
-              </ng-container>
-
-              <div
-                class="existing-comments"
-                *ngIf="getCommentsForRecord(record.id).length > 0"
-              >
-                <div
-                  *ngFor="let comment of getCommentsForRecord(record.id)"
-                  class="comment-bubble"
-                >
-                  <div class="comment-header">
-                    <span class="doctor-name">You</span>
-                    <span class="comment-time">{{
-                      comment.date | date : "MMM d, y, h:mm a"
-                    }}</span>
+                <ion-label>
+                  <h3 class="record-title">{{ record.title }}</h3>
+                  <div class="record-meta">
+                    <ion-badge color="tertiary">{{
+                      record.recordType.name
+                    }}</ion-badge>
+                    <span class="record-date">
+                      <ion-icon name="calendar-outline"></ion-icon>
+                      {{ record.date | date : "mediumDate" }}
+                    </span>
                   </div>
-                  <div class="comment-text">{{ comment.content }}</div>
-                </div>
-              </div>
+                </ion-label>
+                <ion-button
+                  fill="clear"
+                  size="small"
+                  class="comment-toggle-btn"
+                  (click)="toggleComments(record.id)"
+                >
+                  <div class="comment-indicator" *ngIf="hasComments(record.id)">
+                    {{ getCommentCount(record.id) }}
+                  </div>
+                  <ion-icon
+                    [name]="
+                      isCommentVisible(record.id)
+                        ? 'chevron-up-outline'
+                        : 'chatbubble-outline'
+                    "
+                    slot="icon-only"
+                  ></ion-icon>
+                </ion-button>
+              </ion-item>
 
               <div
-                class="new-comment-container"
-                *ngIf="newComments[record.id] as newComment"
+                class="comment-section"
+                [class.expanded]="isCommentVisible(record.id)"
               >
-                <div class="comment-input-label">Add a new note:</div>
-
-                <!-- Free-text -->
-                <ion-item lines="none" class="comment-item">
-                  <ion-textarea
-                    rows="3"
-                    name="commentText-{{ record.id }}"
-                    [(ngModel)]="newComment.text"
-                    [ngModelOptions]="{ standalone: true }"
-                    fill="outline"
-                    placeholder="Enter your medical observations or treatment notes..."
-                    class="comment-textarea"
-                  ></ion-textarea>
-                </ion-item>
-
-                <!-- Type selector -->
-                <ion-item lines="none" class="comment-type-select">
-                  <ion-select
-                    name="commentType-{{ record.id }}"
-                    [ngModelOptions]="{ standalone: true }"
-                    [(ngModel)]="newComments[record.id].typeId"
-                    interface="action-sheet"
-                    fill="outline"
-                    placeholder="Select comment type"
+                <ion-card-content>
+                  <ion-item *ngIf="record.notes" lines="none">
+                    <ion-label>
+                      <h3>Notes</h3>
+                      <p>{{ record.notes }}</p>
+                    </ion-label>
+                  </ion-item>
+                  <ion-item
+                    *ngIf="!record.files || !record.files.length"
+                    lines="none"
                   >
-                    <ion-select-option
-                      *ngFor="let t of commentTypes()"
-                      [value]="t.id"
+                    <ion-label>
+                      <h3>Files</h3>
+                      <p>No files attached to this record</p>
+                    </ion-label>
+                  </ion-item>
+                </ion-card-content>
+                <ng-container *ngIf="record.files && !!record.files.length">
+                  <ion-card-header>
+                    <ion-card-title>
+                      <div class="files-header">
+                        <span>Files ({{ record.files.length }})</span>
+                        <ion-button
+                          fill="clear"
+                          size="small"
+                          (click)="downloadAllFiles(record)"
+                        >
+                          <ion-icon
+                            name="download-outline"
+                            slot="start"
+                          ></ion-icon>
+                          Download All
+                        </ion-button>
+                      </div>
+                    </ion-card-title>
+                  </ion-card-header>
+
+                  <ion-card-content>
+                    <app-document-gallery
+                      [files]="record.files || []"
+                      (fileSelected)="openFile($event)"
                     >
-                      {{ t.name }}
-                    </ion-select-option>
-                  </ion-select>
-                </ion-item>
+                    </app-document-gallery>
+                  </ion-card-content>
+                </ng-container>
 
-                <!-- Actions -->
-                <div class="comment-actions">
-                  <ion-button
-                    size="small"
-                    fill="outline"
-                    (click)="clearNewComment(record.id)"
-                    [disabled]="!newComment.text"
-                    class="clear-btn"
+                <div
+                  class="existing-comments"
+                  *ngIf="getCommentsForRecord(record.id).length > 0"
+                >
+                  <div
+                    *ngFor="let comment of getCommentsForRecord(record.id)"
+                    class="comment-bubble"
                   >
-                    <ion-icon name="close-outline" slot="start"></ion-icon>
-                    Clear
-                  </ion-button>
-                  <ion-button
-                    size="medium"
-                    (click)="saveComment(record)"
-                    [disabled]="!newComment.text || !newComment.typeId"
-                    class="save-btn"
-                  >
-                    <ion-icon name="save-outline" slot="start"></ion-icon>
-                    Save Note
-                  </ion-button>
+                    <div class="comment-header">
+                      <span class="doctor-name">You</span>
+                      <span class="comment-time">{{
+                        comment.date | date : "MMM d, y, h:mm a"
+                      }}</span>
+                    </div>
+                    <div class="comment-text">{{ comment.content }}</div>
+                  </div>
+                </div>
+
+                <div
+                  class="new-comment-container"
+                  *ngIf="newComments[record.id] as newComment"
+                >
+                  <div class="comment-input-label">Add a new note:</div>
+
+                  <!-- Free-text -->
+                  <ion-item lines="none" class="comment-item">
+                    <ion-textarea
+                      rows="3"
+                      name="commentText-{{ record.id }}"
+                      [(ngModel)]="newComment.text"
+                      [ngModelOptions]="{ standalone: true }"
+                      fill="outline"
+                      placeholder="Enter your medical observations or treatment notes..."
+                      class="comment-textarea"
+                    ></ion-textarea>
+                  </ion-item>
+
+                  <!-- Type selector -->
+                  <ion-item lines="none" class="comment-type-select">
+                    <ion-select
+                      name="commentType-{{ record.id }}"
+                      [ngModelOptions]="{ standalone: true }"
+                      [(ngModel)]="newComments[record.id].typeId"
+                      interface="action-sheet"
+                      fill="outline"
+                      placeholder="Select comment type"
+                    >
+                      <ion-select-option
+                        *ngFor="let t of commentTypes()"
+                        [value]="t.id"
+                      >
+                        {{ t.name }}
+                      </ion-select-option>
+                    </ion-select>
+                  </ion-item>
+
+                  <!-- Actions -->
+                  <div class="comment-actions">
+                    <ion-button
+                      size="small"
+                      fill="outline"
+                      (click)="clearNewComment(record.id)"
+                      [disabled]="!newComment.text"
+                      class="clear-btn"
+                    >
+                      <ion-icon name="close-outline" slot="start"></ion-icon>
+                      Clear
+                    </ion-button>
+                    <ion-button
+                      size="medium"
+                      (click)="saveComment(record)"
+                      [disabled]="!newComment.text || !newComment.typeId"
+                      class="save-btn"
+                    >
+                      <ion-icon name="save-outline" slot="start"></ion-icon>
+                      Save Note
+                    </ion-button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </ng-container>
+        </section>
+      </ng-container>
 
-    <ng-template #noShared>
-      <div class="empty-state ion-text-center ion-padding">
-        <ion-icon name="document-lock-outline"></ion-icon>
-        <h3>No Records Shared</h3>
-        <p>No medical records have been shared with you at this time.</p>
-      </div>
-    </ng-template>
+      <ng-template #noShared>
+        <div class="empty-state ion-text-center ion-padding">
+          <ion-icon name="document-lock-outline"></ion-icon>
+          <h3>No Records Shared</h3>
+          <p>No medical records have been shared with you at this time.</p>
+        </div>
+      </ng-template>
+    </div>
   </div>
 </ion-content>
 

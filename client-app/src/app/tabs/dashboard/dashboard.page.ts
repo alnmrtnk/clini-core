@@ -1,14 +1,21 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, effect, inject, Signal } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngxs/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LoadRecords } from '../../store/medical-record.state';
 import { RecordsState } from '../../store/medical-record.state';
-import { MedicalRecord } from '../../models/medical-record.model';
+import {
+  MedicalRecord,
+  MedicalRecordGroupDto,
+} from '../../models/medical-record.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { MainDashboardRecordsComponent } from './components/main-dashboard-records/main-dashboard-records.component';
-import { AccessState, LoadAccesses } from 'src/app/store/doctor-access.state';
+import {
+  AccessState,
+  LoadAccesses,
+  LoadSharedRecords,
+} from 'src/app/store/doctor-access.state';
 import { DoctorAccess } from 'src/app/models/doctor-access.model';
 import { EsculabDashboardCardComponent } from './components/esculab-dashboard-card/esculab-dashboard-card.component';
 import { DoctorAccessCardComponent } from '../shared/doctor-access-card/doctor-access-card.component';
@@ -19,13 +26,6 @@ import {
   GetAllOrders,
 } from 'src/app/store/esculab.state';
 import { EsculabOrderDto } from 'src/app/models/esculab.model';
-
-interface LabResult {
-  id: number;
-  name: string;
-  date: Date;
-  resultCount: number;
-}
 
 @Component({
   selector: 'app-dashboard',
@@ -46,6 +46,11 @@ export class DashboardPage {
 
   readonly recordsSignal: Signal<MedicalRecord[]> = toSignal(
     this.store.select(RecordsState.records),
+    { initialValue: [] }
+  );
+
+  readonly sharedGroups = toSignal(
+    this.store.select(AccessState.sharedRecords),
     { initialValue: [] }
   );
 
@@ -96,15 +101,32 @@ export class DashboardPage {
     () => this.patient() !== null && this.patient() !== undefined
   );
 
-  ngOnInit() {
-    const userId = this.auth.currentUserId();
+  isShareVisible = computed(() => !!this.sharedGroups().length);
 
-    if (userId) {
-      this.store.dispatch(new LoadRecords());
-      this.store.dispatch(new LoadAccesses());
-      this.store.dispatch(new GetAllOrders());
-      this.store.dispatch(new FindPatient());
-    }
+  readonly sharedRecordsCount = computed(() =>
+    this.sharedGroups().reduce((sum, group) => sum + group.records.length, 0)
+  );
+
+  readonly sharedRecordsLabel = computed(() =>
+    this.sharedRecordsCount() === 1 ? 'record' : 'records'
+  );
+
+  constructor() {
+    effect(() => {
+      const userId = this.auth.currentUserId();
+
+      if (userId) {
+        this.store.dispatch(new LoadRecords());
+        this.store.dispatch(new LoadAccesses());
+        this.store.dispatch(new GetAllOrders());
+        this.store.dispatch(new FindPatient());
+        this.store.dispatch(new LoadSharedRecords(null));
+      }
+    });
+  }
+
+  trackByOwner(_: number, g: MedicalRecordGroupDto) {
+    return g.ownerEmail;
   }
 
   navigate(path: string) {

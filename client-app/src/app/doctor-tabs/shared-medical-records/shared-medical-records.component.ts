@@ -53,7 +53,6 @@ export class SharedMedicalRecordsComponent implements OnInit {
   private readonly store = inject(Store);
   private readonly sanitizer = inject(DomSanitizer);
 
-  // State signals
   readonly sharedGroups: Signal<MedicalRecordGroupDto[]> = toSignal(
     this.store.select(AccessState.sharedRecords),
     { initialValue: [] }
@@ -67,12 +66,12 @@ export class SharedMedicalRecordsComponent implements OnInit {
     { initialValue: [] }
   );
 
-  // UI state
   commentVisibility = new Map<string, boolean>();
   newComments: Record<string, NewCommentInput> = {};
   showFileViewer = false;
   selectedFile: MedicalRecordFile | null = null;
   safeFileUrl: SafeResourceUrl | null = null;
+  isToken = false;
 
   constructor() {
     effect(() => {
@@ -88,10 +87,14 @@ export class SharedMedicalRecordsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((pm) => {
+      this.store.dispatch(new LoadCommentTypes());
+
       const token = pm.get('token');
       if (token) {
+        this.isToken = true;
         this.store.dispatch(new LoadSharedRecords(token));
-        this.store.dispatch(new LoadCommentTypes());
+      } else {
+        this.store.dispatch(new LoadSharedRecords(null));
       }
     });
   }

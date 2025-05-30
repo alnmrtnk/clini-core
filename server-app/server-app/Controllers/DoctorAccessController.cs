@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server_app.Dtos;
+using server_app.Extensions;
 using server_app.Helpers;
 using server_app.Services;
 
@@ -29,9 +30,7 @@ namespace server_app.Controllers
         [HttpGet("shared-with-me")]
         public async Task<IActionResult> GetSharedWithMe()
         {
-            var userId = HttpContext.User.Identity?.IsAuthenticated == true
-                ? Guid.Parse(User.FindFirst("sub")!.Value)
-                : (Guid?)null;
+            var userId = User.GetUserId();
             var result = await _svc.GetAccessibleRecordsAsync(userId, null);
             return this.ToActionResult(result);
         }

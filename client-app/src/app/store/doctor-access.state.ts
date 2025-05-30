@@ -24,7 +24,7 @@ export class DeleteAccess {
 
 export class LoadSharedRecords {
   static readonly type = '[Access] Get Shared Records';
-  constructor(public token: string) {}
+  constructor(public token: string | null) {}
 }
 
 export interface AccessStateModel {
@@ -93,10 +93,14 @@ export class AccessState {
 
   @Action(LoadSharedRecords)
   loadShared(ctx: StateContext<AccessStateModel>, action: LoadSharedRecords) {
-    return this.service.getSharedPublic(action.token).pipe(
+    return (
+      action.token
+        ? this.service.getSharedPublic(action.token)
+        : this.service.getSharedPrivate()
+    ).pipe(
       tap((sharedRecords) => {
-        ctx.patchState({sharedRecords})
+        ctx.patchState({ sharedRecords });
       })
-    )
+    );
   }
 }

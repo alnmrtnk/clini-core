@@ -5,6 +5,7 @@ import { NgxsModule } from '@ngxs/store';
 import { RecordsState } from '../store/medical-record.state';
 import { EsculabState } from '../store/esculab.state';
 import { AccessState } from '../store/doctor-access.state';
+import { DoctorCommentState } from '../store/doctor-comment.state';
 
 export const routes: Routes = [
   {
@@ -76,6 +77,18 @@ export const routes: Routes = [
             (m) => m.DoctorAccessPage
           ),
         providers: [importProvidersFrom(NgxsModule.forFeature([AccessState]))],
+      },
+      {
+        path: 'shared-records',
+        loadComponent: () =>
+          import(
+            '../doctor-tabs/shared-medical-records/shared-medical-records.component'
+          ).then((m) => m.SharedMedicalRecordsComponent),
+        providers: [
+          importProvidersFrom(
+            NgxsModule.forFeature([AccessState, DoctorCommentState])
+          ),
+        ],
       },
       {
         path: 'settings',

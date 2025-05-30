@@ -19,4 +19,8 @@ export class DoctorAccessService extends BaseEntityService<DoctorAccess> {
   getSharedPublic(token: string): Observable<MedicalRecordGroupDto[]> {
     return this.getCustom<MedicalRecordGroupDto[]>(`public/${token}`);
   }
+
+  getSharedPrivate(): Observable<MedicalRecordGroupDto[]> {
+    return this.getCustom<MedicalRecordGroupDto[]>(`shared-with-me`);
+  }
 }
