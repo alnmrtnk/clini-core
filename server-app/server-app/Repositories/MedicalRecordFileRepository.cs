@@ -40,6 +40,5 @@ namespace server_app.Repositories
             await _db.SaveChangesAsync();
             return true;
         }
-
     }
 }

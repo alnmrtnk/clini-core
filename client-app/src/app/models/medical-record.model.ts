@@ -1,9 +1,10 @@
-import { DoctorCommentDto } from "./doctor-comment.model";
+import { DoctorCommentDto } from './doctor-comment.model';
+import { RecordType } from './record-type.model';
 
 export type MedicalRecord = {
   id: string;
   userId: string;
-  recordTypeName: string;
+  recordType: RecordType;
   title: string;
   date: string;
   notes?: string;
@@ -16,7 +17,7 @@ export type CreateMedicalRecord = {
   title: string;
   date: string;
   notes?: string;
-}
+};
 
 export type MedicalRecordFile = {
   id: string;
@@ -31,4 +32,4 @@ export type MedicalRecordGroupDto = {
   ownerName: string;
   ownerEmail: string;
   records: MedicalRecord[];
-}
+};

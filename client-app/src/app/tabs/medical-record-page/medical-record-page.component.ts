@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import {
   MedicalRecord,
@@ -13,6 +13,13 @@ import { DocumentGalleryComponent } from './components/docunent-gallery/docunent
 import { LoadRecord, RecordsState } from 'src/app/store/medical-record.state';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs';
+import { DoctorCommentDto } from 'src/app/models/doctor-comment.model';
+
+interface DoctorCommentGroup {
+  doctorAccessId: string;
+  doctorName: string;
+  comments: DoctorCommentDto[];
+}
 
 @Component({
   selector: 'app-medical-record-page',
@@ -29,19 +36,43 @@ export class MedicalRecordPageComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly store = inject(Store);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly router = inject(Router);
 
-  record = toSignal(this.store.select(RecordsState.selectedRecord));
+  record = toSignal<MedicalRecord | null>(
+    this.store.select(RecordsState.selectedRecord)
+  );
   isLoading = true;
   errorMessage: string | null = null;
   showFileViewer = false;
   selectedFile: MedicalRecordFile | null = null;
   safeFileUrl: SafeResourceUrl | null = null;
 
+  doctorCommentGroups = computed(() => {
+    const comments = this.record()?.doctorComments || [];
+    const map: Record<string, DoctorCommentGroup> = {};
+
+    for (const c of comments) {
+      if (!map[c.doctorAccessId]) {
+        map[c.doctorAccessId] = {
+          doctorAccessId: c.doctorAccessId,
+          doctorName: c.doctorName,
+          comments: [],
+        };
+      }
+      map[c.doctorAccessId].comments.push(c);
+    }
+
+    return Object.values(map);
+  });
+
   iconForCommentType(typeName: string): string {
     switch (typeName.toLowerCase()) {
-      case 'prescription':      return 'document-text-outline';
-      case 'reccomendations':   return 'medkit-outline';
-      default:                  return 'chatbubble-ellipses-outline';
+      case 'prescription':
+        return 'document-text-outline';
+      case 'reccomendations':
+        return 'medkit-outline';
+      default:
+        return 'chatbubble-ellipses-outline';
     }
   }
 
@@ -81,7 +112,7 @@ export class MedicalRecordPageComponent implements OnInit {
   openFile(file: MedicalRecordFile) {
     this.selectedFile = file;
     this.safeFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(file.url);
-  
+
     this.showFileViewer = true;
   }
 
@@ -103,18 +134,6 @@ export class MedicalRecordPageComponent implements OnInit {
   editRecord() {
     const record = this.record();
     if (!record) return;
-    console.log('Edit record:', record.id);
-  }
-
-  shareRecord() {
-    const record = this.record();
-    if (!record) return;
-    console.log('Share record:', record.id);
-  }
-
-  addFiles() {
-    const record = this.record();
-    if (!record) return;
-    console.log('Add files to record:', record.id);
+    this.router.navigate(['/tabs/medical-records/add', record.id]);
   }
 }

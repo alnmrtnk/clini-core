@@ -26,7 +26,7 @@ export class MainDashboardRecordsComponent {
   }
 
   getIcon(record: MedicalRecord): string {
-    return getIcon(record.recordTypeName);
+    return getIcon(record.recordType.name);
   }
 
   viewDocument(record: MedicalRecord) {

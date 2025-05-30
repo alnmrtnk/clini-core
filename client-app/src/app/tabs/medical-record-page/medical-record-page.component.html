@@ -12,7 +12,7 @@
         <ion-card>
           <ion-card-header>
             <ion-card-subtitle>{{
-              record()?.recordTypeName
+              record()?.recordType?.name
             }}</ion-card-subtitle>
             <ion-card-title
               >{{ record()?.title }}
@@ -96,32 +96,35 @@
         </ion-card>
 
         <!-- Doctor Comments -->
-        <ion-card
-          *ngIf="
-            record()?.doctorComments?.length &&
-            record()?.doctorComments as doctorComments
-          "
-        >
+        <ion-card *ngIf="doctorCommentGroups().length">
           <ion-card-header>
             <ion-card-title>
-              Doctor Comments ({{ doctorComments.length }})
+              Doctor Comments ({{ record()?.doctorComments?.length }})
             </ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list lines="full">
-              <ion-item *ngFor="let c of doctorComments">
-                <ion-icon
-                  slot="start"
-                  [name]="iconForCommentType(c.doctorCommentTypeName)"
-                  color="tertiary"
-                ></ion-icon>
+            <ng-container *ngFor="let group of doctorCommentGroups()">
+              <ion-item-divider color="tertiary">
                 <ion-label>
-                  <h3>{{ c.doctorCommentTypeName | titlecase }}</h3>
-                  <p class="comment-date">{{ c.date | date : "medium" }}</p>
-                  <p class="comment-text">{{ c.content }}</p>
+                  <h2>{{ group.doctorName }}</h2>
                 </ion-label>
-              </ion-item>
-            </ion-list>
+              </ion-item-divider>
+
+              <ion-list lines="full">
+                <ion-item *ngFor="let c of group.comments">
+                  <ion-icon
+                    slot="start"
+                    [name]="iconForCommentType(c.doctorCommentTypeName)"
+                    color="tertiary"
+                  ></ion-icon>
+                  <ion-label>
+                    <h3>{{ c.doctorCommentTypeName | titlecase }}</h3>
+                    <p class="comment-date">{{ c.date | date : "medium" }}</p>
+                    <p class="comment-text">{{ c.content }}</p>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+            </ng-container>
           </ion-card-content>
         </ion-card>
       </ng-container>
@@ -138,29 +141,10 @@
   </div>
 </ion-content>
 
-<!-- File Viewer Modal -->
-<ion-modal
-  [isOpen]="showFileViewer"
-  [backdropDismiss]="true"
-  (didDismiss)="closeFileViewer()"
->
-  <ng-template>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>{{ selectedFile?.fileName || "File Viewer" }}</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="closeFileViewer()">
-            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content>
-      <app-file-viewer
-        *ngIf="selectedFile"
-        [file]="selectedFile"
-        [safeUrl]="safeFileUrl"
-      ></app-file-viewer>
-    </ion-content>
-  </ng-template>
-</ion-modal>
+@if(showFileViewer) {
+<app-file-viewer
+  [file]="selectedFile"
+  [safeUrl]="safeFileUrl"
+  (closeClicked)="closeFileViewer()"
+/>
+}

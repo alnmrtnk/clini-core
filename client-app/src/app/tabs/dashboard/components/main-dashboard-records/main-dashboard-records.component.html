@@ -7,7 +7,7 @@
     >
       <div
         class="document-thumbnail"
-        [ngClass]="'document-type-' + record.recordTypeName"
+        [ngClass]="'document-type-' + record.recordType.name"
       >
         <ion-icon [name]="getIcon(record)" class="document-icon"></ion-icon>
       </div>
@@ -19,7 +19,9 @@
   </div>
 
   <div class="gallery-footer" *ngIf="records().length > 0">
-    <ion-button fill="clear" size="small" (click)="navigateToAll()">View All Records</ion-button>
+    <ion-button fill="clear" size="small" (click)="navigateToAll()"
+      >View All Records</ion-button
+    >
   </div>
 
   <div class="empty-gallery" *ngIf="records().length === 0">

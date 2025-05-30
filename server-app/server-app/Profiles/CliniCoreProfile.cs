@@ -15,12 +15,12 @@ namespace server_app.Profiles
             CreateMap<UpdateUserDto, User>();
 
             CreateMap<MedicalRecord, MedicalRecordDto>()
-                .ForMember(d => d.RecordTypeName, o => o.MapFrom(s => s.RecordType.Name))
+                .ForMember(d => d.RecordType, o => o.MapFrom(s => s.RecordType))
                 .ForMember(d => d.Files, o => o.MapFrom(s => s.Files))
                 .ForMember(d => d.DoctorComments, o => o.MapFrom(s => s.DoctorComments));
 
             CreateMap<RecordType, RecordTypeDto>()
-                .ForMember(d => d.MedicalRecords, o => o.MapFrom(s => s.MedicalRecords));
+                .ForMember(dto => dto.MedicalRecords, opt => opt.Ignore());
 
             CreateMap<RecordTypeDto, RecordType>();
 
@@ -45,7 +45,9 @@ namespace server_app.Profiles
                 .ForMember(d => d.DoctorCommentTypeName,
                            o => o.MapFrom(s => s.DoctorCommentType.Name))
                 .ForMember(d => d.DoctorCommentTypeId,
-                           o => o.MapFrom(s => s.DoctorCommentType.Id));
+                           o => o.MapFrom(s => s.DoctorCommentType.Id))
+                .ForMember(d => d.DoctorName,
+                           o => o.MapFrom(s => s.DoctorAccess.Name));
             CreateMap<DoctorCommentType, DoctorCommentTypeDto>();
         }
     }

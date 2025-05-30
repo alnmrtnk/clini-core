@@ -43,9 +43,13 @@ namespace server_app.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromForm] UpdateMedicalRecordDto d, [FromForm] List<IFormFile> files)
+        public async Task<IActionResult> Put(
+            Guid id,
+            [FromForm] UpdateMedicalRecordDto dto,
+            [FromForm] List<IFormFile> files
+        )
         {
-            var result = await _s.UpdateAsync(id, d, files);
+            var result = await _s.UpdateAsync(id, dto, files);
             return this.ToActionResult(result);
         }
 

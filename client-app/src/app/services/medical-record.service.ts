@@ -32,4 +32,27 @@ export class MedicalRecordService extends BaseEntityService<MedicalRecord> {
       observe: 'events',
     });
   }
+
+  updateMedicalRecord(
+    id: string,
+    dto: CreateMedicalRecord,
+    files: File[],
+    removedFiles: string[]
+  ): Observable<HttpEvent<{ id: string }>> {
+    const formData = new FormData();
+    formData.append('recordTypeId', dto.recordTypeId);
+    formData.append('title', dto.title);
+    formData.append('date', new Date(dto.date).toISOString());
+    removedFiles.forEach((file) => formData.append('removedFiles', file));
+
+    if (dto.notes) {
+      formData.append('notes', dto.notes);
+    }
+    files.forEach((f) => formData.append('files', f, f.name));
+
+    return this.http.put<{ id: string }>(`${this.apiUrl}/${id}`, formData, {
+      reportProgress: true,
+      observe: 'events',
+    });
+  }
 }

@@ -51,7 +51,7 @@ export class MedicalRecordsPage implements OnInit, AfterViewInit {
   readonly groupedRecords = computed(() => this.groupByMonth(this.records()));
 
   getIcon(record: MedicalRecord): string {
-    return getIcon(record.recordTypeName);
+    return getIcon(record.recordType.name);
   }
 
   ngOnInit() {

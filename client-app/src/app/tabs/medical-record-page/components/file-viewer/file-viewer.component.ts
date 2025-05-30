@@ -6,6 +6,7 @@ import {
   input,
   OnChanges,
   OnInit,
+  output,
   SimpleChanges,
 } from '@angular/core';
 import { SafeResourceUrl } from '@angular/platform-browser';
@@ -21,6 +22,8 @@ import { MedicalRecordFile } from 'src/app/models/medical-record.model';
 export class FileViewerComponent {
   readonly file = input<MedicalRecordFile | null>(null);
   readonly safeUrl = input<SafeResourceUrl | null>(null);
+
+  readonly closeClicked = output();
 
   isLoading = true;
   hasError = false;
@@ -133,5 +136,9 @@ export class FileViewerComponent {
         'Share feature is not supported in your browser. You can copy the link instead.'
       );
     }
+  }
+
+  closeFileViewer() {
+    this.closeClicked.emit()
   }
 }

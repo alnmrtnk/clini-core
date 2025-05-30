@@ -1,4 +1,5 @@
-﻿using server_app.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using server_app.Models;
 
 namespace server_app.Dtos
 {
@@ -7,7 +8,7 @@ namespace server_app.Dtos
         public required Guid Id { get; set; }
         public required string Title { get; set; } = null!;
         public required DateTime Date { get; set; }
-        public required string RecordTypeName { get; set; } = null!;
+        public required RecordTypeDto RecordType { get; set; }
 
         public string? Notes { get; set; }
 
@@ -31,9 +32,13 @@ namespace server_app.Dtos
 
     public class UpdateMedicalRecordDto
     {
-        public string? Title { get; set; } = null!;
-
+        public required Guid RecordTypeId { get; set; }
+        public required string Title { get; set; }
+        public required DateTime Date { get; set; }
         public string? Notes { get; set; }
+
+        [FromForm(Name = "removedFiles")]
+        public List<Guid> RemovedFiles { get; set; } = new();
     }
 
     public class MedicalRecordGroupDto

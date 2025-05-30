@@ -1,6 +1,7 @@
 export type DoctorCommentDto = {
   id: string;
   doctorAccessId: string;
+  doctorName: string;
   medicalRecordId: string;
   doctorCommentTypeId: string;
   doctorCommentTypeName: string;

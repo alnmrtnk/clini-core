@@ -26,6 +26,16 @@ export class AddRecord {
   constructor(public dto: CreateMedicalRecord, public files: File[]) {}
 }
 
+export class UpdateRecord {
+  static readonly type = '[Record] Edit';
+  constructor(
+    public id: string,
+    public dto: CreateMedicalRecord,
+    public files: File[],
+    public removedFiles: string[]
+  ) {}
+}
+
 export interface RecordsStateModel {
   selectedRecord: MedicalRecord | null;
   records: MedicalRecord[];
@@ -99,6 +109,10 @@ export class RecordsState {
           ctx.patchState({ uploadingProgress: progress });
         } else if (event.type === HttpEventType.Response) {
           ctx.patchState({ uploading: false, uploadingProgress: 100 });
+          const id = event.body?.id;
+          if (id) {
+            this.store.dispatch(new LoadRecord(id));
+          }
           this.store.dispatch(new LoadRecords());
         }
       }),
@@ -107,5 +121,31 @@ export class RecordsState {
         return of(null);
       })
     );
+  }
+
+  @Action(UpdateRecord)
+  update(
+    ctx: StateContext<RecordsStateModel>,
+    { id, dto, files, removedFiles }: UpdateRecord
+  ) {
+    ctx.patchState({ uploading: true, uploadingProgress: 0 });
+    return this.recordService
+      .updateMedicalRecord(id, dto, files, removedFiles)
+      .pipe(
+        tap((event) => {
+          if (event.type === HttpEventType.UploadProgress && event.total) {
+            const progress = Math.round((100 * event.loaded) / event.total);
+            ctx.patchState({ uploadingProgress: progress });
+          } else if (event.type === HttpEventType.Response) {
+            ctx.patchState({ uploading: false, uploadingProgress: 100 });
+            this.store.dispatch(new LoadRecord(id));
+            this.store.dispatch(new LoadRecords());
+          }
+        }),
+        catchError(() => {
+          ctx.patchState({ uploadingProgress: 0 });
+          return of(null);
+        })
+      );
   }
 }

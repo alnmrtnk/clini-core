@@ -46,6 +46,18 @@ export const routes: Routes = [
         ],
       },
       {
+        path: 'medical-records/add/:id',
+        loadComponent: () =>
+          import('./medical-record-add/medical-record-add.component').then(
+            (m) => m.MedicalRecordAddComponent
+          ),
+        providers: [
+          importProvidersFrom(
+            NgxsModule.forFeature([EsculabState, RecordsState])
+          ),
+        ],
+      },
+      {
         path: 'medical-records/:id',
         loadComponent: () =>
           import('./medical-record-page/medical-record-page.component').then(

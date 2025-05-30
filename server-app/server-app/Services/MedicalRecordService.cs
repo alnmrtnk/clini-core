@@ -93,32 +93,27 @@ namespace server_app.Services
             return ServiceResult<Guid>.Ok(id);
         }
 
-        public async Task<ServiceResult<bool>> UpdateAsync(Guid id, UpdateMedicalRecordDto dto, List<IFormFile> newFiles)
+        public async Task<ServiceResult<bool>> UpdateAsync(
+            Guid id,
+            UpdateMedicalRecordDto dto,
+            List<IFormFile> newFiles
+        )
         {
             var success = await _medicalRecordRepository.UpdateAsync(id, dto);
             if (!success)
                 return ServiceResult<bool>.Fail("Record not found", StatusCodes.Status404NotFound);
 
             var record = await _medicalRecordRepository.GetByIdAsync(id);
-
             if (record == null)
+                return ServiceResult<bool>.Fail("Not found", StatusCodes.Status404NotFound);
+
+            foreach (var fileId in dto.RemovedFiles)
             {
-                return ServiceResult<bool>.Fail("Item not found", StatusCodes.Status404NotFound);
+                await _medicalRecordFileRepository.DeleteAsync(fileId);
             }
 
-            var existingFiles = record.Files;
-
-            var newFileNames = newFiles.Select(f => f.FileName).ToHashSet(StringComparer.OrdinalIgnoreCase);
-            var existingFileNames = existingFiles.Select(f => f.FileName).ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            var toDelete = existingFiles.Where(f => !newFileNames.Contains(f.FileName)).ToList();
-            foreach (var file in toDelete)
-            {
-                await _medicalRecordFileRepository.DeleteAsync(file.Id);
-            }
-
-            var toAdd = newFiles.Where(f => !existingFileNames.Contains(f.FileName));
-            foreach (var file in toAdd)
+            var existingNames = record.Files.Select(f => f.FileName).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            foreach (var file in newFiles.Where(f => !existingNames.Contains(f.FileName)))
             {
                 var s3Key = await _fileUploader.UploadAsync(file);
                 await _medicalRecordFileRepository.AddAsync(new CreateMedicalRecordFileDto
@@ -131,6 +126,7 @@ namespace server_app.Services
 
             return ServiceResult<bool>.Ok(true);
         }
+
 
         public async Task<ServiceResult<bool>> DeleteAsync(Guid id)
         {

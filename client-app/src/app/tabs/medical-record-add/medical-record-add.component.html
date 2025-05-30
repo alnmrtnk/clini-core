@@ -1,6 +1,11 @@
 <ion-content class="ion-padding">
   <div class="page-wrapper">
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <div *ngIf="isLoading" class="loading-container">
+      <ion-spinner name="lines"></ion-spinner>
+      <p>Loading record…</p>
+    </div>
+
+    <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="submit()">
       <ion-grid>
         <ion-row>
           <ion-col size="12" size-md="6">
@@ -133,12 +138,30 @@
           </div>
         </div>
 
-        <div class="selected-files" *ngIf="selectedFiles.length > 0">
+        <div class="selected-files" *ngIf="selectedFiles.length > 0 || filesFromEdit()?.length !== 0">
           <h5>Selected Files</h5>
           <ion-list lines="full">
+            <ion-item *ngFor="let file of filesFromEdit(); let i = index" (click)="openFile(file)">
+              <ion-icon
+                [name]="getFileIcon(file.fileName)"
+                slot="start"
+                color="primary"
+              ></ion-icon>
+              <ion-label>
+                <h2 class="file-name">{{ file.fileName }}</h2>
+              </ion-label>
+              <ion-button
+                fill="clear"
+                slot="end"
+                color="danger"
+                (click)="removeEditFile(file)"
+              >
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
             <ion-item *ngFor="let file of selectedFiles; let i = index">
               <ion-icon
-                [name]="getFileIcon(file)"
+                [name]="getFileIcon(file.name)"
                 slot="start"
                 color="primary"
               ></ion-icon>

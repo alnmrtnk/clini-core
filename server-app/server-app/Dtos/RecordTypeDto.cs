@@ -7,6 +7,6 @@ namespace server_app.Dtos
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
 
-        public List<MedicalRecord> MedicalRecords { get; set; } = null!;
+        public List<MedicalRecordDto> MedicalRecords { get; set; } = new();
     }
 }
