@@ -67,17 +67,16 @@
               [class.expanded]="isCommentVisible(record.id)"
             >
               <ion-card-content>
-                <ion-item lines="none">
-                  <ion-label>
-                    <h3>Date</h3>
-                    <p>{{ record.date | date }}</p>
-                  </ion-label>
-                </ion-item>
-
                 <ion-item *ngIf="record.notes" lines="none">
                   <ion-label>
                     <h3>Notes</h3>
                     <p>{{ record.notes }}</p>
+                  </ion-label>
+                </ion-item>
+                <ion-item *ngIf="!record.files || !record.files.length" lines="none">
+                  <ion-label>
+                    <h3>Files</h3>
+                    <p>No files attached to this record</p>
                   </ion-label>
                 </ion-item>
               </ion-card-content>
@@ -117,7 +116,6 @@
                 <div
                   *ngFor="let comment of getCommentsForRecord(record.id)"
                   class="comment-bubble"
-                  
                 >
                   <div class="comment-header">
                     <span class="doctor-name">You</span>
@@ -142,19 +140,20 @@
                     name="commentText-{{ record.id }}"
                     [(ngModel)]="newComment.text"
                     [ngModelOptions]="{ standalone: true }"
-                    shape="round"
+                    fill="outline"
                     placeholder="Enter your medical observations or treatment notes..."
                     class="comment-textarea"
                   ></ion-textarea>
                 </ion-item>
 
                 <!-- Type selector -->
-                <ion-item lines="none">
+                <ion-item lines="none" class="comment-type-select">
                   <ion-select
                     name="commentType-{{ record.id }}"
                     [ngModelOptions]="{ standalone: true }"
                     [(ngModel)]="newComments[record.id].typeId"
                     interface="action-sheet"
+                    fill="outline"
                     placeholder="Select comment type"
                   >
                     <ion-select-option
@@ -205,29 +204,11 @@
   </div>
 </ion-content>
 
-<ion-modal
-  [isOpen]="showFileViewer"
-  [backdropDismiss]="true"
-  (didDismiss)="closeFileViewer()"
+@if(showFileViewer) {
+<app-file-viewer
+  [file]="selectedFile"
+  [safeUrl]="safeFileUrl"
+  (closeClicked)="closeFileViewer()"
 >
-  <ng-template>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>{{ selectedFile?.fileName || "File Viewer" }}</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="closeFileViewer()">
-            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content>
-      <app-file-viewer
-        *ngIf="selectedFile"
-        [file]="selectedFile"
-        [safeUrl]="safeFileUrl"
-      >
-      </app-file-viewer>
-    </ion-content>
-  </ng-template>
-</ion-modal>
+</app-file-viewer>
+}

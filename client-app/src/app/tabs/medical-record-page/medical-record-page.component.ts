@@ -8,12 +8,12 @@ import {
 } from 'src/app/models/medical-record.model';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { FileViewerComponent } from './components/file-viewer/file-viewer.component';
 import { DocumentGalleryComponent } from './components/docunent-gallery/docunent-gallery.component';
 import { LoadRecord, RecordsState } from 'src/app/store/medical-record.state';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs';
 import { DoctorCommentDto } from 'src/app/models/doctor-comment.model';
+import { FileViewerComponent } from '../shared/file-viewer/file-viewer.component';
 
 interface DoctorCommentGroup {
   doctorAccessId: string;

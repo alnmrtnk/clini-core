@@ -22,13 +22,13 @@ import {
   MedicalRecordFile,
 } from 'src/app/models/medical-record.model';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { FileViewerComponent } from 'src/app/tabs/medical-record-page/components/file-viewer/file-viewer.component';
 import {
   DoctorCommentTypeDto,
   DoctorCommentDto,
   CreateDoctorCommentDto,
 } from 'src/app/models/doctor-comment.model';
 import { DocumentGalleryComponent } from 'src/app/tabs/medical-record-page/components/docunent-gallery/docunent-gallery.component';
+import { FileViewerComponent } from 'src/app/tabs/shared/file-viewer/file-viewer.component';
 
 interface NewCommentInput {
   text: string;
