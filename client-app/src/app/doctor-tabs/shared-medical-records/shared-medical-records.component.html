@@ -12,9 +12,93 @@
       </ion-card>
       }
 
-      <ng-container *ngIf="sharedGroups().length > 0; else noShared">
+      <!-- Search and Filter Section -->
+      <ion-card class="search-filter-card">
+        <ion-card-content>
+          <div class="search-container">
+            <ion-searchbar
+              [(ngModel)]="searchTerm"
+              (ionInput)="applyFilters()"
+              placeholder="Search records by title, type, or patient name"
+              animated
+              class="record-search"
+            ></ion-searchbar>
+          </div>
+
+          <div class="filters-container">
+            <ion-item lines="none" class="filter-item">
+              <ion-label>Record Type</ion-label>
+              <ion-select
+                [(ngModel)]="filters.recordType"
+                (ionChange)="applyFilters()"
+                placeholder="All Types"
+                interface="popover"
+                class="filter-select"
+              >
+                <ion-select-option value="">All Types</ion-select-option>
+                <ion-select-option
+                  *ngFor="let type of recordTypes"
+                  [value]="type"
+                  >{{ type }}</ion-select-option
+                >
+              </ion-select>
+            </ion-item>
+
+            <ion-item lines="none" class="filter-item">
+              <ion-label>Date Range</ion-label>
+              <ion-select
+                [(ngModel)]="filters.dateRange"
+                (ionChange)="applyFilters()"
+                placeholder="Any Time"
+                interface="popover"
+                class="filter-select"
+              >
+                <ion-select-option value="">Any Time</ion-select-option>
+                <ion-select-option value="week">Last Week</ion-select-option>
+                <ion-select-option value="month">Last Month</ion-select-option>
+                <ion-select-option value="quarter"
+                  >Last 3 Months</ion-select-option
+                >
+                <ion-select-option value="year">Last Year</ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <ion-item lines="none" class="filter-item">
+              <ion-label>Has Files</ion-label>
+              <ion-select
+                [(ngModel)]="filters.hasFiles"
+                (ionChange)="applyFilters()"
+                placeholder="All Records"
+                interface="popover"
+                class="filter-select"
+              >
+                <ion-select-option value="">All Records</ion-select-option>
+                <ion-select-option value="yes">With Files</ion-select-option>
+                <ion-select-option value="no">Without Files</ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <ion-button
+              fill="clear"
+              size="small"
+              (click)="resetFilters()"
+              class="reset-filters-btn"
+            >
+              <ion-icon name="refresh-outline" slot="start"></ion-icon>
+              Reset Filters
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Results Summary -->
+      <div class="results-summary" *ngIf="filteredGroups.length > 0">
+        <span>{{ getTotalRecordsCount() }} records found</span>
+      </div>
+
+      <ng-container *ngIf="filteredGroups.length > 0; else noShared">
         <section
-          *ngFor="let group of sharedGroups()"
+          *ngFor="let group of filteredGroups"
           class="group-section ion-margin-bottom"
         >
           <div class="patient-header">
@@ -201,10 +285,29 @@
       </ng-container>
 
       <ng-template #noShared>
-        <div class="empty-state ion-text-center ion-padding">
+        <div
+          class="empty-state ion-text-center ion-padding"
+          *ngIf="sharedGroups().length === 0"
+        >
           <ion-icon name="document-lock-outline"></ion-icon>
           <h3>No Records Shared</h3>
           <p>No medical records have been shared with you at this time.</p>
+        </div>
+
+        <div
+          class="empty-state ion-text-center ion-padding"
+          *ngIf="sharedGroups().length > 0 && filteredGroups.length === 0"
+        >
+          <ion-icon name="search-outline"></ion-icon>
+          <h3>No Matching Records</h3>
+          <p>
+            No records match your current search criteria. Try adjusting your
+            filters.
+          </p>
+          <ion-button (click)="resetFilters()" color="primary">
+            <ion-icon name="refresh-outline" slot="start"></ion-icon>
+            Reset Filters
+          </ion-button>
         </div>
       </ng-template>
     </div>
