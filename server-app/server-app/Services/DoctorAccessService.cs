@@ -3,6 +3,7 @@ using server_app.Dtos;
 using server_app.Helpers;
 using server_app.Models;
 using server_app.Repositories;
+using System.Text.RegularExpressions;
 
 namespace server_app.Services
 {
@@ -19,10 +20,10 @@ namespace server_app.Services
     {
         private readonly IDoctorAccessRepository _repo;
         private readonly IUserRepository _users;
-        private readonly IMedicalRecordRepository _records;
+        private readonly IMedicalRecordService _records;
         private readonly IMapper _map;
 
-        public DoctorAccessService(IDoctorAccessRepository repo, IUserRepository users, IMedicalRecordRepository records, IMapper mapper)
+        public DoctorAccessService(IDoctorAccessRepository repo, IUserRepository users, IMedicalRecordService records, IMapper mapper)
         {
             _repo = repo;
             _users = users;
@@ -43,7 +44,18 @@ namespace server_app.Services
             {
                 var targetUser = await _users.GetEntityByEmailAsync(dto.TargetUserEmail);
                 if (targetUser == null)
-                    return ServiceResult<DoctorAccessDto>.Fail("User not found", StatusCodes.Status404NotFound);
+                    return ServiceResult<DoctorAccessDto>
+                              .Fail("User not found", StatusCodes.Status404NotFound);
+
+                var existingAccesses = await _repo.GetByTargetUserIdAsync(targetUser.Id);
+
+                if (existingAccesses != null && existingAccesses.Any())
+                {
+                    foreach (var oldAccess in existingAccesses)
+                    {
+                        await _repo.RevokeAsync(oldAccess.Id);
+                    }
+                }
 
                 access.TargetUserId = targetUser.Id;
                 access.TargetUserEmail = targetUser.Email;
@@ -61,7 +73,8 @@ namespace server_app.Services
                 Name = access.Name,
                 Token = access.Token,
                 ExpiresAt = access.ExpiresAt,
-                Revoked = access.Revoked
+                Revoked = access.Revoked,
+                TargetUserEmail = access.TargetUserEmail
             });
         }
 
@@ -97,13 +110,23 @@ namespace server_app.Services
                 .Select(g =>
                 {
                     var representative = g.First().User;
-                    return new MedicalRecordGroupDto
+                    var group = new MedicalRecordGroupDto
                     {
                         OwnerUserId = representative.Id,
                         OwnerName = representative.FullName,
                         OwnerEmail = representative.Email,
                         Records = _map.Map<List<MedicalRecordDto>>(g.ToList())
                     };
+
+                    group.Records.ForEach((record) =>
+                    {
+                        record.DoctorComments = record.DoctorComments.Where(dc => dc.IsPublic || entries.Any(da => da.Id == dc.DoctorAccessId)).ToList();
+                        foreach (var item in record.DoctorComments)
+                        {
+                            item.DoctorName = entries.Any(e => e.Id == item.DoctorAccessId) ? "You" : item.DoctorName;
+                        }
+                    });
+                    return group;
                 })
                 .ToList();
 

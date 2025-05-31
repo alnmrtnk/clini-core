@@ -15,6 +15,8 @@ namespace server_app.Repositories
         Task<IEnumerable<DoctorAccess>> GetValidAccessesByTokenAsync(string token);
         Task<IEnumerable<DoctorAccess>> GetGrantedAccessesByCurrentUserAsync();
         Task<bool> RevokeAsync(Guid id);
+
+        Task<IEnumerable<DoctorAccess>> GetByTargetUserIdAsync(Guid targetUserId);
     }
 
     public class DoctorAccessRepository : BaseRepository, IDoctorAccessRepository
@@ -86,6 +88,13 @@ namespace server_app.Repositories
             entity.Revoked = true;
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<DoctorAccess>> GetByTargetUserIdAsync(Guid targetUserId)
+        {
+            return await _context.DoctorAccesses
+                       .Where(a => a.TargetUserId == targetUserId && !a.Revoked)
+                       .ToListAsync();
         }
     }
 }

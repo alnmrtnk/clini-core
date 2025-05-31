@@ -215,6 +215,8 @@ export class MedicalRecordAddComponent implements OnInit {
       .dispatch(new AddRecord(dto, this.selectedFiles))
       .subscribe(() => {
         this.form.reset();
+        this.selectedFiles = [];
+        this.removedFilesFromEdit.set([]);
         if (!this.uploading()) {
           this.router.navigate(['/tabs/medical-records']);
         }

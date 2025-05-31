@@ -17,6 +17,8 @@ namespace server_app.Models
 
         public DateTime Date {  get; set; } = DateTime.UtcNow;
 
+        public bool IsPublic { get; set; } = false;
+
         public DoctorAccess DoctorAccess { get; set; } = null!;
 
         [JsonIgnore]

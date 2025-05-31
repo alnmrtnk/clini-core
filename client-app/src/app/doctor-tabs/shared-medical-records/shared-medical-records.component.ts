@@ -33,6 +33,7 @@ import { FileViewerComponent } from 'src/app/tabs/shared/file-viewer/file-viewer
 interface NewCommentInput {
   text: string;
   typeId: string;
+  isPublic: boolean;
 }
 
 interface FilterOptions {
@@ -71,14 +72,7 @@ export class SharedMedicalRecordsComponent implements OnInit {
       initialValue: [],
     }
   );
-  readonly comments: Signal<DoctorCommentDto[]> = toSignal(
-    this.store.select(DoctorCommentState.comments),
-    {
-      initialValue: [],
-    }
-  );
 
-  // Search and filter properties
   searchTerm = '';
   filters: FilterOptions = {
     recordType: '',
@@ -93,23 +87,24 @@ export class SharedMedicalRecordsComponent implements OnInit {
   showFileViewer = false;
   selectedFile: MedicalRecordFile | null = null;
   safeFileUrl: SafeResourceUrl | null = null;
-  isToken = false;
+  token: string | null = null;
 
   constructor() {
     effect(() => {
-      // Initialize new comments for each record
       this.sharedGroups().forEach((group) => {
         group.records.forEach((record) => {
           if (!this.newComments[record.id]) {
-            this.newComments[record.id] = { text: '', typeId: '' };
+            this.newComments[record.id] = {
+              text: '',
+              typeId: '',
+              isPublic: false,
+            };
           }
         });
       });
 
-      // Extract unique record types for filter dropdown
       this.extractRecordTypes();
 
-      // Apply initial filtering
       this.applyFilters();
     });
   }
@@ -120,7 +115,7 @@ export class SharedMedicalRecordsComponent implements OnInit {
 
       const token = pm.get('token');
       if (token) {
-        this.isToken = true;
+        this.token = token;
         this.store.dispatch(new LoadSharedRecords(token));
       } else {
         this.store.dispatch(new LoadSharedRecords(null));
@@ -128,7 +123,6 @@ export class SharedMedicalRecordsComponent implements OnInit {
     });
   }
 
-  // Extract unique record types from all records
   extractRecordTypes(): void {
     const types = new Set<string>();
     this.sharedGroups().forEach((group) => {
@@ -141,15 +135,11 @@ export class SharedMedicalRecordsComponent implements OnInit {
     this.recordTypes = Array.from(types).sort();
   }
 
-  // Apply search and filters to records
   applyFilters(): void {
     const searchLower = this.searchTerm.toLowerCase().trim();
 
-    // Create a deep copy of the groups to avoid modifying the original data
     const filteredGroups = this.sharedGroups().map((group) => {
-      // Filter records within each group
       const filteredRecords = group.records.filter((record) => {
-        // Search term filtering
         const matchesSearch =
           !searchLower ||
           record.title.toLowerCase().includes(searchLower) ||
@@ -158,7 +148,6 @@ export class SharedMedicalRecordsComponent implements OnInit {
 
         if (!matchesSearch) return false;
 
-        // Record filtering
         if (
           this.filters.recordType &&
           record.recordType?.name !== this.filters.recordType
@@ -166,7 +155,6 @@ export class SharedMedicalRecordsComponent implements OnInit {
           return false;
         }
 
-        // Date range filtering
         if (this.filters.dateRange) {
           const recordDate = new Date(record.date);
           const now = new Date();
@@ -186,7 +174,7 @@ export class SharedMedicalRecordsComponent implements OnInit {
               cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1));
               break;
             default:
-              cutoffDate = new Date(0); // Beginning of time
+              cutoffDate = new Date(0);
           }
 
           if (recordDate < cutoffDate) {
@@ -194,7 +182,6 @@ export class SharedMedicalRecordsComponent implements OnInit {
           }
         }
 
-        // Has files filtering
         if (this.filters.hasFiles) {
           const hasFiles = record.files && record.files.length > 0;
           if (
@@ -208,20 +195,17 @@ export class SharedMedicalRecordsComponent implements OnInit {
         return true;
       });
 
-      // Return a new group object with filtered records
       return {
         ...group,
         records: filteredRecords,
       };
     });
 
-    // Filter out groups with no matching records
     this.filteredGroups = filteredGroups.filter(
       (group) => group.records.length > 0
     );
   }
 
-  // Reset all filters and search
   resetFilters(): void {
     this.searchTerm = '';
     this.filters = {
@@ -232,7 +216,6 @@ export class SharedMedicalRecordsComponent implements OnInit {
     this.applyFilters();
   }
 
-  // Get total number of records across all filtered groups
   getTotalRecordsCount(): number {
     return this.filteredGroups.reduce(
       (total, group) => total + group.records.length,
@@ -243,9 +226,6 @@ export class SharedMedicalRecordsComponent implements OnInit {
   toggleComments(recordId: string): void {
     const visible = this.commentVisibility.get(recordId) || false;
     this.commentVisibility.set(recordId, !visible);
-    if (!visible) {
-      this.store.dispatch(new LoadComments(recordId));
-    }
   }
 
   isCommentVisible(recordId: string): boolean {
@@ -253,7 +233,11 @@ export class SharedMedicalRecordsComponent implements OnInit {
   }
 
   getCommentsForRecord(recordId: string): DoctorCommentDto[] {
-    return this.comments().filter((c) => c.medicalRecordId === recordId);
+    return (
+      this.sharedGroups()
+        .find((group) => group.records.some((r) => r.id === recordId))
+        ?.records.find((r) => r.id === recordId)?.doctorComments ?? []
+    );
   }
 
   hasComments(recordId: string): boolean {
@@ -265,7 +249,7 @@ export class SharedMedicalRecordsComponent implements OnInit {
   }
 
   clearNewComment(recordId: string): void {
-    this.newComments[recordId] = { text: '', typeId: '' };
+    this.newComments[recordId] = { text: '', typeId: '', isPublic: false };
   }
 
   saveComment(record: MedicalRecord): void {
@@ -280,11 +264,16 @@ export class SharedMedicalRecordsComponent implements OnInit {
       doctorCommentTypeId: input.typeId,
       content: input.text.trim(),
       date: new Date().toISOString(),
+      isPublic: input.isPublic,
     };
 
     this.store.dispatch(new AddComment(dto)).subscribe(() => {
       this.clearNewComment(record.id);
-      this.store.dispatch(new LoadComments(record.id));
+      if (this.token) {
+        this.store.dispatch(new LoadSharedRecords(this.token));
+      } else {
+        this.store.dispatch(new LoadSharedRecords(null));
+      }
     });
   }
 

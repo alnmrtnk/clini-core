@@ -15,6 +15,7 @@ export type CreateDoctorCommentDto = {
   doctorCommentTypeId: string;
   content: string;
   date: string;
+  isPublic: boolean;
 }
 
 export type DoctorCommentTypeDto = {

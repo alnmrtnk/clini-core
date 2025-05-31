@@ -1,7 +1,7 @@
 <ion-content class="ion-padding">
-  <div [class.page-wrapper]="!isToken">
+  <div [class.page-wrapper]="!token">
     <div class="wrapper">
-      @if (isToken) {
+      @if (!!token) {
       <ion-card class="welcome-card">
         <ion-card-header>
           <ion-card-title>Welcome, Doctor</ion-card-title>
@@ -12,7 +12,6 @@
       </ion-card>
       }
 
-      <!-- Search and Filter Section -->
       <ion-card class="search-filter-card">
         <ion-card-content>
           <div class="search-container">
@@ -208,7 +207,7 @@
                     class="comment-bubble"
                   >
                     <div class="comment-header">
-                      <span class="doctor-name">You</span>
+                      <span class="doctor-name">{{comment.doctorName}}</span>
                       <span class="comment-time">{{
                         comment.date | date : "MMM d, y, h:mm a"
                       }}</span>
@@ -223,7 +222,6 @@
                 >
                   <div class="comment-input-label">Add a new note:</div>
 
-                  <!-- Free-text -->
                   <ion-item lines="none" class="comment-item">
                     <ion-textarea
                       rows="3"
@@ -236,7 +234,6 @@
                     ></ion-textarea>
                   </ion-item>
 
-                  <!-- Type selector -->
                   <ion-item lines="none" class="comment-type-select">
                     <ion-select
                       name="commentType-{{ record.id }}"
@@ -255,7 +252,20 @@
                     </ion-select>
                   </ion-item>
 
-                  <!-- Actions -->
+                  <ion-item lines="none" class="comment-visibility">
+                    <ion-checkbox
+                      slot="start"
+                      [(ngModel)]="newComments[record.id].isPublic"
+                      [ngModelOptions]="{ standalone: true }"
+                    ></ion-checkbox>
+                    <ion-label>
+                      Visible to other doctors
+                      <p class="small-text">
+                        (leave unchecked to keep private to the patient)
+                      </p>
+                    </ion-label>
+                  </ion-item>
+
                   <div class="comment-actions">
                     <ion-button
                       size="small"

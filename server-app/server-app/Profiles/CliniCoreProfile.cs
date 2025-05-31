@@ -47,7 +47,7 @@ namespace server_app.Profiles
                 .ForMember(d => d.DoctorCommentTypeId,
                            o => o.MapFrom(s => s.DoctorCommentType.Id))
                 .ForMember(d => d.DoctorName,
-                           o => o.MapFrom(s => s.DoctorAccess.Name));
+                           o => o.MapFrom(s => s.DoctorAccess.TargetUserEmail ?? s.DoctorAccess.Name));
             CreateMap<DoctorCommentType, DoctorCommentTypeDto>();
         }
     }

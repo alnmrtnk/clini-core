@@ -10,6 +10,7 @@
         public required string DoctorName { get; set; }
         public required string Content { get; set; }
         public required DateTime Date { get; set; }
+        public bool IsPublic { get; set; }
     }
 
     public class CreateDoctorCommentDto
@@ -18,5 +19,6 @@
         public required Guid MedicalRecordId { get; set; }
         public required Guid DoctorCommentTypeId { get; set; }
         public required string Content { get; set; }
+        public bool IsPublic { get; set; } = true;
     }
 }

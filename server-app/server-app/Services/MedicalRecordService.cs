@@ -13,6 +13,7 @@ namespace server_app.Services
         Task<ServiceResult<Guid>> CreateAsync(CreateMedicalRecordDto dto, List<IFormFile> files);
         Task<ServiceResult<bool>> UpdateAsync(Guid id, UpdateMedicalRecordDto dto, List<IFormFile> files);
         Task<ServiceResult<bool>> DeleteAsync(Guid id);
+        Task<IEnumerable<MedicalRecordDto>> GetByUserIdsAsync(List<Guid>? ownerIds);
     }
 
     public class MedicalRecordService : IMedicalRecordService
@@ -61,6 +62,22 @@ namespace server_app.Services
             dto.Files = BuildFileDtosAsync(recordEntity.Files);
 
             return ServiceResult<MedicalRecordDto>.Ok(dto);
+        }
+
+        public async Task<IEnumerable<MedicalRecordDto>> GetByUserIdsAsync(List<Guid>? ownerIds)
+        {
+            var entities = await _medicalRecordRepository.GetByUserIdsAsync(ownerIds);
+
+            var dtos = new List<MedicalRecordDto>();
+
+            foreach (var record in entities)
+            {
+                var dto = _map.Map<MedicalRecordDto>(record);
+                dto.Files = BuildFileDtosAsync(record.Files);
+                dtos.Add(dto);
+            }
+
+            return dtos;
         }
 
 

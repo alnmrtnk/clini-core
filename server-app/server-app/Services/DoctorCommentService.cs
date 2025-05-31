@@ -44,6 +44,7 @@ namespace server_app.Services
                     DoctorCommentTypeId = dto.DoctorCommentTypeId,
                     Content = dto.Content,
                     Date = DateTime.UtcNow,
+                    IsPublic = dto.IsPublic
                 };
                 await _repo.AddAsync(comment);
                 var resultDto = _mapper.Map<DoctorCommentDto>(comment);
