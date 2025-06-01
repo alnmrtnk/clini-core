@@ -8,6 +8,7 @@ import {
   LabResultDto,
   PatientDto,
 } from '../models/esculab.model';
+import { Response } from '../models/response.type';
 
 @Injectable({
   providedIn: 'root',
@@ -46,7 +47,6 @@ export class EsculabService {
       .pipe(
         map((response) => {
           return response.data;
-          //throw new Error(response.message || 'Failed to find patient');
         })
       );
   }
@@ -57,26 +57,21 @@ export class EsculabService {
       .pipe(
         map((response) => {
           return response.data;
-          //throw new Error(response.message || 'Failed to get lab orders');
         })
       );
   }
 
-  /**
-   * Get detailed results for a specific lab order
-   */
   getOrderDetails(
     orderId: number,
     esculabToken: string
   ): Observable<LabResultDto[]> {
     return this.http
-      .get<any>(
+      .get<{esculabRecordDetails: LabResultDto[]}>(
         `${this.apiUrl}get-order/${orderId}?esculabToken=${esculabToken}`
       )
       .pipe(
         map((response) => {
-          return response.data;
-          //throw new Error(response.message || 'Failed to get order details');
+          return response.esculabRecordDetails;
         })
       );
   }

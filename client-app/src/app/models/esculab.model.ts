@@ -1,3 +1,5 @@
+import { DoctorCommentDto } from "./doctor-comment.model";
+
 export type RequestCodeDto = {
   phone: string;
   uuid: string;
@@ -36,7 +38,8 @@ export type PatientDto = {
 }
 
 export type EsculabOrderDto = {
-  dt: string;
+  id: string;
+  dt: string; 
   idGrTest: number;
   address: string;
   ready: string;
@@ -44,12 +47,14 @@ export type EsculabOrderDto = {
   stringAgg?: string;
   packet: string;
   idOrder: number;
-  idClient: number;
+  idClient: number; 
   fullname: string;
   state: string;
   deleted: boolean;
   rating: number;
   last: boolean;
+  doctorComments: DoctorCommentDto[];
+  esculabRecordDetails: LabResultDto[];
 }
 
 export type LabResultDto = {

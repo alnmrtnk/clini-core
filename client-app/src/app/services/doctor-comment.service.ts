@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BaseEntityService } from './base-entity.service';
-import { CreateDoctorCommentDto, DoctorCommentDto, DoctorCommentTypeDto } from '../models/doctor-comment.model';
+import {
+  CreateDoctorCommentDto,
+  DoctorCommentDto,
+  DoctorCommentTypeDto,
+} from '../models/doctor-comment.model';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { Response } from '../models/response.type';
 
 @Injectable({ providedIn: 'root' })
 export class DoctorCommentService extends BaseEntityService<DoctorCommentDto> {
@@ -17,10 +22,15 @@ export class DoctorCommentService extends BaseEntityService<DoctorCommentDto> {
   }
 
   createComment(payload: CreateDoctorCommentDto): Observable<DoctorCommentDto> {
-    return this.create(payload);
+    return this.http
+      .post<Response<DoctorCommentDto>>(this.apiUrl, payload)
+      .pipe(map((r) => r.data));
   }
 
-  updateComment(id: string, changes: Partial<DoctorCommentDto>): Observable<void> {
+  updateComment(
+    id: string,
+    changes: Partial<DoctorCommentDto>
+  ): Observable<void> {
     return this.update(id, changes);
   }
 

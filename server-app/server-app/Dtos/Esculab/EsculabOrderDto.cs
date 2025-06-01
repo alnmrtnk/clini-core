@@ -17,5 +17,4 @@
         public int Rating { get; set; }
         public bool Last { get; set; }
     }
-
 }

@@ -1,4 +1,5 @@
 import { DoctorCommentDto } from './doctor-comment.model';
+import { EsculabOrderDto } from './esculab.model';
 import { RecordType } from './record-type.model';
 
 export type MedicalRecord = {
@@ -32,4 +33,5 @@ export type MedicalRecordGroupDto = {
   ownerName: string;
   ownerEmail: string;
   records: MedicalRecord[];
+  esculabRecords: EsculabOrderDto[];
 };

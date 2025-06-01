@@ -1,0 +1,64 @@
+<div class="new-comment-container" *ngIf="newComments()[recordId()] as newComment">
+  <div class="comment-input-label">Add a new note:</div>
+
+  <ion-item lines="none" class="comment-item">
+    <ion-textarea
+      rows="3"
+      name="commentText-{{ recordId() }}"
+      [(ngModel)]="newComment.text"
+      [ngModelOptions]="{ standalone: true }"
+      fill="outline"
+      placeholder="Enter your medical observations or treatment notes..."
+      class="comment-textarea"
+    ></ion-textarea>
+  </ion-item>
+
+  <ion-item lines="none" class="comment-type-select">
+    <ion-select
+      name="commentType-{{ recordId() }}"
+      [ngModelOptions]="{ standalone: true }"
+      [(ngModel)]="newComments()[recordId()].typeId"
+      interface="action-sheet"
+      fill="outline"
+      placeholder="Select comment type"
+    >
+      <ion-select-option *ngFor="let t of commentTypes()" [value]="t.id">
+        {{ t.name }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item lines="none" class="comment-visibility">
+    <ion-checkbox
+      slot="start"
+      [(ngModel)]="newComments()[recordId()].isPublic"
+      [ngModelOptions]="{ standalone: true }"
+    ></ion-checkbox>
+    <ion-label>
+      Visible to other doctors
+      <p class="small-text">(leave unchecked to keep private to the patient)</p>
+    </ion-label>
+  </ion-item>
+
+  <div class="comment-actions">
+    <ion-button
+      size="small"
+      fill="outline"
+      (click)="clearNewComment(recordId())"
+      [disabled]="!newComment.text"
+      class="clear-btn"
+    >
+      <ion-icon name="close-outline" slot="start"></ion-icon>
+      Clear
+    </ion-button>
+    <ion-button
+      size="medium"
+      (click)="saveComment(recordId(), type())"
+      [disabled]="!newComment.text || !newComment.typeId"
+      class="save-btn"
+    >
+      <ion-icon name="save-outline" slot="start"></ion-icon>
+      Save Note
+    </ion-button>
+  </div>
+</div>

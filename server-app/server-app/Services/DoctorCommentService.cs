@@ -41,6 +41,7 @@ namespace server_app.Services
                 {
                     DoctorAccessId = doctorAccess.Id,
                     MedicalRecordId = dto.MedicalRecordId,
+                    EsculabRecordId = dto.EsculabRecordId,
                     DoctorCommentTypeId = dto.DoctorCommentTypeId,
                     Content = dto.Content,
                     Date = DateTime.UtcNow,

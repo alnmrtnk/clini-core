@@ -10,27 +10,21 @@ import {
   AccessState,
   LoadSharedRecords,
 } from 'src/app/store/doctor-access.state';
-import {
-  DoctorCommentState,
-  LoadCommentTypes,
-  LoadComments,
-  AddComment,
-} from 'src/app/store/doctor-comment.state';
+import { LoadCommentTypes } from 'src/app/store/doctor-comment.state';
 import {
   MedicalRecordGroupDto,
   MedicalRecord,
   MedicalRecordFile,
 } from 'src/app/models/medical-record.model';
+
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import {
-  DoctorCommentTypeDto,
-  DoctorCommentDto,
-  CreateDoctorCommentDto,
-} from 'src/app/models/doctor-comment.model';
+import { DoctorCommentDto } from 'src/app/models/doctor-comment.model';
 import { DocumentGalleryComponent } from 'src/app/tabs/medical-record-page/components/docunent-gallery/docunent-gallery.component';
 import { FileViewerComponent } from 'src/app/tabs/shared/file-viewer/file-viewer.component';
+import { NewCommentComponent } from './components/new-comment/new-comment.component';
+import { CommentsComponent } from './components/comments/comments.component';
 
-interface NewCommentInput {
+export interface NewCommentInput {
   text: string;
   typeId: string;
   isPublic: boolean;
@@ -51,6 +45,8 @@ interface FilterOptions {
     FormsModule,
     DocumentGalleryComponent,
     FileViewerComponent,
+    NewCommentComponent,
+    CommentsComponent,
   ],
   templateUrl: './shared-medical-records.component.html',
   styleUrls: ['./shared-medical-records.component.scss'],
@@ -62,16 +58,10 @@ export class SharedMedicalRecordsComponent implements OnInit {
 
   readonly sharedGroups: Signal<MedicalRecordGroupDto[]> = toSignal(
     this.store.select(AccessState.sharedRecords),
-    {
-      initialValue: [],
-    }
+    { initialValue: [] }
   );
-  readonly commentTypes: Signal<DoctorCommentTypeDto[]> = toSignal(
-    this.store.select(DoctorCommentState.types),
-    {
-      initialValue: [],
-    }
-  );
+
+  showDetailsMap = new Map<string, boolean>();
 
   searchTerm = '';
   filters: FilterOptions = {
@@ -101,10 +91,24 @@ export class SharedMedicalRecordsComponent implements OnInit {
             };
           }
         });
+
+        group.esculabRecords?.forEach((order) => {
+          const key = order.id;
+          if (!this.newComments[key]) {
+            this.newComments[key] = {
+              text: '',
+              typeId: '',
+              isPublic: false,
+            };
+          }
+
+          if (!this.showDetailsMap.has(order.id)) {
+            this.showDetailsMap.set(order.id, false);
+          }
+        });
       });
 
       this.extractRecordTypes();
-
       this.applyFilters();
     });
   }
@@ -140,8 +144,9 @@ export class SharedMedicalRecordsComponent implements OnInit {
 
     const filteredGroups = this.sharedGroups().map((group) => {
       const filteredRecords = group.records.filter((record) => {
+        if (!searchLower.length) return true;
+
         const matchesSearch =
-          !searchLower ||
           record.title.toLowerCase().includes(searchLower) ||
           record.recordType?.name?.toLowerCase().includes(searchLower) ||
           group.ownerName.toLowerCase().includes(searchLower);
@@ -183,7 +188,8 @@ export class SharedMedicalRecordsComponent implements OnInit {
         }
 
         if (this.filters.hasFiles) {
-          const hasFiles = record.files && record.files.length > 0;
+          const hasFiles =
+            Array.isArray(record.files) && record.files.length > 0;
           if (
             (this.filters.hasFiles === 'yes' && !hasFiles) ||
             (this.filters.hasFiles === 'no' && hasFiles)
@@ -195,14 +201,25 @@ export class SharedMedicalRecordsComponent implements OnInit {
         return true;
       });
 
+      const filteredEsculab = (group.esculabRecords ?? []).filter((order) => {
+        if (!searchLower) return true;
+
+        const packetMatch = order.packet.toLowerCase().includes(searchLower);
+        const ownerMatch = group.ownerName.toLowerCase().includes(searchLower);
+        return packetMatch || ownerMatch;
+      });
+
       return {
         ...group,
         records: filteredRecords,
-      };
+        esculabRecords: filteredEsculab,
+      } as MedicalRecordGroupDto;
     });
 
     this.filteredGroups = filteredGroups.filter(
-      (group) => group.records.length > 0
+      (group) =>
+        group.records.length > 0 ||
+        (Array.isArray(group.esculabRecords) && group.esculabRecords.length > 0)
     );
   }
 
@@ -217,10 +234,9 @@ export class SharedMedicalRecordsComponent implements OnInit {
   }
 
   getTotalRecordsCount(): number {
-    return this.filteredGroups.reduce(
-      (total, group) => total + group.records.length,
-      0
-    );
+    return this.filteredGroups.reduce((sum, group) => {
+      return sum + group.records.length + (group.esculabRecords?.length ?? 0);
+    }, 0);
   }
 
   toggleComments(recordId: string): void {
@@ -239,42 +255,28 @@ export class SharedMedicalRecordsComponent implements OnInit {
         ?.records.find((r) => r.id === recordId)?.doctorComments ?? []
     );
   }
-
   hasComments(recordId: string): boolean {
     return this.getCommentsForRecord(recordId).length > 0;
   }
-
   getCommentCount(recordId: string): number {
     return this.getCommentsForRecord(recordId).length;
   }
 
-  clearNewComment(recordId: string): void {
-    this.newComments[recordId] = { text: '', typeId: '', isPublic: false };
+  getCommentsForEsculabRecord(recordId: string): DoctorCommentDto[] {
+    return (
+      this.sharedGroups()
+        .find((group) =>
+          group.esculabRecords.some((r) => r.id === recordId)
+        )
+        ?.esculabRecords.find((r) => r.id === recordId)
+        ?.doctorComments ?? []
+    );
   }
-
-  saveComment(record: MedicalRecord): void {
-    const input = this.newComments[record.id];
-    if (!input?.text.trim() || !input?.typeId) {
-      return;
-    }
-
-    const dto: CreateDoctorCommentDto = {
-      token: this.route.snapshot.paramMap.get('token') || undefined,
-      medicalRecordId: record.id,
-      doctorCommentTypeId: input.typeId,
-      content: input.text.trim(),
-      date: new Date().toISOString(),
-      isPublic: input.isPublic,
-    };
-
-    this.store.dispatch(new AddComment(dto)).subscribe(() => {
-      this.clearNewComment(record.id);
-      if (this.token) {
-        this.store.dispatch(new LoadSharedRecords(this.token));
-      } else {
-        this.store.dispatch(new LoadSharedRecords(null));
-      }
-    });
+  esculabHasComments(recordId: string): boolean {
+    return this.getCommentsForEsculabRecord(recordId).length > 0;
+  }
+  getEsculabCommentsCount(recordId: string): number {
+    return this.getCommentsForEsculabRecord(recordId).length;
   }
 
   openFile(file: MedicalRecordFile): void {
@@ -291,5 +293,26 @@ export class SharedMedicalRecordsComponent implements OnInit {
     this.showFileViewer = false;
     this.selectedFile = null;
     this.safeFileUrl = null;
+  }
+
+  toggleDetails(orderId: string): void {
+    const currently = this.showDetailsMap.get(orderId) || false;
+    this.showDetailsMap.set(orderId, !currently);
+  }
+
+  isDetailVisible(orderId: string): boolean {
+    return this.showDetailsMap.get(orderId) || false;
+  }
+
+  formatNormRange(normString: string | undefined): string {
+    if (!normString) return 'Not specified';
+    try {
+      const normObj = JSON.parse(normString.replace(/'/g, '"'));
+      return Object.entries(normObj)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(', ');
+    } catch {
+      return normString.replace(/[{}"]/g, '');
+    }
   }
 }

@@ -5,9 +5,9 @@
       <ion-card class="welcome-card">
         <ion-card-header>
           <ion-card-title>Welcome, Doctor</ion-card-title>
-          <ion-card-subtitle
-            >Review patient records shared with you</ion-card-subtitle
-          >
+          <ion-card-subtitle>
+            Review patient records shared with you
+          </ion-card-subtitle>
         </ion-card-header>
       </ion-card>
       }
@@ -90,7 +90,6 @@
         </ion-card-content>
       </ion-card>
 
-      <!-- Results Summary -->
       <div class="results-summary" *ngIf="filteredGroups.length > 0">
         <span>{{ getTotalRecordsCount() }} records found</span>
       </div>
@@ -193,101 +192,138 @@
                     <app-document-gallery
                       [files]="record.files || []"
                       (fileSelected)="openFile($event)"
-                    >
-                    </app-document-gallery>
+                    ></app-document-gallery>
                   </ion-card-content>
                 </ng-container>
 
-                <div
-                  class="existing-comments"
-                  *ngIf="getCommentsForRecord(record.id).length > 0"
+                <app-comments
+                  [comments]="getCommentsForRecord(record.id)"
+                ></app-comments>
+                <app-new-comment
+                  [newComments]="newComments"
+                  [recordId]="record.id"
+                  [token]="token"
+                  [type]="'personal'"
+                ></app-new-comment>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="group.esculabRecords?.length" class="records-container">
+            <h3 class="esculab-header">Lab Orders</h3>
+            <div
+              *ngFor="let order of group.esculabRecords"
+              class="record-wrapper"
+            >
+              <ion-item class="record-item" lines="none" button detail="false">
+                <ion-icon
+                  name="flask-outline"
+                  slot="start"
+                  class="record-icon"
+                ></ion-icon>
+                <ion-label>
+                  <h3 class="record-title">{{ order.packet }}</h3>
+                  <div class="record-meta">
+                    <span class="record-date">
+                      <ion-icon name="calendar-outline"></ion-icon>
+                      {{ order.dt | date : "mediumDate" }}
+                    </span>
+                    <span class="order-info">{{ order.address }}</span>
+                  </div>
+                </ion-label>
+                <ion-button
+                  fill="clear"
+                  size="small"
+                  class="comment-toggle-btn"
+                  (click)="toggleComments(order.id)"
                 >
                   <div
-                    *ngFor="let comment of getCommentsForRecord(record.id)"
-                    class="comment-bubble"
+                    class="comment-indicator"
+                    *ngIf="esculabHasComments(order.id)"
                   >
-                    <div class="comment-header">
-                      <span class="doctor-name">{{comment.doctorName}}</span>
-                      <span class="comment-time">{{
-                        comment.date | date : "MMM d, y, h:mm a"
-                      }}</span>
-                    </div>
-                    <div class="comment-text">{{ comment.content }}</div>
+                    {{ getEsculabCommentsCount(order.id) }}
                   </div>
-                </div>
+                  <ion-icon
+                    [name]="
+                      isCommentVisible(order.id)
+                        ? 'chevron-up-outline'
+                        : 'chatbubble-outline'
+                    "
+                    slot="icon-only"
+                  ></ion-icon>
+                </ion-button>
+              </ion-item>
 
-                <div
-                  class="new-comment-container"
-                  *ngIf="newComments[record.id] as newComment"
+              <div
+                class="comment-section"
+                [class.expanded]="isCommentVisible(order.id)"
+              >
+                <ion-card-content>
+                  <p>Tests Ready: {{ order.ready }} / {{ order.total }}</p>
+                </ion-card-content>
+
+                <app-comments
+                  [comments]="getCommentsForEsculabRecord(order.id)"
+                ></app-comments>
+                <app-new-comment
+                  [newComments]="newComments"
+                  [recordId]="order.id"
+                  [token]="token"
+                  [type]="'esculab'"
+                ></app-new-comment>
+              </div>
+
+              <ion-button
+                fill="clear"
+                size="small"
+                class="details-toggle-btn"
+                (click)="toggleDetails(order.id)"
+              >
+                <ion-icon
+                  [name]="
+                    isDetailVisible(order.id)
+                      ? 'chevron-up-outline'
+                      : 'eye-outline'
+                  "
+                  slot="start"
+                ></ion-icon>
+                {{
+                  isDetailVisible(order.id)
+                    ? "Hide Results"
+                    : "View Lab Results"
+                }}
+              </ion-button>
+
+              <div
+                class="lab-details-section"
+                *ngIf="isDetailVisible(order.id)"
+              >
+                <ng-container
+                  *ngIf="order.esculabRecordDetails.length; else loadingDetails"
                 >
-                  <div class="comment-input-label">Add a new note:</div>
-
-                  <ion-item lines="none" class="comment-item">
-                    <ion-textarea
-                      rows="3"
-                      name="commentText-{{ record.id }}"
-                      [(ngModel)]="newComment.text"
-                      [ngModelOptions]="{ standalone: true }"
-                      fill="outline"
-                      placeholder="Enter your medical observations or treatment notes..."
-                      class="comment-textarea"
-                    ></ion-textarea>
-                  </ion-item>
-
-                  <ion-item lines="none" class="comment-type-select">
-                    <ion-select
-                      name="commentType-{{ record.id }}"
-                      [ngModelOptions]="{ standalone: true }"
-                      [(ngModel)]="newComments[record.id].typeId"
-                      interface="action-sheet"
-                      fill="outline"
-                      placeholder="Select comment type"
+                  <ion-list lines="full">
+                    <ion-item
+                      *ngFor="let result of order.esculabRecordDetails"
+                      lines="none"
                     >
-                      <ion-select-option
-                        *ngFor="let t of commentTypes()"
-                        [value]="t.id"
-                      >
-                        {{ t.name }}
-                      </ion-select-option>
-                    </ion-select>
-                  </ion-item>
+                      <ion-label>
+                        <h4>{{ result.test }}</h4>
+                        <p>
+                          {{ result.result }}
+                          {{ result.units || "" }}
+                          (Norm:
+                          {{ formatNormRange(result.norm) }})
+                        </p>
+                      </ion-label>
+                    </ion-item>
+                  </ion-list>
+                </ng-container>
 
-                  <ion-item lines="none" class="comment-visibility">
-                    <ion-checkbox
-                      slot="start"
-                      [(ngModel)]="newComments[record.id].isPublic"
-                      [ngModelOptions]="{ standalone: true }"
-                    ></ion-checkbox>
-                    <ion-label>
-                      Visible to other doctors
-                      <p class="small-text">
-                        (leave unchecked to keep private to the patient)
-                      </p>
-                    </ion-label>
+                <ng-template #loadingDetails>
+                  <ion-item lines="none">
+                    <ion-label>Loading lab results…</ion-label>
+                    <ion-spinner slot="end" name="dots"></ion-spinner>
                   </ion-item>
-
-                  <div class="comment-actions">
-                    <ion-button
-                      size="small"
-                      fill="outline"
-                      (click)="clearNewComment(record.id)"
-                      [disabled]="!newComment.text"
-                      class="clear-btn"
-                    >
-                      <ion-icon name="close-outline" slot="start"></ion-icon>
-                      Clear
-                    </ion-button>
-                    <ion-button
-                      size="medium"
-                      (click)="saveComment(record)"
-                      [disabled]="!newComment.text || !newComment.typeId"
-                      class="save-btn"
-                    >
-                      <ion-icon name="save-outline" slot="start"></ion-icon>
-                      Save Note
-                    </ion-button>
-                  </div>
-                </div>
+                </ng-template>
               </div>
             </div>
           </div>

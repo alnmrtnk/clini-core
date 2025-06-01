@@ -14,6 +14,8 @@ namespace server_app.Data
         public DbSet<MedicalRecordFile> MedicalRecordFiles { get; set; }
         public DbSet<DoctorComment> DoctorComments { get; set; }
         public DbSet<DoctorCommentType> DoctorCommentTypes { get; set; }
+        public DbSet<EsculabRecord> EsculabRecords { get; set; }
+        public DbSet<EsculabRecordDetails> EsculabRecordDetails { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder m)
@@ -59,6 +61,22 @@ namespace server_app.Data
                     .HasForeignKey(x => x.MedicalRecordId);
             });
 
+            m.Entity<EsculabRecord>(e =>
+            {
+                e.HasKey(x => x.Id);
+                e.HasOne(x => x.User)
+                    .WithMany(u => u.EsculabRecords)
+                    .HasForeignKey(x => x.UserId);
+            });
+
+            m.Entity<EsculabRecordDetails>(e =>
+            {
+                e.HasKey(x => x.DetailsId);
+                e.HasOne(x => x.EsculabRecord)
+                    .WithMany(er => er.EsculabRecordDetails)
+                    .HasForeignKey(x => x.EsculabRecordId);
+            });
+
 
             m.Entity<DoctorAccess>(e => {
                 e.HasKey(x => x.Id);
@@ -95,6 +113,10 @@ namespace server_app.Data
                 e.HasOne(x => x.MedicalRecord)
                     .WithMany(mr => mr.DoctorComments)
                     .HasForeignKey(x => x.MedicalRecordId);
+
+                e.HasOne(x => x.EsculabRecord)
+                    .WithMany(er => er.DoctorComments)
+                    .HasForeignKey(x => x.EsculabRecordId);
 
                 e.HasOne(x => x.DoctorCommentType)
                     .WithMany(dc => dc.DoctorComments)

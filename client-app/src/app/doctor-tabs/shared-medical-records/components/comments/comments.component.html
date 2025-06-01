@@ -1,0 +1,17 @@
+<div
+  class="existing-comments"
+  *ngIf="comments().length > 0"
+>
+  <div
+    *ngFor="let comment of comments()"
+    class="comment-bubble"
+  >
+    <div class="comment-header">
+      <span class="doctor-name">{{ comment.doctorAccess.name }}</span>
+      <span class="comment-time">{{
+        comment.date | date : "MMM d, y, h:mm a"
+      }}</span>
+    </div>
+    <div class="comment-text">{{ comment.content }}</div>
+  </div>
+</div>

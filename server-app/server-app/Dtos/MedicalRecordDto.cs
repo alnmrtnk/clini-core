@@ -17,7 +17,7 @@ namespace server_app.Dtos
         public UserDto User { get; set; } = null!;
 
         public IList<MedicalRecordFileDto> Files { get; set; } = new List<MedicalRecordFileDto>();
-        public IList<DoctorCommentDto> DoctorComments { get; set; } = new List<DoctorCommentDto>();
+        public IList<DoctorComment> DoctorComments { get; set; } = new List<DoctorComment>();
     }
 
 
@@ -47,5 +47,6 @@ namespace server_app.Dtos
         public string OwnerName { get; set; } = null!;
         public string OwnerEmail { get; set; } = null!;
         public List<MedicalRecordDto> Records { get; set; } = new();
+        public List<EsculabRecord> EsculabRecords { get; set; } = new();
     }
 }

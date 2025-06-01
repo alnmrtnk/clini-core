@@ -11,6 +11,7 @@
         public string? EsculabPatientId { get; set; } = null!;
         public string? EsculabPhoneNumber { get; set; } = null!;
         public ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
+        public ICollection<EsculabRecord> EsculabRecords { get; set; } = new List<EsculabRecord>();
         public ICollection<DoctorAccess> DoctorAccesses { get; set; } = new List<DoctorAccess>();
     }
 }

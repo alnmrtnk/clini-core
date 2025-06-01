@@ -9,7 +9,8 @@ namespace server_app.Models
 
         public required Guid DoctorAccessId { get; set; }
 
-        public required Guid MedicalRecordId { get; set; }
+        public Guid? MedicalRecordId { get; set; }
+        public Guid? EsculabRecordId { get; set; }
 
         public required Guid DoctorCommentTypeId { get; set; }
 
@@ -22,8 +23,12 @@ namespace server_app.Models
         public DoctorAccess DoctorAccess { get; set; } = null!;
 
         [JsonIgnore]
-        public MedicalRecord MedicalRecord { get; set; } = null!;
+        public MedicalRecord? MedicalRecord { get; set; } = null!;
 
+        [JsonIgnore]
+        public EsculabRecord? EsculabRecord { get; set; } = null!;
+
+        [JsonIgnore]
         public DoctorCommentType DoctorCommentType { get; set; } = null!;
     }
 }

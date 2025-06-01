@@ -77,6 +77,7 @@ builder.Services.AddScoped<IDoctorAccessRepository, DoctorAccessRepository>();
 builder.Services.AddScoped<IMedicalRecordFileRepository, MedicalRecordFileRepository>();
 builder.Services.AddScoped<IDoctorCommentRepository, DoctorCommentRepository>();
 builder.Services.AddScoped<IRecordTypeRepository, RecordTypeRepository>();
+builder.Services.AddScoped<IEsculabRepository, EsculabRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();

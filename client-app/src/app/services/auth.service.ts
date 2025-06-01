@@ -54,13 +54,13 @@ export class AuthService {
     });
   }
 
-  logout() {
+  logout(withRedirection: boolean = true) {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
     localStorage.removeItem('esculab_token');
     this.token.set(null);
     this.user.set(null);
-    this.router.navigate(['/auth/login']);
+    if (withRedirection) this.router.navigate(['/auth/login']);
   }
 
   validate() {

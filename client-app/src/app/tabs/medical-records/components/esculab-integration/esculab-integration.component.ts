@@ -21,6 +21,7 @@ import {
 } from 'src/app/store/esculab.state';
 import { EsculabOrderDto, LabResultDto } from 'src/app/models/esculab.model';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { take } from 'rxjs';
 
 interface GroupedLabResults {
   name: string;
@@ -51,7 +52,7 @@ export class EsculabIntegrationComponent {
 
   phoneForm: FormGroup;
   verificationForm: FormGroup;
-  currentStep = 'results'; // 'phone', 'verification', 'results'
+  currentStep:  'phone' | 'verification' | 'results' = 'results';
   resendDisabled = false;
   resendCountdown = 0;
   countdownInterval: any;
@@ -179,7 +180,7 @@ export class EsculabIntegrationComponent {
   }
 
   fetchLabOrders() {
-    this.store.dispatch(new FindPatient()).subscribe({
+    this.store.dispatch(new FindPatient()).pipe(take(1)).subscribe({
       next: () => {
         this.currentStep = 'results';
         this.store.dispatch(new GetAllOrders());
@@ -216,7 +217,6 @@ export class EsculabIntegrationComponent {
   }
 
   groupResultsByPacket(results: LabResultDto[]) {
-    // Group results by packet
     const groupMap = new Map<string, LabResultDto[]>();
 
     results.forEach((result) => {
@@ -227,10 +227,8 @@ export class EsculabIntegrationComponent {
       groupMap.get(packetName)?.push(result);
     });
 
-    // Convert map to array of grouped results
     this.groupedResults = Array.from(groupMap.entries()).map(
       ([name, results]) => {
-        // Get the date from the first result in the group
         const date = results[0]?.utime
           ? this.formatDateTime(results[0].utime)
           : '';
@@ -266,7 +264,6 @@ export class EsculabIntegrationComponent {
   formatNormRange(normString: string | undefined): string {
     if (!normString) return 'Not specified';
 
-    // Remove the JSON-like formatting and extract just the ranges
     try {
       const normObj = JSON.parse(normString.replace(/'/g, '"'));
       return Object.keys(normObj)
@@ -286,7 +283,6 @@ export class EsculabIntegrationComponent {
   importToMedicalRecords(order: EsculabOrderDto) {
     this.closeOrderDetails();
 
-    // Navigate to add record page with pre-filled data
     this.router.navigate(['/tabs/medical-records/add'], {
       queryParams: {
         type: 'labTest',

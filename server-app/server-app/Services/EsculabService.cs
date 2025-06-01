@@ -1,7 +1,9 @@
-﻿using server_app.Dtos;
+﻿using AutoMapper;
+using server_app.Dtos;
 using server_app.Dtos.Esculab;
 using server_app.Extensions;
 using server_app.Helpers;
+using server_app.Models;
 using server_app.Repositories;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -13,19 +15,28 @@ namespace server_app.Services
         Task<ServiceResult<string>> RequestCode(string phone);
         Task<ServiceResult<string>> AcceptToken(AcceptTokenRequestDto req);
         Task<ServiceResult<PatientDto>> FindEsculabPatient(string esculabToken);
-        Task<ServiceResult<EsculabOrderDto[]>> GetEsculabOrders(string esculabToken);
+        Task<ServiceResult<IEnumerable<EsculabRecord>>> GetEsculabOrders(string esculabToken);
         Task<ServiceResult<LabResultDto[]>> GetSpecificEsculabOrder(int id, string esculabToken);
     }
 
     public class EsculabService : IEsculabService
     {
         private readonly HttpClient _httpClient;
-        private readonly IUserRepository _userRepository;
+        public readonly IUserRepository _userRepository;
+        private readonly IEsculabRepository _esculabRepo;
+        public readonly IMapper _mapper;
 
-        public EsculabService(HttpClient httpClient, IUserRepository userRepository)
+        public EsculabService(
+            HttpClient httpClient,
+            IUserRepository userRepository,
+            IEsculabRepository esculabRepo,
+            IMapper mapper
+        )
         {
             _httpClient = httpClient;
             _userRepository = userRepository;
+            _esculabRepo = esculabRepo;
+            _mapper = mapper;
         }
 
         public async Task<ServiceResult<string>> RequestCode(string phone)
@@ -112,29 +123,64 @@ namespace server_app.Services
             }
         }
 
-        public async Task<ServiceResult<EsculabOrderDto[]>> GetEsculabOrders(string esculabToken)
+        public async Task<ServiceResult<IEnumerable<EsculabRecord>>> GetEsculabOrders(string esculabToken)
         {
             var user = await _userRepository.GetCurrentUser();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", esculabToken);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", esculabToken);
 
-            var response = await _httpClient.GetAsync($"https://esculab.com/api/customers/getPatientOrders/{user.EsculabPatientId}");
-            var content = await response.Content.ReadAsStringAsync();
+            var ordersResponse = await _httpClient
+                .GetAsync($"https://esculab.com/api/customers/getPatientOrders/{user.EsculabPatientId}");
+            var ordersContent = await ordersResponse.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
-                return ServiceResult<EsculabOrderDto[]>.Fail(content, (int)response.StatusCode);
+            if (!ordersResponse.IsSuccessStatusCode)
+                return ServiceResult<IEnumerable<EsculabRecord>>.Fail(
+                    ordersContent,
+                    (int)ordersResponse.StatusCode
+                );
 
-            try
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            options.Converters.Add(new FlexibleDateTimeConverter());
+            var orderDtos = JsonSerializer.Deserialize<EsculabOrderDto[]>(ordersContent, options)
+                            ?? Array.Empty<EsculabOrderDto>();
+
+            var esculabRecords = new List<EsculabRecord>();
+            foreach (var dto in orderDtos)
             {
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                options.Converters.Add(new FlexibleDateTimeConverter());
+                var record = _mapper.Map<EsculabRecord>(dto);
+                record.UserId = user.Id;
+                esculabRecords.Add(record);
+            }
 
-                var orders = JsonSerializer.Deserialize<EsculabOrderDto[]>(content, options);
-                return ServiceResult<EsculabOrderDto[]>.Ok(orders ?? Array.Empty<EsculabOrderDto>());
-            }
-            catch (JsonException e)
+            await _esculabRepo.AddOrUpdateOrdersAsync(esculabRecords);
+            
+            var allDetails = new List<EsculabRecordDetails>();
+            foreach (var record in esculabRecords)
             {
-                return ServiceResult<EsculabOrderDto[]>.Fail($"Failed to deserialize orders: {e.Message}");
+                var specificResponse = await _httpClient
+                    .GetAsync($"https://esculab.com/api/customers/getOrdersResult/{record.IdOrder}/{user.EsculabPatientId}");
+                var specificContent = await specificResponse.Content.ReadAsStringAsync();
+
+                if (!specificResponse.IsSuccessStatusCode)
+                {
+                    continue;
+                }
+
+                var detailsDtos = JsonSerializer.Deserialize<LabResultDto[]>(specificContent, options)
+                                   ?? Array.Empty<LabResultDto>();
+
+                foreach (var detDto in detailsDtos)
+                {
+                    var detEntity = _mapper.Map<EsculabRecordDetails>(detDto);
+                    detEntity.EsculabRecordId = record.Id;
+                    allDetails.Add(detEntity);
+                }
             }
+
+            await _esculabRepo.AddOrUpdateRecordDetailsAsync(allDetails);
+
+            var saved = await _esculabRepo.GetAllAsync();
+            return ServiceResult<IEnumerable<EsculabRecord>>.Ok(saved);
         }
 
         public async Task<ServiceResult<LabResultDto[]>> GetSpecificEsculabOrder(int id, string esculabToken)

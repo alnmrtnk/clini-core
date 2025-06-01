@@ -1,4 +1,6 @@
-﻿namespace server_app.Models
+﻿using System.Text.Json.Serialization;
+
+namespace server_app.Models
 {
     public class DoctorAccess
     {
@@ -11,9 +13,12 @@
         public required DateTime ExpiresAt { get; set; }
         public bool Revoked { get; set; } = false;
         public DateTime GrantedAt { get; set; } = DateTime.UtcNow;
+        [JsonIgnore]
         public User User { get; set; } = null!;
+        [JsonIgnore]
         public User? SharedWithUser { get; set; }
 
+        [JsonIgnore]
         public List<DoctorComment> DoctorComments { get; set; } = new List<DoctorComment>();
     }
 }

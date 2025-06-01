@@ -1,6 +1,7 @@
 ﻿using server_app.Dtos;
 using server_app.Models;
 using AutoMapper;
+using server_app.Dtos.Esculab;
 
 namespace server_app.Profiles
 {
@@ -16,8 +17,7 @@ namespace server_app.Profiles
 
             CreateMap<MedicalRecord, MedicalRecordDto>()
                 .ForMember(d => d.RecordType, o => o.MapFrom(s => s.RecordType))
-                .ForMember(d => d.Files, o => o.MapFrom(s => s.Files))
-                .ForMember(d => d.DoctorComments, o => o.MapFrom(s => s.DoctorComments));
+                .ForMember(d => d.Files, o => o.MapFrom(s => s.Files));
 
             CreateMap<RecordType, RecordTypeDto>()
                 .ForMember(dto => dto.MedicalRecords, opt => opt.Ignore());
@@ -49,6 +49,21 @@ namespace server_app.Profiles
                 .ForMember(d => d.DoctorName,
                            o => o.MapFrom(s => s.DoctorAccess.TargetUserEmail ?? s.DoctorAccess.Name));
             CreateMap<DoctorCommentType, DoctorCommentTypeDto>();
+
+
+            CreateMap<EsculabOrderDto, EsculabRecord>()
+            .ForMember(dest => dest.Id,
+                       opt => opt.MapFrom(src => Guid.NewGuid()))
+            .ForMember(dest => dest.UserId,
+                       opt => opt.Ignore())
+            ;
+
+            CreateMap<LabResultDto, EsculabRecordDetails>()
+                .ForMember(dest => dest.DetailsId,
+                           opt => opt.MapFrom(src => Guid.NewGuid()))
+                .ForMember(dest => dest.EsculabRecordId,
+                           opt => opt.Ignore())
+                ;
         }
     }
 }

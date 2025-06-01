@@ -1,0 +1,50 @@
+.new-comment-container {
+  padding: 16px;
+
+  .comment-input-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--ion-color-medium);
+  }
+
+  .comment-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 0 0;
+    gap: 10px;
+  }
+
+  .comment-type-select {
+    --padding-start: 0;
+  }
+
+  .clear-btn,
+  .save-btn {
+    --border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .save-btn {
+    --box-shadow: 0 4px 8px rgba(var(--ion-color-primary-rgb), 0.3);
+  }
+
+  .comment-textarea {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+    --background: var(--ion-color-light-tint);
+    --border-radius: 8px;
+    margin: 0 0 16px;
+    width: 100%;
+  }
+
+  .comment-item {
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    --background: white;
+  }
+}

@@ -55,7 +55,7 @@ export class MedicalRecordPageComponent implements OnInit {
       if (!map[c.doctorAccessId]) {
         map[c.doctorAccessId] = {
           doctorAccessId: c.doctorAccessId,
-          doctorName: c.doctorName,
+          doctorName: c.doctorAccess.name,
           comments: [],
         };
       }

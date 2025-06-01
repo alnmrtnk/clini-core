@@ -10,7 +10,7 @@ namespace server_app.Extensions
         {
             "yyyy-MM-dd HH:mm:ss.FFFFFFzzz",   // +02:00
             "yyyy-MM-dd HH:mm:ss.FFFFFFzz",    // +0200
-            "yyyy-MM-dd HH:mm:ss.FFFFFFz",     // +02 ← це твій випадок!
+            "yyyy-MM-dd HH:mm:ss.FFFFFFz",     // +02
             "yyyy-MM-dd HH:mm:ss.FFFFFF",
             "yyyy-MM-dd HH:mm:ss",
             "yyyy-MM-dd HH:mm",
@@ -25,7 +25,9 @@ namespace server_app.Extensions
                 return null;
 
             if (DateTimeOffset.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dto))
-                return dto.DateTime;
+            {
+                return dto.UtcDateTime;
+            }
 
             throw new JsonException($"Invalid datetime format: {str}");
         }
