@@ -133,51 +133,49 @@ namespace server_app.Services
                 .GetAsync($"https://esculab.com/api/customers/getPatientOrders/{user.EsculabPatientId}");
             var ordersContent = await ordersResponse.Content.ReadAsStringAsync();
 
-            if (!ordersResponse.IsSuccessStatusCode)
-                return ServiceResult<IEnumerable<EsculabRecord>>.Fail(
-                    ordersContent,
-                    (int)ordersResponse.StatusCode
-                );
-
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            options.Converters.Add(new FlexibleDateTimeConverter());
-            var orderDtos = JsonSerializer.Deserialize<EsculabOrderDto[]>(ordersContent, options)
-                            ?? Array.Empty<EsculabOrderDto>();
-
-            var esculabRecords = new List<EsculabRecord>();
-            foreach (var dto in orderDtos)
+            if (ordersResponse.IsSuccessStatusCode)
             {
-                var record = _mapper.Map<EsculabRecord>(dto);
-                record.UserId = user.Id;
-                esculabRecords.Add(record);
-            }
 
-            await _esculabRepo.AddOrUpdateOrdersAsync(esculabRecords);
-            
-            var allDetails = new List<EsculabRecordDetails>();
-            foreach (var record in esculabRecords)
-            {
-                var specificResponse = await _httpClient
-                    .GetAsync($"https://esculab.com/api/customers/getOrdersResult/{record.IdOrder}/{user.EsculabPatientId}");
-                var specificContent = await specificResponse.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                options.Converters.Add(new FlexibleDateTimeConverter());
+                var orderDtos = JsonSerializer.Deserialize<EsculabOrderDto[]>(ordersContent, options)
+                                ?? Array.Empty<EsculabOrderDto>();
 
-                if (!specificResponse.IsSuccessStatusCode)
+                var esculabRecords = new List<EsculabRecord>();
+                foreach (var dto in orderDtos)
                 {
-                    continue;
+                    var record = _mapper.Map<EsculabRecord>(dto);
+                    record.UserId = user.Id;
+                    esculabRecords.Add(record);
                 }
 
-                var detailsDtos = JsonSerializer.Deserialize<LabResultDto[]>(specificContent, options)
-                                   ?? Array.Empty<LabResultDto>();
+                await _esculabRepo.AddOrUpdateOrdersAsync(esculabRecords);
 
-                foreach (var detDto in detailsDtos)
+                var allDetails = new List<EsculabRecordDetails>();
+                foreach (var record in esculabRecords)
                 {
-                    var detEntity = _mapper.Map<EsculabRecordDetails>(detDto);
-                    detEntity.EsculabRecordId = record.Id;
-                    allDetails.Add(detEntity);
-                }
-            }
+                    var specificResponse = await _httpClient
+                        .GetAsync($"https://esculab.com/api/customers/getOrdersResult/{record.IdOrder}/{user.EsculabPatientId}");
+                    var specificContent = await specificResponse.Content.ReadAsStringAsync();
 
-            await _esculabRepo.AddOrUpdateRecordDetailsAsync(allDetails);
+                    if (!specificResponse.IsSuccessStatusCode)
+                    {
+                        continue;
+                    }
+
+                    var detailsDtos = JsonSerializer.Deserialize<LabResultDto[]>(specificContent, options)
+                                       ?? Array.Empty<LabResultDto>();
+
+                    foreach (var detDto in detailsDtos)
+                    {
+                        var detEntity = _mapper.Map<EsculabRecordDetails>(detDto);
+                        detEntity.EsculabRecordId = record.Id;
+                        allDetails.Add(detEntity);
+                    }
+                }
+
+                await _esculabRepo.AddOrUpdateRecordDetailsAsync(allDetails);
+            }
 
             var saved = await _esculabRepo.GetAllAsync();
             return ServiceResult<IEnumerable<EsculabRecord>>.Ok(saved);

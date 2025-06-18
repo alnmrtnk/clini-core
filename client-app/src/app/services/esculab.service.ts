@@ -51,7 +51,7 @@ export class EsculabService {
       );
   }
 
-  getLabOrders(esculabToken: string): Observable<EsculabOrderDto[]> {
+  getLabOrders(esculabToken?: string): Observable<EsculabOrderDto[]> {
     return this.http
       .get<any>(`${this.apiUrl}get-all-orders?esculabToken=${esculabToken}`)
       .pipe(

@@ -46,7 +46,7 @@ namespace server_app.Repositories
             foreach (var order in orders)
             {
                 var existing = await _db.EsculabRecords
-                                        .FirstOrDefaultAsync(x => x.IdOrder == order.IdOrder);
+                                        .FirstOrDefaultAsync(x => x.IdOrder == order.IdOrder && x.UserId == CurrentUserId);
                 if (existing == null)
                 {
                     order.Id = Guid.NewGuid();
@@ -67,13 +67,14 @@ namespace server_app.Repositories
             foreach (var det in details)
             {
                 var existing = await _db.EsculabRecordDetails
-                                        .FirstOrDefaultAsync(x => x.id == det.id);
+                                        .FirstOrDefaultAsync(x => x.id == det.id && x.EsculabRecordId == det.EsculabRecordId);
                 if (existing == null)
                 {
                     _db.EsculabRecordDetails.Add(det);
                 }
                 else
                 {
+                    det.DetailsId = existing.DetailsId;
                     _db.Entry(existing).CurrentValues.SetValues(det);
                 }
             }

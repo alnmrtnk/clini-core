@@ -14,12 +14,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs';
 import { DoctorCommentDto } from 'src/app/models/doctor-comment.model';
 import { FileViewerComponent } from '../shared/file-viewer/file-viewer.component';
-
-interface DoctorCommentGroup {
-  doctorAccessId: string;
-  doctorName: string;
-  comments: DoctorCommentDto[];
-}
+import { DoctorCommentsComponent } from "../shared/doctor-comments/doctor-comments.component";
 
 @Component({
   selector: 'app-medical-record-page',
@@ -30,7 +25,8 @@ interface DoctorCommentGroup {
     CommonModule,
     FileViewerComponent,
     DocumentGalleryComponent,
-  ],
+    DoctorCommentsComponent
+],
 })
 export class MedicalRecordPageComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -46,35 +42,6 @@ export class MedicalRecordPageComponent implements OnInit {
   showFileViewer = false;
   selectedFile: MedicalRecordFile | null = null;
   safeFileUrl: SafeResourceUrl | null = null;
-
-  doctorCommentGroups = computed(() => {
-    const comments = this.record()?.doctorComments || [];
-    const map: Record<string, DoctorCommentGroup> = {};
-
-    for (const c of comments) {
-      if (!map[c.doctorAccessId]) {
-        map[c.doctorAccessId] = {
-          doctorAccessId: c.doctorAccessId,
-          doctorName: c.doctorAccess.name,
-          comments: [],
-        };
-      }
-      map[c.doctorAccessId].comments.push(c);
-    }
-
-    return Object.values(map);
-  });
-
-  iconForCommentType(typeName: string): string {
-    switch (typeName.toLowerCase()) {
-      case 'prescription':
-        return 'document-text-outline';
-      case 'reccomendations':
-        return 'medkit-outline';
-      default:
-        return 'chatbubble-ellipses-outline';
-    }
-  }
 
   ngOnInit() {
     this.loadRecord();

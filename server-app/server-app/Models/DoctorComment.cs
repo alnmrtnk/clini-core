@@ -28,7 +28,6 @@ namespace server_app.Models
         [JsonIgnore]
         public EsculabRecord? EsculabRecord { get; set; } = null!;
 
-        [JsonIgnore]
         public DoctorCommentType DoctorCommentType { get; set; } = null!;
     }
 }

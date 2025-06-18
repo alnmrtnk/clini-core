@@ -130,6 +130,17 @@
 </ng-container>
 
 <ng-container *ngIf="currentStep === 'results'">
+  <ion-card *ngIf="tokenExpired">
+    <ion-card-content>
+      <ion-text color="warning">
+        Records may be outdated. To refresh, please
+        <ion-button fill="clear" size="small" (click)="currentStep='phone'">
+          re-authenticate
+        </ion-button>.
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+
   <ng-template #noOrders>
     <ion-card-content>
       <div class="empty-state">
@@ -163,8 +174,9 @@
           </ion-badge>
         </ion-item>
         <div slot="content">
+          <app-doctor-comments [doctorComments]="order.doctorComments" />
           <ng-container
-            *ngIf="getOrderDetails(order.idOrder)?.length; else noDetails"
+            *ngIf="order.esculabRecordDetails.length; else noDetails"
           >
             <div class="result-group">
               <div class="result-table">
@@ -178,7 +190,7 @@
                   </thead>
                   <tbody>
                     <tr
-                      *ngFor="let test of getOrderDetails(order.idOrder)"
+                      *ngFor="let test of order.esculabRecordDetails"
                       [class.abnormal]="test.state !== 'normal'"
                     >
                       <td>{{ test.test }}</td>
@@ -189,10 +201,6 @@
                 </table>
               </div>
             </div>
-            <ion-button expand="block" (click)="importToMedicalRecords(order)">
-              <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-              Import to Medical Records
-            </ion-button>
           </ng-container>
           <ng-template #noDetails>
             <ion-item>
@@ -201,9 +209,7 @@
                 color="warning"
                 slot="start"
               ></ion-icon>
-              <ion-label
-                >No detailed results available for this order.</ion-label
-              >
+              <ion-label>No detailed results available for this order.</ion-label>
             </ion-item>
           </ng-template>
         </div>

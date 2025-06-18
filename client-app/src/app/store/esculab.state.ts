@@ -55,7 +55,7 @@ export type EsculabStateModel = {
   error?: string;
   uuid?: string;
   esculabToken?: string;
-  patient?: PatientDto;
+  patient: PatientDto | null;
   orders: EsculabOrderDto[];
   selectedOrderId?: number;
   orderDetails: { [key: number]: LabResultDto[] };
@@ -67,6 +67,7 @@ export type EsculabStateModel = {
     loading: false,
     orders: [],
     orderDetails: {},
+    patient: null
   },
 })
 @Injectable()
@@ -94,7 +95,7 @@ export class EsculabState {
   }
 
   @Selector()
-  static getPatient(state: EsculabStateModel): PatientDto | undefined {
+  static getPatient(state: EsculabStateModel): PatientDto | null {
     return state.patient;
   }
 
@@ -210,6 +211,7 @@ export class EsculabState {
         ctx.patchState({
           loading: false,
           error: error.message || 'Failed to find patient',
+          patient: null
         });
         return throwError(() => error);
       })
@@ -221,16 +223,9 @@ export class EsculabState {
     const state = ctx.getState();
     const token = state.esculabToken ?? localStorage.getItem('esculab_token');
 
-    if (!token) {
-      ctx.patchState({
-        error: 'No token found. Please authenticate first.',
-      });
-      return;
-    }
-
     ctx.patchState({ loading: true, error: undefined });
 
-    return this.esculabService.getLabOrders(token).pipe(
+    return this.esculabService.getLabOrders(token ?? undefined).pipe(
       tap((orders) => {
         ctx.patchState({
           loading: false,
@@ -307,6 +302,7 @@ export class EsculabState {
       loading: false,
       orders: [],
       orderDetails: {},
+      patient: null
     });
   }
 

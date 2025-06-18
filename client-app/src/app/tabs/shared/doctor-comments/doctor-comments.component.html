@@ -1,0 +1,31 @@
+<ion-card *ngIf="doctorCommentGroups().length">
+  <ion-card-header>
+    <ion-card-title>
+      Doctor Comments ({{ doctorComments().length }})
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ng-container *ngFor="let group of doctorCommentGroups()">
+      <ion-item-divider color="tertiary">
+        <ion-label>
+          <h2>{{ group.doctorName }}</h2>
+        </ion-label>
+      </ion-item-divider>
+
+      <ion-list lines="full">
+        <ion-item *ngFor="let c of group.comments">
+          <ion-icon
+            slot="start"
+            [name]="iconForCommentType(c.doctorCommentType.name)"
+            color="tertiary"
+          ></ion-icon>
+          <ion-label>
+            <h3>{{ c.doctorCommentType.name | titlecase }}</h3>
+            <p class="comment-date">{{ c.date | date : "medium" }}</p>
+            <p class="comment-text">{{ c.content }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ng-container>
+  </ion-card-content>
+</ion-card>
